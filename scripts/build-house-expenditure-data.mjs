@@ -6,6 +6,7 @@ const sourceRoot = path.join(root, "Committee Corpus + Witness Directory - CTO S
 const rawDir = path.join(sourceRoot, "data", "raw");
 const outJson = path.join(root, "assets", "house-expenditure-data.json");
 const outJs = path.join(root, "assets", "house-expenditure-data.js");
+const outTransactions = path.join(root, "assets", "house-expenditure-transactions.json");
 
 const sourceUrls = {
   "JANUARY-MARCH-2025-SOD-DETAIL-GRID-FINAL.csv": "https://www.house.gov/sites/default/files/2025-05/JANUARY-MARCH-2025-SOD-DETAIL-GRID-FINAL.csv",
@@ -129,6 +130,32 @@ function classifyExpense(row) {
   return "Other operating costs";
 }
 
+function classifyVendor(vendorName) {
+  const name = String(vendorName || "").toUpperCase();
+  if (!name || name === "NO VENDOR LISTED") {
+    return {
+      type: "Unlisted vendor",
+      note: "The source row does not name a vendor; these rows are excluded from vendor profiles.",
+    };
+  }
+  if (/^HON\./.test(name)) {
+    return {
+      type: "Member reimbursement",
+      note: "Payments directly to Members usually indicate Member reimbursements, not an outside vendor relationship.",
+    };
+  }
+  if (/CITIBANK|CITI PCARD|GOV CARD|PCARD|PURCHASE CARD|CREDIT CARD/.test(name)) {
+    return {
+      type: "Card or payment intermediary",
+      note: "Credit card or purchasing-card entries usually indicate reimbursements or card pass-throughs; the underlying merchant may appear in the description or expanded vendor name.",
+    };
+  }
+  return {
+    type: "Named vendor",
+    note: "",
+  };
+}
+
 function addToSetMap(map, key, value) {
   if (!value) return;
   if (!map.has(key)) map.set(key, new Set());
@@ -149,6 +176,16 @@ function topRollup(map, limit = 9999) {
 
 function money(amount) {
   return Math.round((amount || 0) * 100) / 100;
+}
+
+function slugify(value) {
+  return String(value || "vendor")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 90) || "vendor";
 }
 
 const files = fs.readdirSync(rawDir)
@@ -214,8 +251,11 @@ for (const fileName of files) {
     addRollup(byProgram, row.program, row.amount);
 
     if (vendorName !== "No vendor listed") {
+      const vendorInfo = classifyVendor(vendorName);
       const vendor = vendorMap.get(vendorName) || {
         vendor: vendorName,
+        vendorType: vendorInfo.type,
+        vendorNote: vendorInfo.note,
         amount: 0,
         count: 0,
         clientCount: 0,
@@ -225,6 +265,7 @@ for (const fileName of files) {
         periods: new Set(),
         clients: new Map(),
         descriptions: new Map(),
+        transactions: [],
       };
       vendor.amount += row.amount;
       vendor.count += 1;
@@ -234,31 +275,54 @@ for (const fileName of files) {
       if (row.transactionDate && String(row.transactionDate).localeCompare(vendor.lastDate) > 0) vendor.lastDate = row.transactionDate;
       addRollup(vendor.clients, row.organizationShort || row.organization, row.amount);
       addRollup(vendor.descriptions, row.description || row.objectClassLabel, row.amount);
+      vendor.transactions.push([
+        money(row.amount),
+        row.transactionDate,
+        row.period,
+        row.organizationShort || row.organization,
+        row.officeType,
+        row.description,
+        row.expenseKind,
+        row.objectClassLabel,
+        row.document,
+      ]);
       vendorMap.set(vendorName, vendor);
     }
 
-    topTransactions.push({
-      vendor: vendorName,
-      amount: money(row.amount),
-      date: row.transactionDate,
-      period: row.period,
-      organization: row.organizationShort || row.organization,
-      officeType: row.officeType,
-      description: row.description,
-      expenseKind: row.expenseKind,
-    });
-    topTransactions.sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount));
-    topTransactions.length = Math.min(topTransactions.length, 500);
+    if (vendorName !== "No vendor listed") {
+      topTransactions.push({
+        vendor: vendorName,
+        vendorType: classifyVendor(vendorName).type,
+        amount: money(row.amount),
+        date: row.transactionDate,
+        period: row.period,
+        organization: row.organizationShort || row.organization,
+        officeType: row.officeType,
+        description: row.description,
+        expenseKind: row.expenseKind,
+      });
+      topTransactions.sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount));
+      topTransactions.length = Math.min(topTransactions.length, 500);
+    }
   }
 }
 
+const slugCounts = new Map();
 const vendors = [...vendorMap.values()].map((vendor) => {
   const clients = topRollup(vendor.clients, 8);
   const officeTypes = [...vendor.officeTypes].sort();
   const expenseKinds = [...vendor.expenseKinds].sort();
   const periods = [...vendor.periods].sort((a, b) => periodRank(a) - periodRank(b));
+  const baseSlug = slugify(vendor.vendor);
+  const count = slugCounts.get(baseSlug) || 0;
+  slugCounts.set(baseSlug, count + 1);
+  const slug = count ? `${baseSlug}-${count + 1}` : baseSlug;
+  vendor.slug = slug;
   return {
+    slug,
     vendor: vendor.vendor,
+    vendorType: vendor.vendorType,
+    vendorNote: vendor.vendorNote,
     amount: money(vendor.amount),
     count: vendor.count,
     clientCount: vendor.clients.size,
@@ -303,6 +367,16 @@ const data = {
   vendors,
 };
 
+const transactionData = {
+  generatedAt: data.generatedAt,
+  columns: ["amount", "date", "period", "organization", "officeType", "description", "expenseKind", "objectClass", "document"],
+  vendors: Object.fromEntries([...vendorMap.values()].map((vendor) => [
+    vendor.slug,
+    vendor.transactions.sort((a, b) => Math.abs(b[0]) - Math.abs(a[0])),
+  ])),
+};
+
 fs.writeFileSync(outJson, `${JSON.stringify(data)}\n`);
 fs.writeFileSync(outJs, `window.HOUSE_EXPENDITURE_DATA = ${JSON.stringify(data)};\n`);
+fs.writeFileSync(outTransactions, `${JSON.stringify(transactionData)}\n`);
 console.log(`Generated ${vendors.length.toLocaleString()} vendor rollups from ${detailRows.toLocaleString()} transaction rows.`);

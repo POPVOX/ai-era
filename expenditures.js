@@ -133,6 +133,7 @@ function matches(vendor) {
   if (!query) return true;
   const haystack = [
     vendor.vendor,
+    vendor.vendorType,
     ...vendor.officeTypes,
     ...vendor.expenseKinds,
     ...vendor.periods,
@@ -172,6 +173,7 @@ function vendorCard(vendor) {
           <p>${escapeHtml(topExpense(vendor))}</p>
         </div>
       </div>
+      ${vendor.vendorType && vendor.vendorType !== 'Named vendor' ? `<div class="vendor-context-badge">${escapeHtml(vendor.vendorType)}</div>` : ''}
       <div class="vendor-card-metrics">
         <span><strong>${money(vendor.amount)}</strong> spend</span>
         <span><strong>${numberFmt.format(vendor.count)}</strong> rows</span>
@@ -180,6 +182,7 @@ function vendorCard(vendor) {
       <div class="vendor-chip-row">
         ${vendor.officeTypes.slice(0, 3).map((item) => `<span>${escapeHtml(item)}</span>`).join('')}
       </div>
+      <a class="vendor-detail-link" href="vendor.html?v=${encodeURIComponent(vendor.slug)}">Open transaction detail</a>
     </article>
   `;
 }
@@ -191,7 +194,7 @@ function vendorRow(vendor) {
       <td>${money(vendor.amount)}</td>
       <td>${numberFmt.format(vendor.count)}</td>
       <td>${numberFmt.format(vendor.clientCount)}</td>
-      <td>${escapeHtml(topExpense(vendor))}</td>
+      <td>${escapeHtml(vendor.vendorType && vendor.vendorType !== 'Named vendor' ? vendor.vendorType : topExpense(vendor))}</td>
     </tr>
   `;
 }
@@ -226,6 +229,7 @@ function renderProfile(vendor) {
   els.profile.innerHTML = `
     <p class="eyebrow">Vendor profile</p>
     <h2>${escapeHtml(vendor.vendor)}</h2>
+    ${vendor.vendorType && vendor.vendorType !== 'Named vendor' ? `<div class="vendor-context-note"><strong>${escapeHtml(vendor.vendorType)}</strong><span>${escapeHtml(vendor.vendorNote)}</span></div>` : ''}
     <div class="vendor-profile-metrics">
       <article><strong>${money(vendor.amount)}</strong><span>Total spend</span></article>
       <article><strong>${numberFmt.format(vendor.count)}</strong><span>Transactions</span></article>
@@ -245,6 +249,7 @@ function renderProfile(vendor) {
         ${[...vendor.officeTypes, ...vendor.expenseKinds.slice(0, 4)].map((item) => `<span>${escapeHtml(item)}</span>`).join('')}
       </div>
     </div>
+    <a class="button vendor-profile-button" href="vendor.html?v=${encodeURIComponent(vendor.slug)}">Open full transaction view</a>
   `;
 }
 
@@ -254,7 +259,7 @@ function renderTopTransactions() {
       <td>${escapeHtml(row.vendor)}</td>
       <td>${money(row.amount)}</td>
       <td>${escapeHtml(row.organization)}<div>${escapeHtml(row.officeType)}</div></td>
-      <td>${escapeHtml(row.description)}<div>${escapeHtml(row.expenseKind)}</div></td>
+      <td>${escapeHtml(row.description)}<div>${escapeHtml(row.vendorType && row.vendorType !== 'Named vendor' ? `${row.vendorType} · ${row.expenseKind}` : row.expenseKind)}</div></td>
       <td>${escapeHtml(row.period)}</td>
     </tr>
   `).join('');
@@ -281,6 +286,7 @@ document.querySelectorAll('[data-vendor-view]').forEach((button) => {
 });
 
 els.grid.addEventListener('click', (event) => {
+  if (event.target.closest('a')) return;
   const card = event.target.closest('[data-vendor]');
   if (card) selectVendor(card.dataset.vendor);
 });

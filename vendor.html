@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>POPVOX | Vendor Transactions</title>
+  <meta name="description" content="Detailed House expenditure transaction view for a selected vendor.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="https://s3.us-east-1.amazonaws.com/static.popvox.com/images/pvox+favicon.png">
+</head>
+
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="index.html" aria-label="POPVOX home">
+        <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+      </a>
+
+      <div class="nav-links">
+        <a class="active" href="explore.html">Explore</a>
+        <a href="news.html">News</a>
+        <a href="about.html">About</a>
+        <a href="team.html">Team</a>
+        <a href="contact.html">Contact</a>
+      </div>
+
+      <div class="nav-actions">
+        <a class="button secondary" href="expenditures.html">House Expenditure Explorer</a>
+        <a class="button" href="mailto:info@popvox.com">Request a demo</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="vendor-detail-shell">
+    <section class="vendor-detail-hero">
+      <a class="back-link" href="expenditures.html">← House Expenditure Explorer</a>
+      <p class="eyebrow">Vendor transaction detail</p>
+      <h1 id="vendor-detail-name">Loading vendor<span>.</span></h1>
+      <p id="vendor-detail-summary">Loading transaction detail from the House expenditure dataset.</p>
+      <div id="vendor-detail-context"></div>
+    </section>
+
+    <section class="expenditure-stats" aria-label="Vendor transaction statistics">
+      <article><strong id="vendor-detail-total">$0</strong><span>Total spend</span></article>
+      <article><strong id="vendor-detail-count">0</strong><span>Transactions</span></article>
+      <article><strong id="vendor-detail-clients">0</strong><span>House clients</span></article>
+      <article><strong id="vendor-detail-periods">0</strong><span>Periods</span></article>
+    </section>
+
+    <section class="vendor-detail-tools">
+      <div class="witness-search-wrap">
+        <label class="label" for="vendor-transaction-search">Search transactions</label>
+        <input id="vendor-transaction-search" class="search-input" type="search" placeholder="Office, description, document, expense type...">
+      </div>
+      <div>
+        <label class="label" for="vendor-transaction-period">Period</label>
+        <select id="vendor-transaction-period"><option value="">All periods</option></select>
+      </div>
+      <div>
+        <label class="label" for="vendor-transaction-sort">Sort</label>
+        <select id="vendor-transaction-sort">
+          <option value="amount">Largest amount</option>
+          <option value="date">Newest first</option>
+          <option value="office">Office A-Z</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="expenditure-layout">
+      <aside class="expenditure-sidebar">
+        <div class="vendor-profile" id="vendor-detail-profile"></div>
+      </aside>
+
+      <section class="expenditure-results">
+        <div class="directory-head">
+          <div>
+            <p class="eyebrow">Transactions</p>
+            <h2 id="vendor-transaction-heading">Rows</h2>
+          </div>
+          <span id="vendor-transaction-visible">0 visible</span>
+        </div>
+        <p class="table-note" id="vendor-transaction-note">Showing the first 1,000 matching rows for browser performance.</p>
+        <div class="vendor-table-wrap">
+          <table class="vendor-table">
+            <thead>
+              <tr>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Office</th>
+                <th>Description</th>
+                <th>Document</th>
+              </tr>
+            </thead>
+            <tbody id="vendor-transaction-body"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="vendor-transaction-empty" hidden>No transactions match those filters.</div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="footer-brand" href="index.html" aria-label="POPVOX home">
+      <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+    </a>
+    <div class="footer-links">
+      <a href="explore.html">Explore</a>
+      <a href="news.html">News</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+  </footer>
+
+  <script src="assets/house-expenditure-data.js"></script>
+  <script src="vendor.js"></script>
+</body>
+
+</html>
