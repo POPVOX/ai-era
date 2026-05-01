@@ -102,8 +102,8 @@ function renderPeriodChart(rows) {
   const max = Math.max(...rows.map((row) => Math.abs(row.amount)), 1);
   els.periodChart.innerHTML = rows.map((row, index) => `
     <div class="period-column">
-      <div class="period-column-bar"><i style="height:${Math.max(5, Math.abs(row.amount) / max * 100)}%; background:${palette[index % palette.length]}"></i></div>
       <strong>${escapeHtml(row.label.replace(' 2025', ''))}</strong>
+      <div class="period-column-bar"><i style="width:${Math.max(5, Math.abs(row.amount) / max * 100)}%; background:${palette[index % palette.length]}"></i></div>
       <span>${money(row.amount)}</span>
     </div>
   `).join('');

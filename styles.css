@@ -120,6 +120,21 @@
   min-height: 330px;
 }
 
+.expenditure-chart-card .directory-head {
+  align-items: start;
+  gap: 12px;
+}
+
+.expenditure-chart-card .directory-head h2 {
+  font-size: clamp(24px, 2.3vw, 34px);
+  line-height: 1.05;
+}
+
+.expenditure-chart-card .directory-head > span {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
 .expenditure-bars {
   display: grid;
   gap: 14px;
@@ -215,41 +230,45 @@
 
 .period-chart {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
-  align-items: end;
-  min-height: 230px;
+  min-height: 0;
   margin-top: 18px;
 }
 
 .period-column {
   display: grid;
+  grid-template-columns: 76px minmax(120px, 1fr) minmax(108px, auto);
   gap: 8px;
-  text-align: center;
+  align-items: center;
   color: var(--slate);
   font-weight: 800;
   font-size: 13px;
 }
 
 .period-column-bar {
-  height: 180px;
-  display: flex;
-  align-items: end;
-  justify-content: center;
+  height: 14px;
+  display: block;
   background: #f7f2ec;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 999px;
   overflow: hidden;
 }
 
 .period-column-bar i {
   display: block;
-  width: 100%;
-  min-height: 5px;
+  height: 100%;
+  min-width: 5px;
+  border-radius: inherit;
 }
 
 .period-column strong {
   color: var(--navy);
+  white-space: nowrap;
+}
+
+.period-column span {
+  text-align: right;
+  white-space: nowrap;
 }
 
 .expenditure-toolbar {
@@ -650,6 +669,15 @@
   }
 
   .expenditure-bar-label span {
+    text-align: left;
+  }
+
+  .period-column {
+    grid-template-columns: 72px 1fr;
+  }
+
+  .period-column span {
+    grid-column: 2;
     text-align: left;
   }
 }
