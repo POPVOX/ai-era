@@ -377,7 +377,10 @@ async function loadLegislation() {
   els.status.textContent = 'Loading';
 
   try {
-    const response = await fetch('/api/legislation', { cache: 'no-store' });
+    const apiUrl = window.location.protocol === 'file:'
+      ? 'http://127.0.0.1:8771/api/legislation'
+      : '/api/legislation';
+    const response = await fetch(apiUrl, { cache: 'no-store' });
 
     if (!response.ok) {
       throw new Error(`${response.status} ${response.statusText}`);

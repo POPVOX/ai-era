@@ -324,7 +324,10 @@ async function loadMembers() {
   els.resultNote.textContent = 'Loading CongressLink member data...';
 
   try {
-    const response = await fetch('/api/members');
+    const apiUrl = window.location.protocol === 'file:'
+      ? 'http://127.0.0.1:8771/api/members'
+      : '/api/members';
+    const response = await fetch(apiUrl);
     if (!response.ok) throw new Error(`local proxy returned ${response.status}`);
     const payload = await response.json();
 

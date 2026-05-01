@@ -30,6 +30,12 @@ const server = http.createServer(async (request, response) => {
   try {
     const url = new URL(request.url, `http://${request.headers.host}`);
 
+    if (request.method === 'OPTIONS') {
+      response.writeHead(204, corsHeaders());
+      response.end();
+      return;
+    }
+
     if (url.pathname === '/api/members') {
       console.log(`GET ${url.pathname}`);
       await proxyMembers(response);
@@ -69,7 +75,7 @@ const server = http.createServer(async (request, response) => {
 async function proxyMembers(response) {
   if (!apiToken) {
     console.error('Missing CONGRESSLINK_API_TOKEN');
-    response.writeHead(500, { 'Content-Type': 'application/json' });
+    response.writeHead(500, jsonHeaders());
     response.end(JSON.stringify({ error: 'Missing CONGRESSLINK_API_TOKEN' }));
     return;
   }
@@ -77,14 +83,11 @@ async function proxyMembers(response) {
   try {
     const allMembers = await getMembers();
 
-    response.writeHead(200, {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'no-store',
-    });
+    response.writeHead(200, jsonHeaders());
     response.end(JSON.stringify({ data: allMembers, meta: { count: allMembers.length } }));
   } catch (error) {
     console.error(`Upstream request failed: ${error.message}`);
-    response.writeHead(502, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+    response.writeHead(502, jsonHeaders());
     response.end(JSON.stringify({ error: error.message, upstreams: membersEndpoints.map((endpoint) => `${apiBase}${endpoint}`) }));
   }
 }
@@ -107,7 +110,7 @@ async function getMembers() {
 async function proxyLegislation(response) {
   if (!apiToken) {
     console.error('Missing CONGRESSLINK_API_TOKEN');
-    response.writeHead(500, { 'Content-Type': 'application/json' });
+    response.writeHead(500, jsonHeaders());
     response.end(JSON.stringify({ error: 'Missing CONGRESSLINK_API_TOKEN' }));
     return;
   }
@@ -118,14 +121,11 @@ async function proxyLegislation(response) {
       legislationCache = { data: bills, meta: { count: bills.length, endpoint: legislationEndpoint, cachedAt: new Date().toISOString() } };
     }
 
-    response.writeHead(200, {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'no-store',
-    });
+    response.writeHead(200, jsonHeaders());
     response.end(JSON.stringify(legislationCache));
   } catch (error) {
     console.error(`Legislation upstream request failed: ${error.message}`);
-    response.writeHead(502, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+    response.writeHead(502, jsonHeaders());
     response.end(JSON.stringify({ error: error.message, upstream: `${apiBase}${legislationEndpoint}` }));
   }
 }
@@ -133,13 +133,13 @@ async function proxyLegislation(response) {
 async function proxyBillDetail(response, id) {
   if (!apiToken) {
     console.error('Missing CONGRESSLINK_API_TOKEN');
-    response.writeHead(500, { 'Content-Type': 'application/json' });
+    response.writeHead(500, jsonHeaders());
     response.end(JSON.stringify({ error: 'Missing CONGRESSLINK_API_TOKEN' }));
     return;
   }
 
   if (!/^\d+$/.test(id)) {
-    response.writeHead(400, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+    response.writeHead(400, jsonHeaders());
     response.end(JSON.stringify({ error: 'Bill detail id must be numeric' }));
     return;
   }
@@ -151,16 +151,29 @@ async function proxyBillDetail(response, id) {
       billDetailCache.set(id, augmentBillDetail(payload, members));
     }
 
-    response.writeHead(200, {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'no-store',
-    });
+    response.writeHead(200, jsonHeaders());
     response.end(JSON.stringify(billDetailCache.get(id)));
   } catch (error) {
     console.error(`Bill detail request failed: ${error.message}`);
-    response.writeHead(502, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+    response.writeHead(502, jsonHeaders());
     response.end(JSON.stringify({ error: error.message, upstream: `${apiBase}${legislationEndpoint}/${id}` }));
   }
+}
+
+function corsHeaders() {
+  return {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  };
+}
+
+function jsonHeaders() {
+  return {
+    ...corsHeaders(),
+    'Content-Type': 'application/json',
+    'Cache-Control': 'no-store',
+  };
 }
 
 async function fetchAllMembers(endpoint, chamber) {
