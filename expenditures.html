@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>POPVOX | House Expenditure Explorer</title>
+  <meta name="description" content="Search House Statement of Disbursements vendors, offices, spending categories, and quarterly expenditure patterns.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="https://s3.us-east-1.amazonaws.com/static.popvox.com/images/pvox+favicon.png">
+</head>
+
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="index.html" aria-label="POPVOX home">
+        <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+      </a>
+
+      <div class="nav-links">
+        <a class="active" href="explore.html">Explore</a>
+        <a href="news.html">News</a>
+        <a href="about.html">About</a>
+        <a href="team.html">Team</a>
+        <a href="contact.html">Contact</a>
+      </div>
+
+      <div class="nav-actions">
+        <a class="button secondary" href="explore.html">All Explorers</a>
+        <a class="button" href="mailto:info@popvox.com">Request a demo</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="expenditure-shell">
+    <section class="expenditure-hero" aria-labelledby="expenditure-title">
+      <div>
+        <div class="eyebrow-row">
+          <span class="tag"><span class="dot"></span> House Expenditure Explorer</span>
+          <span class="tag navy">Statement of Disbursements</span>
+          <span class="tag navy" id="expenditure-updated">Loading</span>
+        </div>
+        <h1 id="expenditure-title">Follow the vendors behind House spending<span>.</span></h1>
+        <p class="summary">Search vendor-level rollups from House Statement of Disbursements detail rows, then inspect offices served, expense mixes, quarterly patterns, and large transactions.</p>
+      </div>
+
+      <div class="expenditure-hero-card">
+        <p class="eyebrow">Prototype source</p>
+        <h2>Public disbursement grids</h2>
+        <p>Built from official 2025 House detail-grid CSVs. Subtotal/context rows are excluded so totals reflect transaction-detail rows only.</p>
+      </div>
+    </section>
+
+    <section class="expenditure-stats" aria-label="Expenditure Explorer statistics">
+      <article><strong id="expenditure-total">$0</strong><span>Total detail spending</span></article>
+      <article><strong id="expenditure-transactions">0</strong><span>Transactions</span></article>
+      <article><strong id="expenditure-vendors">0</strong><span>Vendors</span></article>
+      <article><strong id="expenditure-offices">0</strong><span>Organizations</span></article>
+    </section>
+
+    <section class="expenditure-charts" aria-label="House expenditure charts">
+      <article class="expenditure-chart-card feature-chart">
+        <div class="directory-head">
+          <div>
+            <p class="eyebrow">Office Type</p>
+            <h2>Where spending is booked</h2>
+          </div>
+          <span id="office-type-chart-total">$0</span>
+        </div>
+        <div class="expenditure-bars" id="office-type-bars"></div>
+      </article>
+
+      <article class="expenditure-chart-card">
+        <div class="directory-head">
+          <div>
+            <p class="eyebrow">Expense Mix</p>
+            <h2>What spending is for</h2>
+          </div>
+          <span>Top categories</span>
+        </div>
+        <div class="donut-wrap">
+          <div class="donut-chart" id="expense-donut" aria-hidden="true"></div>
+          <div class="donut-legend" id="expense-legend"></div>
+        </div>
+      </article>
+
+      <article class="expenditure-chart-card">
+        <div class="directory-head">
+          <div>
+            <p class="eyebrow">Quarterly Pattern</p>
+            <h2>Loaded 2025 periods</h2>
+          </div>
+          <span>Detail rows</span>
+        </div>
+        <div class="period-chart" id="period-chart"></div>
+      </article>
+    </section>
+
+    <section class="expenditure-toolbar" aria-label="Vendor filters">
+      <div class="witness-search-wrap">
+        <label class="label" for="vendor-search">Search vendors</label>
+        <input id="vendor-search" class="search-input" type="search" placeholder="Vendor, office, client, category, keyword...">
+      </div>
+
+      <div>
+        <label class="label" for="vendor-office-filter">Office type</label>
+        <select id="vendor-office-filter">
+          <option value="">All office types</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="label" for="vendor-expense-filter">Expense type</label>
+        <select id="vendor-expense-filter">
+          <option value="">All expense types</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="label" for="vendor-period-filter">Period</label>
+        <select id="vendor-period-filter">
+          <option value="">All periods</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="label" for="vendor-sort">Sort</label>
+        <select id="vendor-sort">
+          <option value="amount">Largest spend</option>
+          <option value="clients">Most House clients</option>
+          <option value="transactions">Most transactions</option>
+          <option value="name">Name A-Z</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="expenditure-layout">
+      <aside class="expenditure-sidebar" aria-label="Selected vendor">
+        <div id="vendor-profile" class="vendor-profile">
+          <p class="eyebrow">Vendor profile</p>
+          <h2>Select a vendor</h2>
+          <p>Click any vendor card to inspect its House clients, office exposure, expense mix, repeated descriptions, and largest associated transactions.</p>
+        </div>
+      </aside>
+
+      <section class="expenditure-results" aria-live="polite">
+        <div class="directory-head">
+          <div>
+            <p class="eyebrow">Results</p>
+            <h2 id="vendor-result-heading">Vendors</h2>
+          </div>
+          <div class="view-toggle" role="group" aria-label="Vendor result view">
+            <button class="active" type="button" data-vendor-view="cards">Cards</button>
+            <button type="button" data-vendor-view="table">Table</button>
+          </div>
+          <span id="vendor-visible-count">0 visible</span>
+        </div>
+
+        <div class="vendor-grid" id="vendor-grid"></div>
+        <div class="vendor-table-wrap" id="vendor-table-wrap" hidden>
+          <table class="vendor-table">
+            <thead>
+              <tr>
+                <th>Vendor</th>
+                <th>Spend</th>
+                <th>Transactions</th>
+                <th>Clients</th>
+                <th>Top expense</th>
+              </tr>
+            </thead>
+            <tbody id="vendor-table-body"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="vendor-empty" hidden>No vendors match those filters.</div>
+      </section>
+    </section>
+
+    <section class="expenditure-transactions-panel">
+      <div class="directory-head">
+        <div>
+          <p class="eyebrow">Largest Transactions</p>
+          <h2>Sample detail rows across the loaded data</h2>
+        </div>
+        <span>Top 25</span>
+      </div>
+      <div class="vendor-table-wrap">
+        <table class="vendor-table">
+          <thead>
+            <tr>
+              <th>Vendor</th>
+              <th>Amount</th>
+              <th>Office</th>
+              <th>Description</th>
+              <th>Period</th>
+            </tr>
+          </thead>
+          <tbody id="top-transaction-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="footer-brand" href="index.html" aria-label="POPVOX home">
+      <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+    </a>
+    <div class="footer-links">
+      <a href="explore.html">Explore</a>
+      <a href="news.html">News</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+  </footer>
+
+  <script src="assets/house-expenditure-data.js"></script>
+  <script src="expenditures.js"></script>
+</body>
+
+</html>

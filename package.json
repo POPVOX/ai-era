@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.mjs",
     "build": "node scripts/build-witness-pages.mjs && node scripts/build-event-pages.mjs && node scripts/build-bill-pages.mjs",
-    "build:data": "node scripts/build-house-journal-data.mjs && node scripts/build-congressional-reports-data.mjs",
+    "build:data": "node scripts/build-house-journal-data.mjs && node scripts/build-congressional-reports-data.mjs && node scripts/build-house-expenditure-data.mjs",
     "check": "for f in scripts/*.mjs *.js; do node --check \"$f\" || exit 1; done"
   }
 }

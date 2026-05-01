@@ -15,6 +15,7 @@ The site is intentionally lightweight. Most pages are static HTML/CSS/JS, with a
   - House Journal Explorer
   - Executive Reports Dashboard
   - House Rules Explorer
+  - House Expenditure Explorer
 - Generated detail pages:
   - Bill pages in `bills/`
   - Committee pages in `committees/`
@@ -102,4 +103,3 @@ Then spot-check:
 - `/journal.html`
 - `/reports.html`
 - `/rules.html`
-
