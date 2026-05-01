@@ -12,6 +12,7 @@ The site is intentionally lightweight. Most pages are static HTML/CSS/JS, with a
   - Legislation Explorer
   - Committee Explorer
   - House Staff Explorer
+  - Registered Lobbyist Explorer
   - Witness Explorer
   - House Journal Explorer
   - Executive Reports Dashboard
@@ -23,6 +24,7 @@ The site is intentionally lightweight. Most pages are static HTML/CSS/JS, with a
   - Committee event pages in `events/`
   - Witness profile pages in `witnesses/`
   - Staff profile pages in `staffers/`
+  - Registered lobbyist profile pages in `lobbyists/`
   - Vendor transaction profiles through `vendor.html?v=:slug`
 
 ## Local Setup
@@ -85,6 +87,13 @@ The House Staff Explorer uses:
 
 Staff profiles are inferred from public House Statement of Disbursements personnel rows. Compensation values are present in the public source data but are intentionally excluded from the public interface because this prototype is focused on staff identity, office context, and role history.
 
+The Registered Lobbyist Explorer uses:
+
+- `assets/lobbyist-data.{json,js}` for searchable public LDA lobbyist, client, registrant, filing, and covered-position metadata.
+- `lobbyists/*.html` for generated registered lobbyist profile pages with links back to public LDA filings.
+
+Lobbyist profiles summarize public filing relationships. They should be treated as a source-record index, not as an assertion about current representation without checking the linked filing.
+
 Generated pages and generated data are committed so the site can be deployed as a mostly static site. Live CongressLink-backed pages still need the local/server proxy routes listed above unless an equivalent production proxy is provided.
 
 The local folder `Committee Corpus + Witness Directory - CTO Share/` is source/reference material used during development. It is intentionally ignored by Git because it is large and contains raw working files that do not need to ship with the public site.
@@ -118,6 +127,7 @@ Then spot-check:
 - `/legislation.html`
 - `/committees.html`
 - `/staff.html`
+- `/lobbyists.html`
 - `/witnesses.html`
 - `/journal.html`
 - `/reports.html`

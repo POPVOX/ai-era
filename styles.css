@@ -626,21 +626,26 @@
 }
 
 .staff-shell,
-.staff-profile-shell {
+.staff-profile-shell,
+.lobbyist-shell,
+.lobbyist-profile-shell {
   padding: 44px 6vw 70px;
 }
 
-.staff-toolbar {
+.staff-toolbar,
+.lobbyist-toolbar {
   grid-template-columns: minmax(280px, 1.15fr) repeat(3, minmax(180px, 0.55fr));
 }
 
-.staff-grid {
+.staff-grid,
+.lobbyist-grid {
   display: grid;
   gap: 16px;
   margin-top: 18px;
 }
 
-.staff-card {
+.staff-card,
+.lobbyist-card {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: 18px;
@@ -649,6 +654,10 @@
   border-radius: 8px;
   background: var(--white);
   box-shadow: 0 14px 36px rgba(13, 38, 67, 0.04);
+}
+
+.lobbyist-card {
+  border-color: rgba(244, 90, 63, 0.24);
 }
 
 .staff-card-main {
@@ -714,11 +723,99 @@
   font-weight: 750;
 }
 
+.lobbyist-avatar {
+  background: #fff5ef;
+  color: var(--coral);
+}
+
+.lobbyist-avatar img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.lobbyist-profile-hero .lobbyist-avatar {
+  background: #fff5ef;
+}
+
+.lobbyist-profile-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.lobbyist-profile-columns article {
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+}
+
+.lobbyist-profile-columns h3 {
+  margin: 0 0 18px;
+  color: var(--navy);
+  font-size: 24px;
+}
+
+.lobbyist-profile-columns p {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+  color: var(--slate);
+  font-weight: 800;
+}
+
+.lobbyist-profile-columns strong {
+  color: var(--navy);
+}
+
+.lobbyist-filing-list {
+  display: grid;
+  gap: 12px;
+}
+
+.lobbyist-filing-list a {
+  display: grid;
+  gap: 6px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  text-decoration: none;
+  transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.lobbyist-filing-list a:hover {
+  border-color: rgba(244, 90, 63, 0.5);
+  box-shadow: 0 14px 34px rgba(13, 38, 67, 0.08);
+  transform: translateY(-1px);
+}
+
+.lobbyist-filing-list strong {
+  color: var(--coral);
+}
+
+.lobbyist-filing-list span {
+  color: var(--navy);
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.lobbyist-filing-list small {
+  color: var(--slate);
+  font-weight: 750;
+}
+
 @media (max-width: 1180px) {
   .expenditure-hero,
   .expenditure-layout,
   .vendor-detail-tools,
-  .staff-toolbar {
+  .staff-toolbar,
+  .lobbyist-toolbar,
+  .lobbyist-profile-columns {
     grid-template-columns: 1fr;
   }
 
@@ -2331,6 +2428,25 @@ main {
   border: 2px solid var(--ink);
   border-radius: 999px 999px 0 0;
   border-bottom: 0;
+}
+
+.experiment-icon.lobbyists::before {
+  left: 13px;
+  top: 16px;
+  width: 32px;
+  height: 24px;
+  border: 2px solid var(--coral);
+  border-radius: 5px;
+}
+
+.experiment-icon.lobbyists::after {
+  left: 20px;
+  top: 23px;
+  width: 18px;
+  height: 10px;
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  box-shadow: 0 10px 0 -4px var(--ink);
 }
 
 .experiment-icon.witnesses::before {

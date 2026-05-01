@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>POPVOX | Registered Lobbyist Explorer</title>
+  <meta name="description" content="Search registered lobbyists, clients, registrants, filing periods, and covered positions from normalized public LDA records.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="https://s3.us-east-1.amazonaws.com/static.popvox.com/images/pvox+favicon.png">
+</head>
+
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="index.html" aria-label="POPVOX home">
+        <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+      </a>
+
+      <div class="nav-links">
+        <a class="active" href="explore.html">Explore</a>
+        <a href="news.html">News</a>
+        <a href="about.html">About</a>
+        <a href="team.html">Team</a>
+        <a href="contact.html">Contact</a>
+      </div>
+
+      <div class="nav-actions">
+        <a class="button secondary" href="explore.html">All Explorers</a>
+        <a class="button" href="mailto:info@popvox.com">Request a demo</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="lobbyist-shell">
+    <section class="witness-hero" aria-labelledby="lobbyist-title">
+      <div>
+        <div class="eyebrow-row">
+          <span class="tag"><span class="dot"></span> Registered Lobbyist Explorer</span>
+          <span class="tag navy">LDA public records</span>
+          <span class="tag navy" id="lobbyist-updated">Loading</span>
+        </div>
+        <h1 id="lobbyist-title">Trace lobbyist relationships across filings<span>.</span></h1>
+        <p class="summary">Search lobbyists, clients, registrants, filing periods, and covered government positions from normalized public Lobbying Disclosure Act data.</p>
+      </div>
+
+      <div class="witness-hero-card">
+        <p class="eyebrow">Prototype source</p>
+        <h2>Public LDA filings as connective tissue</h2>
+        <p>This Explorer makes filing relationships easier to scan, then connects them to witness profiles, hearings, and other public legislative records as those links are enriched.</p>
+      </div>
+    </section>
+
+    <section class="witness-stats" aria-label="Registered Lobbyist Explorer statistics">
+      <article><strong id="lobbyist-count">0</strong><span>Lobbyists</span></article>
+      <article><strong id="lobbyist-filing-count">0</strong><span>Filing links</span></article>
+      <article><strong id="lobbyist-client-count">0</strong><span>Clients</span></article>
+      <article><strong id="lobbyist-registrant-count">0</strong><span>Registrants</span></article>
+    </section>
+
+    <section class="witness-toolbar lobbyist-toolbar" aria-label="Lobbyist filters">
+      <div class="witness-search-wrap">
+        <label class="label" for="lobbyist-search">Search lobbyists</label>
+        <input id="lobbyist-search" class="search-input" type="search" placeholder="Name, client, registrant, covered position...">
+      </div>
+
+      <div>
+        <label class="label" for="lobbyist-year-filter">Filing year</label>
+        <select id="lobbyist-year-filter">
+          <option value="">All years</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="label" for="lobbyist-status-filter">Focus</label>
+        <select id="lobbyist-status-filter">
+          <option value="">All profiles</option>
+          <option value="covered">Covered government position</option>
+          <option value="multi-client">Multiple clients</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="label" for="lobbyist-sort">Sort</label>
+        <select id="lobbyist-sort">
+          <option value="filings">Most filing links</option>
+          <option value="clients">Most clients</option>
+          <option value="recent">Most recent</option>
+          <option value="name">Name A-Z</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="witness-layout">
+      <aside class="witness-sidebar" aria-label="Lobbyist Explorer notes">
+        <div class="sidebar-block">
+          <p class="eyebrow">What this shows</p>
+          <p>Each profile groups public filing links by lobbyist. Detail pages show clients, registrants, filing periods, and covered positions when listed in LDA data.</p>
+        </div>
+        <div class="sidebar-block">
+          <p class="eyebrow">Careful language</p>
+          <p>These are public registration and filing relationships. They should be read as source records, not as a current-client assertion without checking the linked filing.</p>
+        </div>
+        <div class="committee-list" id="lobbyist-client-list"></div>
+      </aside>
+
+      <section class="witness-results" aria-live="polite">
+        <div class="directory-head">
+          <div>
+            <p class="eyebrow">Results</p>
+            <h2 id="lobbyist-result-heading">Lobbyists</h2>
+          </div>
+          <span id="lobbyist-visible-count">0 visible</span>
+        </div>
+
+        <div class="lobbyist-grid" id="lobbyist-grid"></div>
+        <div class="empty-state" id="lobbyist-empty" hidden>No lobbyist profiles match those filters.</div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="footer-brand" href="index.html" aria-label="POPVOX home">
+      <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+    </a>
+    <div class="footer-links">
+      <a href="explore.html">Explore</a>
+      <a href="news.html">News</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+  </footer>
+
+  <script src="assets/lobbyist-data.js"></script>
+  <script src="lobbyists.js"></script>
+</body>
+
+</html>
