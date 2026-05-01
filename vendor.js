@@ -66,6 +66,22 @@ function rowObject(row) {
   };
 }
 
+async function fetchVendorRows(vendorSlug) {
+  const quickPath = `assets/house-expenditure-vendors/${encodeURIComponent(vendorSlug)}.json`;
+  try {
+    const quickResponse = await fetch(quickPath, { cache: 'no-store' });
+    if (quickResponse.ok) return quickResponse.json();
+  } catch (error) {
+    console.warn(`Falling back to full transaction bundle: ${error.message}`);
+  }
+
+  const data = await fetch('assets/house-expenditure-transactions.json', { cache: 'no-store' }).then((response) => {
+    if (!response.ok) throw new Error(`Could not load transaction data: ${response.status}`);
+    return response.json();
+  });
+  return data.vendors?.[vendorSlug] || [];
+}
+
 async function load() {
   if (!vendor) {
     els.name.innerHTML = 'Vendor not found<span>.</span>';
@@ -93,11 +109,12 @@ async function load() {
     <div class="vendor-profile-section"><h3>Exposure</h3><div class="vendor-chip-row">${[...vendor.officeTypes, ...vendor.expenseKinds.slice(0, 5)].map((item) => `<span>${escapeHtml(item)}</span>`).join('')}</div></div>
   `;
 
-  const data = await fetch('assets/house-expenditure-transactions.json', { cache: 'no-store' }).then((response) => {
-    if (!response.ok) throw new Error(`Could not load transaction data: ${response.status}`);
-    return response.json();
-  });
-  rows = (data.vendors?.[vendor.slug] || []).map(rowObject);
+  els.heading.textContent = 'Loading transactions';
+  els.visible.textContent = 'Loading';
+  els.note.textContent = 'Loading transaction rows for this vendor.';
+  els.empty.hidden = true;
+
+  rows = (await fetchVendorRows(vendor.slug)).map(rowObject);
   applyFilters();
 }
 

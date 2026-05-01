@@ -7,6 +7,7 @@ const rawDir = path.join(sourceRoot, "data", "raw");
 const outJson = path.join(root, "assets", "house-expenditure-data.json");
 const outJs = path.join(root, "assets", "house-expenditure-data.js");
 const outTransactions = path.join(root, "assets", "house-expenditure-transactions.json");
+const outVendorTransactions = path.join(root, "assets", "house-expenditure-vendors");
 
 const sourceUrls = {
   "JANUARY-MARCH-2025-SOD-DETAIL-GRID-FINAL.csv": "https://www.house.gov/sites/default/files/2025-05/JANUARY-MARCH-2025-SOD-DETAIL-GRID-FINAL.csv",
@@ -142,6 +143,18 @@ function classifyVendor(vendorName) {
     return {
       type: "Member reimbursement",
       note: "Payments directly to Members usually indicate Member reimbursements, not an outside vendor relationship.",
+    };
+  }
+  if (/^(UNITED STATES POSTAL SERVICE|USPS|U\.S\. POSTAL SERVICE|US POSTAL SERVICE)/.test(name)) {
+    return {
+      type: "Franked mail context",
+      note: "Postal Service expenditures usually reflect franked mail sent by congressional offices to constituents.",
+    };
+  }
+  if (/^(DEPT OF EDUCATION|DEPARTMENT OF EDUCATION|US DEPARTMENT OF EDUCATION|U\.S\. DEPARTMENT OF EDUCATION)/.test(name)) {
+    return {
+      type: "Student loan repayment program",
+      note: "Department of Education entries usually reflect payments for the House employee student loan repayment program.",
     };
   }
   if (/CITIBANK|CITI PCARD|GOV CARD|PCARD|PURCHASE CARD|CREDIT CARD/.test(name)) {
@@ -375,6 +388,15 @@ const transactionData = {
     vendor.transactions.sort((a, b) => Math.abs(b[0]) - Math.abs(a[0])),
   ])),
 };
+
+fs.rmSync(outVendorTransactions, { recursive: true, force: true });
+fs.mkdirSync(outVendorTransactions, { recursive: true });
+for (const vendor of vendors.slice(0, 250)) {
+  fs.writeFileSync(
+    path.join(outVendorTransactions, `${vendor.slug}.json`),
+    `${JSON.stringify(transactionData.vendors[vendor.slug] || [])}\n`,
+  );
+}
 
 fs.writeFileSync(outJson, `${JSON.stringify(data)}\n`);
 fs.writeFileSync(outJs, `window.HOUSE_EXPENDITURE_DATA = ${JSON.stringify(data)};\n`);

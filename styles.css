@@ -96,9 +96,10 @@
 .expenditure-stats strong {
   display: block;
   color: var(--navy);
-  font-size: clamp(26px, 3.3vw, 44px);
+  font-size: clamp(24px, 2.45vw, 38px);
   line-height: 1;
   letter-spacing: 0;
+  overflow-wrap: anywhere;
 }
 
 .expenditure-stats span {
