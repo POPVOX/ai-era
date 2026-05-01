@@ -64,6 +64,18 @@ Regenerate imported data files from the local source/reference corpus:
 npm run build:data
 ```
 
+Refresh the normalized LDA source files from LDA.gov, then regenerate the Registered Lobbyist Explorer:
+
+```bash
+LDA_API_KEY="your-token" LDA_FILING_YEARS="2026" npm run refresh:lobbyists
+```
+
+To pull more than one filing year, use a comma-separated list:
+
+```bash
+LDA_API_KEY="your-token" LDA_FILING_YEARS="2026,2025" npm run refresh:lobbyists
+```
+
 Run JavaScript syntax checks:
 
 ```bash
@@ -91,6 +103,7 @@ The Registered Lobbyist Explorer uses:
 
 - `assets/lobbyist-data.{json,js}` for searchable public LDA lobbyist, client, registrant, filing, and covered-position metadata.
 - `lobbyists/*.html` for generated registered lobbyist profile pages with links back to public LDA filings.
+- `scripts/refresh-lda-data.mjs` to refresh the local normalized JSONL source files from the official LDA.gov API.
 
 Lobbyist profiles summarize public filing relationships. They should be treated as a source-record index, not as an assertion about current representation without checking the linked filing.
 
@@ -105,6 +118,13 @@ The local folder `Committee Corpus + Witness Directory - CTO Share/` is source/r
 - `CONGRESSLINK_API_BASE`: optional override for the CongressLink API host.
 - `CONGRESSLINK_MEMBERS_ENDPOINTS`: optional comma-separated member endpoints. Defaults to House and Senate member endpoints.
 - `CONGRESSLINK_LEGISLATION_ENDPOINT`: optional bill endpoint override.
+- `LDA_API_KEY`: optional LDA.gov API token for higher refresh rate limits. The LDA API also supports anonymous requests with stricter throttling.
+- `LDA_API_BASE`: optional override for the LDA API host. Defaults to `https://lda.gov/api/v1`.
+- `LDA_FILING_YEARS`: comma-separated filing years to refresh. Defaults to the current calendar year.
+- `LDA_PAGE_SIZE`: optional LDA pagination size. Defaults to `100`.
+- `LDA_REQUEST_DELAY_MS`: optional delay between LDA API requests.
+- `LDA_MAX_PAGES`: optional cap for smoke-testing the refresh script without pulling a full year.
+- `LDA_OUTPUT_DIR`: optional normalized JSONL output directory. Defaults to the local ignored witness corpus path used by `scripts/build-lobbyist-data.mjs`.
 
 Do not commit API tokens. Keep local secrets in shell environment variables or an untracked `.env` file.
 
