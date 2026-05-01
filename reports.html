@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>POPVOX | Reports Dashboard</title>
+    <meta name="description" content="Track congressionally mandated executive branch reports by agency, committee, legal authority, due date, and receipt status.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="https://s3.us-east-1.amazonaws.com/static.popvox.com/images/pvox+favicon.png">
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav" aria-label="Primary navigation">
+        <a class="brand" href="index.html" aria-label="POPVOX home">
+          <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+        </a>
+
+        <div class="nav-links">
+          <a href="explore.html">Explore</a>
+          <a href="news.html">News</a>
+          <a href="about.html">About</a>
+          <a href="team.html">Team</a>
+          <a href="contact.html">Contact</a>
+        </div>
+
+        <div class="nav-actions">
+          <button class="button secondary" id="export-reports-button" type="button">Export list</button>
+          <a class="button" href="mailto:info@popvox.com">Create alert</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="directory-shell reports-shell">
+      <div class="orbit" aria-hidden="true"></div>
+
+      <section class="directory-hero reports-hero" aria-labelledby="reports-title">
+        <div class="directory-hero-grid">
+          <div>
+            <div class="eyebrow-row">
+              <span class="tag"><span class="dot"></span> Reports Dashboard</span>
+              <span class="tag navy">GovInfo CMR</span>
+              <span class="tag navy" id="reports-data-status">Loading</span>
+            </div>
+            <h1 id="reports-title">Track reports due from executive agencies to Congress<span>.</span></h1>
+            <p class="summary">Search congressionally mandated reports by agency, committee routing, legal authority, expected cadence, receipt date, and timeliness.</p>
+          </div>
+          <div class="stats-grid" aria-label="Reports summary statistics">
+            <div class="stat"><strong id="stat-reports">0</strong><span>Reports</span></div>
+            <div class="stat"><strong id="stat-received">0</strong><span>Received by Congress</span></div>
+            <div class="stat"><strong id="stat-late">0</strong><span>Late or unknown to GPO</span></div>
+            <div class="stat"><strong id="stat-visible-reports">0</strong><span>Visible results</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="quick-filter-bar reports-quick-filter" aria-label="Quick report filters">
+        <div>
+          <span class="quick-label">Status</span>
+          <div class="segmented" role="group" aria-label="Report status filter">
+            <button class="segment active" type="button" data-report-filter="status" data-value="">All</button>
+            <button class="segment" type="button" data-report-filter="status" data-value="received">Received</button>
+            <button class="segment" type="button" data-report-filter="status" data-value="late">Late / unknown</button>
+          </div>
+        </div>
+        <div>
+          <label class="quick-label" for="top-report-committee-filter">Committee</label>
+          <select id="top-report-committee-filter">
+            <option value="">Any committee</option>
+          </select>
+        </div>
+        <div>
+          <label class="quick-label" for="top-report-agency-filter">Agency</label>
+          <select id="top-report-agency-filter">
+            <option value="">Any agency</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="member-directory-grid">
+        <aside class="filter-card" aria-label="Report filters">
+          <h2>Search & filter</h2>
+
+          <div class="filter-group">
+            <label class="label" for="reports-search">Report, statute, agency, or subject</label>
+            <input id="reports-search" class="search-input" type="search" placeholder="Search reports, statutes, committees...">
+          </div>
+
+          <div class="filter-group">
+            <label class="label" for="report-congress-filter">Congress</label>
+            <select id="report-congress-filter">
+              <option value="">All congresses</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="label" for="report-agency-filter">Agency</label>
+            <select id="report-agency-filter">
+              <option value="">Any agency</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="label" for="report-committee-filter">Committee</label>
+            <select id="report-committee-filter">
+              <option value="">Any committee</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="label" for="report-authority-filter">Authority type</label>
+            <select id="report-authority-filter">
+              <option value="">Any authority</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="label" for="report-status-filter">Status</label>
+            <select id="report-status-filter">
+              <option value="">Any status</option>
+              <option value="received">Received by Congress</option>
+              <option value="late">Late or unknown to GPO</option>
+              <option value="on-time">On time to GPO</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="label" for="report-sort-filter">Sort</label>
+            <select id="report-sort-filter">
+              <option value="recent">Most recently submitted</option>
+              <option value="agency">Agency</option>
+              <option value="committee">Committee</option>
+              <option value="late">Late / unknown first</option>
+            </select>
+          </div>
+
+          <div class="filter-actions">
+            <button class="button secondary" id="clear-reports-button" type="button">Clear filters</button>
+          </div>
+
+          <p class="api-note">Data from <code>GovInfo CMR</code>. This first dashboard shows reports that appear in GovInfo metadata; a later obligation tracker can add not-yet-received expected reports.</p>
+        </aside>
+
+        <div>
+          <article class="directory-panel">
+            <div class="directory-head">
+              <div class="directory-title">
+                <h2>Executive branch reports</h2>
+                <p id="reports-result-note">Loading congressional report data...</p>
+              </div>
+              <div class="view-controls">
+                <button class="view-toggle active" data-reports-view="cards" type="button">Cards</button>
+                <button class="view-toggle" data-reports-view="table" type="button">Table</button>
+              </div>
+            </div>
+
+            <div id="reports-empty-state" class="empty-state" hidden>
+              <h3>No reports found</h3>
+              <p>Try clearing filters or searching for a different agency, committee, or statute.</p>
+            </div>
+
+            <div class="reports-grid" id="reports-grid" aria-label="Reports dashboard cards"></div>
+
+            <table class="list-table" id="reports-table" aria-label="Reports dashboard table">
+              <thead>
+                <tr>
+                  <th>Report</th>
+                  <th>Agency</th>
+                  <th>Committee</th>
+                  <th>Authority</th>
+                  <th>Due / received</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="reports-table-body"></tbody>
+            </table>
+          </article>
+
+          <div class="insight-row" aria-label="Reports dashboard notes">
+            <article class="insight-card">
+              <h3>Committee routing</h3>
+              <p>Each report surfaces the receiving committee metadata where GovInfo provides it, including House and Senate routing.</p>
+            </article>
+            <article class="insight-card">
+              <h3>Authority trail</h3>
+              <p>The dashboard keeps the legal authority close to the report so users can see the statute, public law, or committee report basis.</p>
+            </article>
+            <article class="insight-card">
+              <h3>Next layer</h3>
+              <p>Expected-but-missing obligations can be added later when we ingest the full mandate inventory, not only reports already in GovInfo.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="footer-brand" href="index.html" aria-label="POPVOX home">
+        <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+      </a>
+      <div class="footer-links">
+        <a href="explore.html">Explore</a>
+        <a href="news.html">News</a>
+        <a href="contact.html">Contact</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+      </div>
+    </footer>
+
+    <script src="assets/congressional-reports-data.js"></script>
+    <script src="reports.js"></script>
+  </body>
+</html>

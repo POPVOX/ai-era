@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>POPVOX | House Rules Explorer</title>
+    <meta name="description" content="Ask plain-language questions about House procedure, special rules, amendments, germaneness, motions, and the Rules of the House for the 119th Congress.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="https://s3.us-east-1.amazonaws.com/static.popvox.com/images/pvox+favicon.png">
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav" aria-label="Primary navigation">
+        <a class="brand" href="index.html" aria-label="POPVOX home">
+          <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+        </a>
+
+        <div class="nav-links">
+          <a href="explore.html">Explore</a>
+          <a href="news.html">News</a>
+          <a href="about.html">About</a>
+          <a href="team.html">Team</a>
+          <a href="contact.html">Contact</a>
+        </div>
+
+        <div class="nav-actions">
+          <button class="button secondary" id="clear-rules-chat" type="button">Reset chat</button>
+          <a class="button" href="mailto:info@popvox.com">Request access</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="rules-shell">
+      <section class="rules-hero" aria-labelledby="rules-title">
+        <div>
+          <div class="eyebrow-row">
+            <span class="tag"><span class="dot"></span> House Rules Explorer</span>
+            <span class="tag navy">119th Congress</span>
+            <span class="tag navy">Prototype RAG UI</span>
+          </div>
+          <h1 id="rules-title">Ask what the House rules mean in practice<span>.</span></h1>
+          <p class="summary">A working chatbot prototype for procedural questions about special rules, germaneness, amendments, voting, committee work, and the House Rules and Manual.</p>
+        </div>
+        <div class="rules-hero-card">
+          <span>Source posture</span>
+          <p>Designed for retrieval against <a class="bill-ref" href="bills/hres-5.html">H. Res. 5</a>, the House Rules and Manual, and official procedural materials. This static preview uses curated sample responses until the production RAG endpoint is wired in.</p>
+        </div>
+      </section>
+
+      <section class="rules-layout">
+        <div class="rules-chat-panel" aria-label="House Rules Explorer chatbot">
+          <div class="rules-chat-head">
+            <div>
+              <p class="eyebrow">Ask HouseRules</p>
+              <h2>Procedural assistant</h2>
+            </div>
+            <div class="rules-status">
+              <span></span>
+              Local prototype
+            </div>
+          </div>
+
+          <div class="rules-suggestions" id="rules-suggestions" aria-label="Example questions"></div>
+
+          <div class="rules-messages" id="rules-messages" aria-live="polite"></div>
+
+          <form class="rules-input-form" id="rules-form">
+            <label hidden for="rules-input">Ask about House procedure</label>
+            <textarea id="rules-input" rows="2" aria-label="Ask about House procedure" placeholder="Ask about special rules, germaneness, previous question, suspensions, or committee procedure..."></textarea>
+            <button class="button" id="rules-submit" type="submit">Ask</button>
+          </form>
+        </div>
+
+        <aside class="rules-sidebar" aria-label="House Rules Explorer context">
+          <article class="rules-side-card">
+            <h3>What it is built to answer</h3>
+            <ul>
+              <li>What a special rule does before floor consideration</li>
+              <li>Whether an amendment might raise germaneness issues</li>
+              <li>How motions, suspension days, and voting windows work</li>
+              <li>Where to start in the House Rules and Manual</li>
+            </ul>
+          </article>
+
+          <article class="rules-side-card">
+            <h3>Retrieval model</h3>
+            <dl>
+              <div><dt>Documents</dt><dd><a class="bill-ref" href="bills/hres-5.html">H. Res. 5</a> and House Rules and Manual</dd></div>
+              <div><dt>Chunks</dt><dd>Rule, page, and section metadata</dd></div>
+              <div><dt>Answer style</dt><dd>Concise, cited, nonpartisan</dd></div>
+              <div><dt>Cache</dt><dd>Exact and semantic reuse from old RuleBot design</dd></div>
+            </dl>
+          </article>
+
+          <article class="rules-side-card source-card">
+            <h3>Official sources</h3>
+            <a href="https://www.congress.gov/bill/119th-congress/house-resolution/5/text" target="_blank" rel="noopener">H. Res. 5 on Congress.gov</a>
+            <a href="https://rules.house.gov/resources" target="_blank" rel="noopener">Rules Committee resources</a>
+            <a href="https://www.govinfo.gov/" target="_blank" rel="noopener">GovInfo House Rules and Manual</a>
+          </article>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="footer-brand" href="index.html" aria-label="POPVOX home">
+        <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+      </a>
+      <div class="footer-links">
+        <a href="explore.html">Explore</a>
+        <a href="news.html">News</a>
+        <a href="contact.html">Contact</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+      </div>
+    </footer>
+
+    <script src="rules.js"></script>
+  </body>
+</html>

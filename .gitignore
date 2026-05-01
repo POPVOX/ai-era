@@ -1,0 +1,7 @@
+.DS_Store
+node_modules/
+.env
+.env.*
+
+# Local source/reference material used to generate public static data.
+Committee Corpus + Witness Directory - CTO Share/

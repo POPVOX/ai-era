@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>POPVOX | Lawmaker Explorer</title>
+    <meta name="description" content="Search and filter lawmakers by name, party, state, chamber, committee, and issue.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="https://s3.us-east-1.amazonaws.com/static.popvox.com/images/pvox+favicon.png">
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav" aria-label="Primary navigation">
+        <a class="brand" href="index.html" aria-label="POPVOX home">
+          <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+        </a>
+
+        <div class="nav-links">
+          <a href="explore.html">Explore</a>
+          <a href="news.html">News</a>
+          <a href="about.html">About</a>
+          <a href="team.html">Team</a>
+          <a href="contact.html">Contact</a>
+        </div>
+
+        <div class="nav-actions">
+          <button class="button secondary" id="export-button" type="button">Export list</button>
+          <a class="button" href="mailto:info@popvox.com">Create alert</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="directory-shell">
+      <div class="orbit" aria-hidden="true"></div>
+
+      <section class="directory-hero" aria-labelledby="directory-title">
+        <div class="directory-hero-grid">
+          <div>
+            <div class="eyebrow-row">
+              <span class="tag"><span class="dot"></span> Lawmaker Explorer</span>
+              <span class="tag navy">CongressLink API</span>
+              <span class="tag navy" id="api-status">Loading</span>
+            </div>
+            <h1 id="directory-title">Find lawmakers by name, party, state, committee, or issue<span>.</span></h1>
+            <p class="summary">A clean Explorer for discovering Members, understanding their districts and committee roles, and moving quickly from a person to the bills, offices, and signals that matter.</p>
+          </div>
+          <div class="stats-grid" aria-label="Lawmaker Explorer summary statistics">
+            <div class="stat"><strong id="stat-members">0</strong><span>Loaded Members</span></div>
+            <div class="stat"><strong id="stat-states">0</strong><span>States represented</span></div>
+            <div class="stat"><strong id="stat-parties">0</strong><span>Parties</span></div>
+            <div class="stat"><strong id="stat-filtered">0</strong><span>Visible results</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="quick-filter-bar" aria-label="Quick member filters">
+        <div>
+          <span class="quick-label">Chamber</span>
+          <div class="segmented" role="group" aria-label="Chamber filter">
+            <button class="segment active" type="button" data-filter="chamber" data-value="">All</button>
+            <button class="segment" type="button" data-filter="chamber" data-value="House">House</button>
+            <button class="segment" type="button" data-filter="chamber" data-value="Senate">Senate</button>
+          </div>
+        </div>
+        <div>
+          <span class="quick-label">Party</span>
+          <div class="segmented" role="group" aria-label="Party filter">
+            <button class="segment active" type="button" data-filter="party" data-value="">All</button>
+            <button class="segment" type="button" data-filter="party" data-value="Democrat">Democrat</button>
+            <button class="segment" type="button" data-filter="party" data-value="Republican">Republican</button>
+          </div>
+        </div>
+        <div>
+          <label class="quick-label" for="top-committee-filter">Committee</label>
+          <select id="top-committee-filter">
+            <option value="">Any committee</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="member-directory-grid">
+        <aside class="filter-card" aria-label="Member filters">
+          <h2>Search & filter</h2>
+
+          <div class="filter-group">
+            <label class="label" for="member-search">Name or keyword</label>
+            <input id="member-search" class="search-input" type="search" placeholder="Search by name, district, issue...">
+          </div>
+
+          <div class="filter-group">
+            <label class="label" for="party-filter">Party</label>
+            <select id="party-filter">
+              <option value="">All parties</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="label" for="state-filter">State</label>
+            <select id="state-filter">
+              <option value="">All states</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="label" for="chamber-filter">Chamber</label>
+            <select id="chamber-filter">
+              <option value="">All chambers</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="label" for="sort-filter">Sort</label>
+            <select id="sort-filter">
+              <option value="last_name">Last name</option>
+              <option value="state">State</option>
+              <option value="party">Party</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="label" for="committee-filter">Committee</label>
+            <select id="committee-filter">
+              <option value="">Any committee</option>
+            </select>
+          </div>
+
+          <div class="filter-actions">
+            <button class="button" id="refresh-button" type="button">Refresh API data</button>
+            <button class="button secondary" id="clear-button" type="button">Clear filters</button>
+          </div>
+
+          <p class="api-note">Data from <code>CongressLink API</code> — House and Senate member endpoints with live pagination.</p>
+        </aside>
+
+        <div>
+          <article class="directory-panel">
+            <div class="directory-head">
+              <div class="directory-title">
+                <h2>Members</h2>
+                <p id="result-note">Loading CongressLink member data...</p>
+              </div>
+              <div class="view-controls">
+                <button class="view-toggle active" data-view="cards" type="button">Cards</button>
+                <button class="view-toggle" data-view="table" type="button">Table</button>
+              </div>
+            </div>
+
+            <div id="empty-state" class="empty-state" hidden>
+              <h3>No members found</h3>
+              <p>Try clearing filters or refreshing the API data.</p>
+            </div>
+
+            <div class="member-grid" id="member-grid" aria-label="Lawmaker Explorer cards"></div>
+
+            <table class="list-table" id="member-table" aria-label="Lawmaker Explorer table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Party</th>
+                  <th>State/District</th>
+                  <th>Chamber</th>
+                  <th>Role</th>
+                  <th>Contact</th>
+                </tr>
+              </thead>
+              <tbody id="member-table-body"></tbody>
+            </table>
+          </article>
+
+          <div class="insight-row" aria-label="Lawmaker Explorer intelligence cards">
+            <article class="insight-card">
+              <h3>Newest signals</h3>
+              <p>Next: connect profiles to bill introductions, cosponsorships, committee activity, public statements, and staff-relevant changes.</p>
+            </article>
+            <article class="insight-card">
+              <h3>Smart lists</h3>
+              <p>Save filtered sets such as “new members from rural districts” or “committee members working on AI procurement.”</p>
+            </article>
+            <article class="insight-card">
+              <h3>Relationship context</h3>
+              <p>Connect Members to committees, districts, bills, votes, offices, and issue histories from one public page.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="footer-brand" href="index.html" aria-label="POPVOX home">
+        <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+      </a>
+      <div class="footer-links">
+        <a href="explore.html">Explore</a>
+        <a href="news.html">News</a>
+        <a href="contact.html">Contact</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+      </div>
+    </footer>
+
+    <script src="members.js"></script>
+  </body>
+</html>

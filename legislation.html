@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>POPVOX | Legislation Explorer</title>
+    <meta name="description" content="Search and filter House bills from the CongressLink API by bill number, title, sponsor, committee, status, and keyword.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="https://s3.us-east-1.amazonaws.com/static.popvox.com/images/pvox+favicon.png">
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav" aria-label="Primary navigation">
+        <a class="brand" href="index.html" aria-label="POPVOX home">
+          <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+        </a>
+
+        <div class="nav-links">
+          <a href="explore.html">Explore</a>
+          <a href="news.html">News</a>
+          <a href="about.html">About</a>
+          <a href="team.html">Team</a>
+          <a href="contact.html">Contact</a>
+        </div>
+
+        <div class="nav-actions">
+          <button class="button secondary" id="export-legislation-button" type="button">Export list</button>
+          <a class="button" href="mailto:info@popvox.com">Create alert</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="directory-shell legislation-shell">
+      <div class="orbit" aria-hidden="true"></div>
+
+      <section class="directory-hero legislation-hero" aria-labelledby="legislation-title">
+        <div class="directory-hero-grid">
+          <div>
+            <div class="eyebrow-row">
+              <span class="tag"><span class="dot"></span> Legislation Explorer</span>
+              <span class="tag navy">CongressLink API</span>
+              <span class="tag navy" id="legislation-api-status">Loading</span>
+            </div>
+            <h1 id="legislation-title">Find bills by number, title, sponsor, committee, or issue<span>.</span></h1>
+            <p class="summary">A live House bill Explorer for scanning legislative records, tracking signals, and preparing the detail pages that will later connect text, actions, committees, hearings, witnesses, and summaries.</p>
+          </div>
+          <div class="stats-grid" aria-label="Legislation Explorer summary statistics">
+            <div class="stat"><strong id="stat-bills">0</strong><span>Loaded bills</span></div>
+            <div class="stat"><strong id="stat-sponsors">0</strong><span>Sponsors</span></div>
+            <div class="stat"><strong id="stat-committees">0</strong><span>Committees</span></div>
+            <div class="stat"><strong id="stat-visible-bills">0</strong><span>Visible results</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="quick-filter-bar" aria-label="Quick bill filters">
+        <div>
+          <span class="quick-label">Type</span>
+          <div class="segmented" role="group" aria-label="Bill type filter">
+            <button class="segment active" type="button" data-filter="type" data-value="">All</button>
+            <button class="segment" type="button" data-filter="type" data-value="HR">H.R.</button>
+            <button class="segment" type="button" data-filter="type" data-value="HRES">H.Res.</button>
+            <button class="segment" type="button" data-filter="type" data-value="HJRES">H.J.Res.</button>
+          </div>
+        </div>
+        <div>
+          <label class="quick-label" for="top-bill-status-filter">Status</label>
+          <select id="top-bill-status-filter">
+            <option value="">Any status</option>
+          </select>
+        </div>
+        <div>
+          <label class="quick-label" for="top-bill-committee-filter">Committee</label>
+          <select id="top-bill-committee-filter">
+            <option value="">Any committee</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="member-directory-grid">
+        <aside class="filter-card" aria-label="Legislation filters">
+          <h2>Search & filter</h2>
+
+          <div class="filter-group">
+            <label class="label" for="legislation-search">Bill or keyword</label>
+            <input id="legislation-search" class="search-input" type="search" placeholder="Search by number, title, sponsor, issue...">
+          </div>
+
+          <div class="filter-group">
+            <label class="label" for="bill-type-filter">Type</label>
+            <select id="bill-type-filter">
+              <option value="">All types</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="label" for="bill-status-filter">Status</label>
+            <select id="bill-status-filter">
+              <option value="">Any status</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="label" for="bill-sponsor-filter">Sponsor</label>
+            <select id="bill-sponsor-filter">
+              <option value="">Any sponsor</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="label" for="bill-committee-filter">Committee</label>
+            <select id="bill-committee-filter">
+              <option value="">Any committee</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="label" for="bill-sort-filter">Sort</label>
+            <select id="bill-sort-filter">
+              <option value="recent">Most recent</option>
+              <option value="number">Bill number</option>
+              <option value="sponsor">Sponsor</option>
+              <option value="status">Status</option>
+            </select>
+          </div>
+
+          <div class="filter-actions">
+            <button class="button" id="refresh-legislation-button" type="button">Refresh API data</button>
+            <button class="button secondary" id="clear-legislation-button" type="button">Clear filters</button>
+          </div>
+
+          <p class="api-note">Data from <code>CongressLink API</code> — House bill document endpoint with live pagination through the local POPVOX proxy.</p>
+        </aside>
+
+        <div>
+          <article class="directory-panel">
+            <div class="directory-head">
+              <div class="directory-title">
+                <h2>Bills</h2>
+                <p id="legislation-result-note">Loading CongressLink bill data...</p>
+              </div>
+              <div class="view-controls">
+                <button class="view-toggle active" data-bill-view="cards" type="button">Cards</button>
+                <button class="view-toggle" data-bill-view="table" type="button">Table</button>
+              </div>
+            </div>
+
+            <div id="legislation-empty-state" class="empty-state" hidden>
+              <h3>No bills found</h3>
+              <p>Try clearing filters or refreshing the API data.</p>
+            </div>
+
+            <div class="legislation-grid" id="legislation-grid" aria-label="Legislation Explorer cards"></div>
+
+            <table class="list-table" id="legislation-table" aria-label="Legislation Explorer table">
+              <thead>
+                <tr>
+                  <th>Bill</th>
+                  <th>Title</th>
+                  <th>Sponsor</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Links</th>
+                </tr>
+              </thead>
+              <tbody id="legislation-table-body"></tbody>
+            </table>
+          </article>
+
+          <div class="insight-row" aria-label="Legislation Explorer intelligence cards">
+            <article class="insight-card">
+              <h3>Bill detail pages</h3>
+              <p>Next: connect each bill to text versions, actions, sponsors, committees, related hearings, and witnesses.</p>
+            </article>
+            <article class="insight-card">
+              <h3>Embeddings-ready</h3>
+              <p>Structured bill records can later support plain-language questions, summaries, changes across versions, and citation-backed answers.</p>
+            </article>
+            <article class="insight-card">
+              <h3>Signal tracking</h3>
+              <p>Saved views can become alerts for new bills, committee referrals, markups, amendments, and movement across the legislative process.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="footer-brand" href="index.html" aria-label="POPVOX home">
+        <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+      </a>
+      <div class="footer-links">
+        <a href="explore.html">Explore</a>
+        <a href="news.html">News</a>
+        <a href="contact.html">Contact</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+      </div>
+    </footer>
+
+    <script src="legislation.js"></script>
+  </body>
+</html>

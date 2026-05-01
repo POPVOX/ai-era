@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>POPVOX | House Journal Explorer</title>
+    <meta name="description" content="Browse House Journal actions with plain-language explanations of what happened on the House floor.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="https://s3.us-east-1.amazonaws.com/static.popvox.com/images/pvox+favicon.png">
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav" aria-label="Primary navigation">
+        <a class="brand" href="index.html" aria-label="POPVOX home">
+          <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+        </a>
+
+        <div class="nav-links">
+          <a href="explore.html">Explore</a>
+          <a href="news.html">News</a>
+          <a href="about.html">About</a>
+          <a href="team.html">Team</a>
+          <a href="contact.html">Contact</a>
+        </div>
+
+        <div class="nav-actions">
+          <button class="button secondary" id="export-journal-button" type="button">Export list</button>
+          <a class="button" href="mailto:info@popvox.com">Create alert</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="directory-shell journal-shell">
+      <div class="orbit" aria-hidden="true"></div>
+
+      <section class="directory-hero journal-hero" aria-labelledby="journal-title">
+        <div class="directory-hero-grid">
+          <div>
+            <div class="eyebrow-row">
+              <span class="tag"><span class="dot"></span> House Journal Explorer</span>
+              <span class="tag navy">Floor actions</span>
+              <span class="tag navy" id="journal-data-status">Loading</span>
+            </div>
+            <h1 id="journal-title">See what happened in the House, in plain English<span>.</span></h1>
+            <p class="summary">Browse the House Journal as a structured ledger of floor activity: votes, motions, bills, communications, procedural steps, and adjournments, with a plain-language explanation for each action.</p>
+          </div>
+          <div class="stats-grid" aria-label="House Journal Explorer summary statistics">
+            <div class="stat"><strong id="stat-actions">0</strong><span>Actions</span></div>
+            <div class="stat"><strong id="stat-days">0</strong><span>Session days</span></div>
+            <div class="stat"><strong id="stat-votes">0</strong><span>Vote actions</span></div>
+            <div class="stat"><strong id="stat-visible-actions">0</strong><span>Visible results</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="journal-plain-language">
+        <div>
+          <p class="eyebrow">Plain-language readout</p>
+          <h2 id="journal-summary-title">Loading House activity</h2>
+          <p id="journal-summary">The Explorer is reading the ledger and preparing a plain-language summary of the visible actions.</p>
+        </div>
+      </section>
+
+      <section class="quick-filter-bar" aria-label="Quick journal filters">
+        <div>
+          <span class="quick-label">Action type</span>
+          <div class="segmented" role="group" aria-label="Action type filter">
+            <button class="segment active" type="button" data-journal-filter="type" data-value="">All</button>
+            <button class="segment" type="button" data-journal-filter="type" data-value="vote">Votes</button>
+            <button class="segment" type="button" data-journal-filter="type" data-value="bill">Bills</button>
+            <button class="segment" type="button" data-journal-filter="type" data-value="procedure">Procedure</button>
+          </div>
+        </div>
+        <div>
+          <label class="quick-label" for="top-journal-date-filter">Date</label>
+          <select id="top-journal-date-filter">
+            <option value="">Any date</option>
+          </select>
+        </div>
+        <div>
+          <label class="quick-label" for="top-journal-search">Search</label>
+          <input id="top-journal-search" class="search-input" type="search" placeholder="Bill, motion, vote, member...">
+        </div>
+      </section>
+
+      <section class="journal-layout">
+        <aside class="filter-card" aria-label="Journal filters">
+          <h2>Search & filter</h2>
+
+          <div class="filter-group">
+            <label class="label" for="journal-search">Keyword</label>
+            <input id="journal-search" class="search-input" type="search" placeholder="Search the ledger...">
+          </div>
+
+          <div class="filter-group">
+            <label class="label" for="journal-type-filter">Action type</label>
+            <select id="journal-type-filter">
+              <option value="">All action types</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="label" for="journal-date-filter">Date</label>
+            <select id="journal-date-filter">
+              <option value="">Any date</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="label" for="journal-sort-filter">Sort</label>
+            <select id="journal-sort-filter">
+              <option value="recent">Most recent</option>
+              <option value="oldest">Oldest first</option>
+              <option value="type">Action type</option>
+            </select>
+          </div>
+
+          <div class="filter-actions">
+            <button class="button" id="refresh-journal-button" type="button">Reload ledger</button>
+            <button class="button secondary" id="clear-journal-button" type="button">Clear filters</button>
+          </div>
+
+          <p class="api-note">Data from the House Journal / Ledger CTO share package, using official Office of the Clerk daily floor proceedings XML as the working feed for ledger design.</p>
+        </aside>
+
+        <div>
+          <article class="directory-panel">
+            <div class="directory-head">
+              <div class="directory-title">
+                <h2>House actions</h2>
+                <p id="journal-result-note">Loading House Journal ledger...</p>
+              </div>
+              <div class="view-controls">
+                <button class="view-toggle active" data-journal-view="cards" type="button">Cards</button>
+                <button class="view-toggle" data-journal-view="timeline" type="button">Timeline</button>
+              </div>
+            </div>
+
+            <div id="journal-empty-state" class="empty-state" hidden>
+              <h3>No actions found</h3>
+              <p>Try clearing filters or reloading the ledger.</p>
+            </div>
+
+            <div class="journal-grid" id="journal-grid" aria-label="House Journal Explorer action cards"></div>
+            <div class="journal-timeline" id="journal-timeline" aria-label="House Journal Explorer timeline" hidden></div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="footer-brand" href="index.html" aria-label="POPVOX home">
+        <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+      </a>
+      <div class="footer-links">
+        <a href="explore.html">Explore</a>
+        <a href="news.html">News</a>
+        <a href="contact.html">Contact</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+      </div>
+    </footer>
+
+    <script src="assets/house-journal-ledger.js"></script>
+    <script src="journal.js"></script>
+  </body>
+</html>
