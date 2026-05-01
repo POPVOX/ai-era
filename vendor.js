@@ -12,6 +12,7 @@ const els = {
   clients: document.querySelector('#vendor-detail-clients'),
   periods: document.querySelector('#vendor-detail-periods'),
   search: document.querySelector('#vendor-transaction-search'),
+  clientSearch: document.querySelector('#vendor-client-search'),
   period: document.querySelector('#vendor-transaction-period'),
   sort: document.querySelector('#vendor-transaction-sort'),
   profile: document.querySelector('#vendor-detail-profile'),
@@ -120,10 +121,12 @@ async function load() {
 
 function applyFilters() {
   const query = els.search.value.trim().toLowerCase();
+  const clientQuery = els.clientSearch.value.trim().toLowerCase();
   const period = els.period.value;
   const sort = els.sort.value;
   filtered = rows.filter((row) => {
     if (period && row.period !== period) return false;
+    if (clientQuery && ![row.organization, row.officeType].join(' ').toLowerCase().includes(clientQuery)) return false;
     if (!query) return true;
     return [row.organization, row.officeType, row.description, row.expenseKind, row.objectClass, row.document, row.period].join(' ').toLowerCase().includes(query);
   });
@@ -153,7 +156,7 @@ function render() {
   `).join('');
 }
 
-[els.search, els.period, els.sort].forEach((input) => {
+[els.search, els.clientSearch, els.period, els.sort].forEach((input) => {
   input.addEventListener('input', applyFilters);
   input.addEventListener('change', applyFilters);
 });
