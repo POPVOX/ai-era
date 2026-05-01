@@ -89,6 +89,14 @@ function staffGroup(title, officeType) {
   return officeType;
 }
 
+function normalizeTitle(title) {
+  return String(title || "Title not listed")
+    .replace(/\s*\((?:OTHER\s+)?COMPENSATION\)\s*/gi, " ")
+    .replace(/\s*\(OVERTIME\)\s*/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim() || "Title not listed";
+}
+
 function slugify(value) {
   return String(value || "staffer")
     .toLowerCase()
@@ -149,6 +157,14 @@ function titleCaseName(name) {
         .join("");
     })
     .join(" ");
+}
+
+function personKey(name) {
+  return String(name || "")
+    .toUpperCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^A-Z0-9]+/g, "");
 }
 
 function pageShell({ title, description, body }) {
@@ -262,10 +278,10 @@ for (const fileName of files) {
     if (!name || name === "No vendor listed") continue;
 
     const office = stripOrgYear(raw[index.ORGANIZATION] || "");
-    const title = String(raw[index.DESCRIPTION] || "").trim() || "Title not listed";
+    const title = normalizeTitle(raw[index.DESCRIPTION] || "");
     const officeType = classifyOffice(office);
     const group = staffGroup(title, officeType);
-    const key = name.toUpperCase().replace(/\s+/g, " ").trim();
+    const key = personKey(name);
     const person = people.get(key) || {
       name: titleCaseName(name),
       offices: new Map(),
