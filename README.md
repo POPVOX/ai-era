@@ -21,6 +21,7 @@ The site is intentionally lightweight. Most pages are static HTML/CSS/JS, with a
   - Committee pages in `committees/`
   - Committee event pages in `events/`
   - Witness profile pages in `witnesses/`
+  - Vendor transaction profiles through `vendor.html?v=:slug`
 
 ## Local Setup
 
@@ -67,7 +68,15 @@ npm run check
 
 ## Data Notes
 
-The public site uses committed static data in `assets/` for the journal, reports, and witness corpus. Generated pages are committed so the site can be deployed as a mostly static site.
+The public site uses committed static data in `assets/` for the journal, reports, witness corpus, committee/event pages, bill pages, and House expenditure prototype.
+
+The House Expenditure Explorer uses:
+
+- `assets/house-expenditure-data.{json,js}` for dashboard metrics, charts, filters, and vendor rollups.
+- `assets/house-expenditure-transactions.json` as the full transaction fallback bundle.
+- `assets/house-expenditure-vendors/*.json` for fast-loading transaction profiles for the largest vendors.
+
+Generated pages and generated data are committed so the site can be deployed as a mostly static site. Live CongressLink-backed pages still need the local/server proxy routes listed above unless an equivalent production proxy is provided.
 
 The local folder `Committee Corpus + Witness Directory - CTO Share/` is source/reference material used during development. It is intentionally ignored by Git because it is large and contains raw working files that do not need to ship with the public site.
 
@@ -103,3 +112,5 @@ Then spot-check:
 - `/journal.html`
 - `/reports.html`
 - `/rules.html`
+- `/expenditures.html`
+- `/vendor.html?v=citibank`
