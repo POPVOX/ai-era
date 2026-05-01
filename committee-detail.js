@@ -134,8 +134,40 @@
   /*  3.  Extract bills from event titles → build Bills Referred panel   */
   /* ------------------------------------------------------------------ */
 
-  const billPattern = /H\.?\s*R\.?\s*(\d{1,5})/gi;
-  const billSet = new Map(); // bill number → first-seen title snippet
+  function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, (ch) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+    })[ch]);
+  }
+
+  function normalizeBillRef(value) {
+    const text = String(value || '').replace(/\s+/g, ' ').trim();
+    const match = text.match(/^H\.?\s*(Con\.?\s*Res|J\.?\s*Res|Res|R)\.?\s*(\d+)$/i);
+    if (!match) return '';
+    const kind = match[1].replace(/\s+/g, ' ').toLowerCase();
+    const label = ({
+      r: 'H.R.',
+      res: 'H.Res.',
+      'j. res': 'H.J.Res.',
+      jres: 'H.J.Res.',
+      'con. res': 'H.Con.Res.',
+      conres: 'H.Con.Res.',
+    })[kind] || `H.${match[1]}.`;
+    return `${label} ${match[2]}`;
+  }
+
+  function billPageHref(label) {
+    const normalized = normalizeBillRef(label);
+    if (!normalized) return '';
+    return `../bills/${normalized.toLowerCase().replace(/\./g, '').replace(/\s+/g, '-')}.html`;
+  }
+
+  const billPattern = /\bH\.?\s*(?:Con\.?\s*Res|J\.?\s*Res|Res|R)\.?\s*\d+\b/gi;
+  const billSet = new Map(); // bill label → first-seen title snippet
 
   events.forEach(ev => {
     const h3 = ev.querySelector('h3');
@@ -143,20 +175,20 @@
     const text = h3.textContent;
     let m;
     while ((m = billPattern.exec(text)) !== null) {
-      const num = m[1];
-      if (!billSet.has(num)) {
+      const label = normalizeBillRef(m[0]);
+      if (!label || !billSet.has(label)) {
         // Try to grab a short name after the number
         const afterNum = text.substring(m.index + m[0].length);
         const nameMatch = afterNum.match(/^[\s,]*(?:the\s+)?"?([^";,]+)/i);
         const shortName = nameMatch ? nameMatch[1].trim().replace(/"$/, '') : '';
-        billSet.set(num, shortName);
+        billSet.set(label, shortName);
       }
     }
   });
 
   if (billSet.size > 0) {
     // Sort numerically
-    const sorted = Array.from(billSet.entries()).sort((a, b) => Number(a[0]) - Number(b[0]));
+    const sorted = Array.from(billSet.entries()).sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }));
 
     const billsSection = document.createElement('section');
     billsSection.className = 'committee-bills-panel';
@@ -168,12 +200,12 @@
         </div>
         <span>${sorted.length} bills</span>
       </div>
-      <p class="bills-note">Bills and discussion drafts referenced in committee hearings and markups. Links open the bill on Congress.gov.</p>
+      <p class="bills-note">Bills and discussion drafts referenced in committee hearings and markups. Links open local POPVOX bill pages.</p>
       <div class="committee-bill-list">
-        ${sorted.map(([num, name]) => `
-          <a class="committee-bill" href="https://www.congress.gov/bill/119th-congress/house-bill/${num}" target="_blank" rel="noopener">
-            <strong>H.R. ${num}</strong>
-            ${name ? `<span>${name}</span>` : ''}
+        ${sorted.map(([label, name]) => `
+          <a class="committee-bill" href="${escapeHtml(billPageHref(label))}">
+            <strong>${escapeHtml(label)}</strong>
+            ${name ? `<span>${escapeHtml(name)}</span>` : ''}
           </a>
         `).join('')}
       </div>

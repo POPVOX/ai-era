@@ -239,6 +239,20 @@ function billPageHref(label) {
   return `bills/${`${normalized} ${match[2]}`.toLowerCase().replace(/\./g, '').replace(/\s+/g, '-')}.html`;
 }
 
+function linkBillRefs(value) {
+  const pattern = /\bH\.?\s*(?:Con\.?\s*Res|J\.?\s*Res|Res|R)\.?\s*\d+\b/gi;
+  return escapeHtml(value).replace(pattern, (match) => {
+    const href = billPageHref(match);
+    return href ? `<a class="bill-ref" href="${escapeHtml(href)}">${escapeHtml(match)}</a>` : escapeHtml(match);
+  });
+}
+
+function linkBillTitle(title, href) {
+  const value = String(title || '');
+  if (/\bH\.?\s*(?:Con\.?\s*Res|J\.?\s*Res|Res|R)\.?\s*\d+\b/i.test(value)) return linkBillRefs(value);
+  return href ? `<a href="${escapeHtml(href)}">${escapeHtml(value)}</a>` : escapeHtml(value);
+}
+
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, (ch) => ({
     '&': '&amp;',
@@ -346,9 +360,9 @@ function billCard(bill) {
         ${href ? `<a class="bill-number" href="${escapeHtml(href)}">${escapeHtml(number)}</a>` : `<span class="bill-number">${escapeHtml(number)}</span>`}
         <span class="bill-date">${escapeHtml(formatDate(bill.latestDate || bill.introducedDate))}</span>
       </div>
-      <h3>${escapeHtml(bill.title)}</h3>
+      <h3>${linkBillTitle(bill.title, href)}</h3>
       <p class="bill-sponsor">${escapeHtml(bill.sponsor || 'Sponsor pending')}</p>
-      <p class="bill-status">${escapeHtml(bill.status || 'Status pending')}</p>
+      <p class="bill-status">${linkBillRefs(bill.status || 'Status pending')}</p>
       ${committees}
       ${subjects}
       <div class="bill-card-footer">
@@ -364,9 +378,9 @@ function billRow(bill) {
   return `
     <tr>
       <td>${href ? `<a class="link-button" href="${escapeHtml(href)}">${escapeHtml(number)}</a>` : escapeHtml(number)}</td>
-      <td>${escapeHtml(bill.title)}</td>
+      <td>${linkBillTitle(bill.title, href)}</td>
       <td>${escapeHtml(bill.sponsor || 'Sponsor pending')}</td>
-      <td>${escapeHtml(bill.status || 'Status pending')}</td>
+      <td>${linkBillRefs(bill.status || 'Status pending')}</td>
       <td>${escapeHtml(formatDate(bill.latestDate || bill.introducedDate))}</td>
       <td>${bill.url ? `<a class="link-button" href="${escapeHtml(bill.url)}" target="_blank" rel="noopener">Source</a>` : ''}</td>
     </tr>

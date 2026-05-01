@@ -6,6 +6,7 @@ const billsDir = path.join(root, "bills");
 const journalPath = path.join(root, "assets", "house-journal-ledger.json");
 const localLegislationUrl = process.env.POPVOX_LEGISLATION_API || "http://127.0.0.1:8771/api/legislation";
 const billPattern = /\bH\.?\s*(?:Con\.?\s*Res|J\.?\s*Res|Res|R)\.?\s*\d+\b/gi;
+let knownBillLabels = new Set();
 
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
@@ -203,6 +204,20 @@ function congressGovUrl(bill) {
   return `https://www.congress.gov/bill/119th-congress/${type}/${match[2]}`;
 }
 
+function billPageHrefFromContext(label) {
+  const normalized = normalizeBillRef(label);
+  if (!knownBillLabels.has(normalized)) return "";
+  if (!normalized) return "";
+  return `../bills/${billSlug(normalized)}.html`;
+}
+
+function linkBillRefs(value) {
+  return escapeHtml(value).replace(billPattern, (match) => {
+    const href = billPageHrefFromContext(match);
+    return href ? `<a class="bill-ref" href="${escapeHtml(href)}">${escapeHtml(match)}</a>` : escapeHtml(match);
+  });
+}
+
 function docTypeLabel(context) {
   const text = `${context.source || ""} ${context.type || ""}`.toLowerCase();
   if (text.includes("committee") || text.includes("events/")) return "Committee activity";
@@ -359,11 +374,11 @@ function renderBillPage(bill) {
           <div>
             <span>${escapeHtml(docTypeLabel(context))}${context.date || context.type ? ` · ${escapeHtml([context.date, context.type].filter(Boolean).join(" · "))}` : ""}</span>
             <h3>${escapeHtml(context.source)}</h3>
-            <p>${escapeHtml(context.text)}</p>
+            <p>${linkBillRefs(context.text)}</p>
           </div>
           ${context.url ? `<a class="link-button" href="${escapeHtml(context.url)}">Open source</a>` : ""}
         </article>
-      `).join("") : `<div class="empty-state">This bill page was created from a citation, but no source context was captured yet.</div>`}
+      `.trim()).join("\n") : `<div class="empty-state">This bill page was created from a citation, but no source context was captured yet.</div>`}
     </section>
   </main>`;
   return pageShell({
@@ -410,6 +425,7 @@ const bills = new Map();
 collectJournalBills(bills);
 collectHtmlBills(bills);
 for (const apiBill of await loadApiBills()) mergeApiBill(bills, apiBill);
+knownBillLabels = new Set(bills.keys());
 
 for (const bill of bills.values()) {
   fs.writeFileSync(path.join(billsDir, `${bill.slug}.html`), renderBillPage(bill));
