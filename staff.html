@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>POPVOX | House Staff Explorer</title>
+  <meta name="description" content="Search House staff names, offices, and titles inferred from public House Statement of Disbursements personnel records.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="https://s3.us-east-1.amazonaws.com/static.popvox.com/images/pvox+favicon.png">
+</head>
+
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="index.html" aria-label="POPVOX home">
+        <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+      </a>
+
+      <div class="nav-links">
+        <a class="active" href="explore.html">Explore</a>
+        <a href="news.html">News</a>
+        <a href="about.html">About</a>
+        <a href="team.html">Team</a>
+        <a href="contact.html">Contact</a>
+      </div>
+
+      <div class="nav-actions">
+        <a class="button secondary" href="explore.html">All Explorers</a>
+        <a class="button" href="mailto:info@popvox.com">Request a demo</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="staff-shell">
+    <section class="witness-hero" aria-labelledby="staff-title">
+      <div>
+        <div class="eyebrow-row">
+          <span class="tag"><span class="dot"></span> House Staff Explorer</span>
+          <span class="tag navy">Statement of Disbursements</span>
+          <span class="tag navy" id="staff-updated">Loading</span>
+        </div>
+        <h1 id="staff-title">Find House staff by office and role<span>.</span></h1>
+        <p class="summary">Search staff names, offices, committees, and titles inferred from public personnel-compensation rows in House disbursement data.</p>
+      </div>
+
+      <div class="witness-hero-card">
+        <p class="eyebrow">Prototype source</p>
+        <h2>Public payroll records, not compensation display</h2>
+        <p>This directory uses public disbursement records to identify who worked where and in what role. Compensation values are intentionally excluded from the interface.</p>
+      </div>
+    </section>
+
+    <section class="witness-stats" aria-label="House Staff Explorer statistics">
+      <article><strong id="staff-count">0</strong><span>Staff profiles</span></article>
+      <article><strong id="staff-office-count">0</strong><span>Offices</span></article>
+      <article><strong id="staff-title-count">0</strong><span>Titles</span></article>
+      <article><strong id="staff-row-count">0</strong><span>Personnel rows</span></article>
+    </section>
+
+    <section class="witness-toolbar staff-toolbar" aria-label="Staff filters">
+      <div class="witness-search-wrap">
+        <label class="label" for="staff-search">Search staff</label>
+        <input id="staff-search" class="search-input" type="search" placeholder="Name, office, committee, title...">
+      </div>
+
+      <div>
+        <label class="label" for="staff-type-filter">Staff type</label>
+        <select id="staff-type-filter">
+          <option value="">All staff types</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="label" for="staff-period-filter">Period</label>
+        <select id="staff-period-filter">
+          <option value="">All periods</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="label" for="staff-sort">Sort</label>
+        <select id="staff-sort">
+          <option value="name">Name A-Z</option>
+          <option value="recent">Most recent</option>
+          <option value="roles">Most role records</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="witness-layout">
+      <aside class="witness-sidebar" aria-label="Staff Explorer notes">
+        <div class="sidebar-block">
+          <p class="eyebrow">What this shows</p>
+          <p>Each profile is inferred from public personnel-compensation rows. Offices, titles, and periods are shown so this can later be enriched with prior roles and verified public profiles.</p>
+        </div>
+        <div class="sidebar-block">
+          <p class="eyebrow">Not shown</p>
+          <p>Compensation values are present in the public source data but are not displayed here because this Explorer is focused on staff identity, office context, and role history.</p>
+        </div>
+        <div class="committee-list" id="staff-office-list"></div>
+      </aside>
+
+      <section class="witness-results" aria-live="polite">
+        <div class="directory-head">
+          <div>
+            <p class="eyebrow">Results</p>
+            <h2 id="staff-result-heading">Staff</h2>
+          </div>
+          <span id="staff-visible-count">0 visible</span>
+        </div>
+
+        <div class="staff-grid" id="staff-grid"></div>
+        <div class="empty-state" id="staff-empty" hidden>No staff profiles match those filters.</div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="footer-brand" href="index.html" aria-label="POPVOX home">
+      <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+    </a>
+    <div class="footer-links">
+      <a href="explore.html">Explore</a>
+      <a href="news.html">News</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+  </footer>
+
+  <script src="assets/house-staff-data.js"></script>
+  <script src="staff.js"></script>
+</body>
+
+</html>

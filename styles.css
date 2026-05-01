@@ -625,10 +625,100 @@
   border-radius: 8px;
 }
 
+.staff-shell,
+.staff-profile-shell {
+  padding: 44px 6vw 70px;
+}
+
+.staff-toolbar {
+  grid-template-columns: minmax(280px, 1.15fr) repeat(3, minmax(180px, 0.55fr));
+}
+
+.staff-grid {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.staff-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 18px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow: 0 14px 36px rgba(13, 38, 67, 0.04);
+}
+
+.staff-card-main {
+  min-width: 0;
+}
+
+.staff-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.staff-meta-row span {
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fbf8f4;
+  color: var(--slate);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.staff-profile-hero .witness-profile-avatar {
+  background: var(--navy);
+  color: var(--white);
+}
+
+.staff-role-list {
+  display: grid;
+  gap: 14px;
+}
+
+.staff-role-list article {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+}
+
+.staff-role-list span {
+  color: var(--coral);
+  font-weight: 900;
+}
+
+.staff-role-list h3 {
+  margin: 8px 0;
+  color: var(--navy);
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.staff-role-list p {
+  margin: 0;
+  color: var(--slate);
+  font-weight: 800;
+}
+
+.staff-role-list small {
+  display: block;
+  margin-top: 8px;
+  color: var(--slate);
+  font-weight: 750;
+}
+
 @media (max-width: 1180px) {
   .expenditure-hero,
   .expenditure-layout,
-  .vendor-detail-tools {
+  .vendor-detail-tools,
+  .staff-toolbar {
     grid-template-columns: 1fr;
   }
 
@@ -2218,6 +2308,26 @@ main {
   bottom: 13px;
   width: 34px;
   height: 14px;
+  border: 2px solid var(--ink);
+  border-radius: 999px 999px 0 0;
+  border-bottom: 0;
+}
+
+.experiment-icon.staff::before {
+  left: 14px;
+  top: 13px;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--coral);
+  border-radius: 50%;
+  box-shadow: 17px 0 0 -2px var(--soft), 17px 0 0 0 var(--ink);
+}
+
+.experiment-icon.staff::after {
+  left: 11px;
+  bottom: 13px;
+  width: 36px;
+  height: 16px;
   border: 2px solid var(--ink);
   border-radius: 999px 999px 0 0;
   border-bottom: 0;

@@ -11,6 +11,7 @@ The site is intentionally lightweight. Most pages are static HTML/CSS/JS, with a
   - Lawmaker Explorer
   - Legislation Explorer
   - Committee Explorer
+  - House Staff Explorer
   - Witness Explorer
   - House Journal Explorer
   - Executive Reports Dashboard
@@ -21,6 +22,7 @@ The site is intentionally lightweight. Most pages are static HTML/CSS/JS, with a
   - Committee pages in `committees/`
   - Committee event pages in `events/`
   - Witness profile pages in `witnesses/`
+  - Staff profile pages in `staffers/`
   - Vendor transaction profiles through `vendor.html?v=:slug`
 
 ## Local Setup
@@ -76,6 +78,13 @@ The House Expenditure Explorer uses:
 - `assets/house-expenditure-transactions.json` as the full transaction fallback bundle.
 - `assets/house-expenditure-vendors/*.json` for fast-loading transaction profiles for the largest vendors.
 
+The House Staff Explorer uses:
+
+- `assets/house-staff-data.{json,js}` for searchable staff names, offices, titles, and period metadata.
+- `staffers/*.html` for generated staff profile pages.
+
+Staff profiles are inferred from public House Statement of Disbursements personnel rows. Compensation values are present in the public source data but are intentionally excluded from the public interface because this prototype is focused on staff identity, office context, and role history.
+
 Generated pages and generated data are committed so the site can be deployed as a mostly static site. Live CongressLink-backed pages still need the local/server proxy routes listed above unless an equivalent production proxy is provided.
 
 The local folder `Committee Corpus + Witness Directory - CTO Share/` is source/reference material used during development. It is intentionally ignored by Git because it is large and contains raw working files that do not need to ship with the public site.
@@ -108,6 +117,7 @@ Then spot-check:
 - `/members.html`
 - `/legislation.html`
 - `/committees.html`
+- `/staff.html`
 - `/witnesses.html`
 - `/journal.html`
 - `/reports.html`
