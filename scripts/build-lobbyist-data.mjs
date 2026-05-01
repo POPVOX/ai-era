@@ -156,6 +156,7 @@ function renderProfile(profile) {
       </article>
       <aside>
         <dl class="bill-meta-list">
+          <div><dt>Lobbyist ID</dt><dd>${escapeHtml(profile.id)}</dd></div>
           <div><dt>Top registrant</dt><dd>${escapeHtml(profile.primaryRegistrant || "Not listed")}</dd></div>
           <div><dt>Top client</dt><dd>${escapeHtml(profile.primaryClient || "Not listed")}</dd></div>
           <div><dt>Covered positions</dt><dd>${profile.coveredPositions.length ? escapeHtml(profile.coveredPositions.join("; ")) : "None listed"}</dd></div>
