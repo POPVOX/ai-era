@@ -194,6 +194,7 @@ function pageShell({ title, description, body }) {
 
 function renderProfile(profile) {
   const titleDot = /[.!?]$/.test(profile.name.trim()) ? "" : "<span>.</span>";
+  const statusLabel = profile.isActive ? "Active" : "Inactive";
   const body = `<main class="staff-profile-shell">
     <section class="witness-profile-hero staff-profile-hero">
       <a class="back-link" href="../staff.html">← Staff Explorer</a>
@@ -208,6 +209,7 @@ function renderProfile(profile) {
           </div>
         </div>
         <div class="witness-profile-badges">
+          <span class="${profile.isActive ? "active-status" : "inactive-status"}">${statusLabel}</span>
           <span>${escapeHtml(profile.staffType)}</span>
           <span>${profile.roles.length} role record${profile.roles.length === 1 ? "" : "s"}</span>
           <span>${escapeHtml(profile.latestPeriod)}</span>
@@ -219,12 +221,13 @@ function renderProfile(profile) {
       <article>
         <p class="eyebrow">Public source</p>
         <h2>Disbursement-derived profile</h2>
-        <p>This profile is inferred from House Statement of Disbursements personnel-compensation rows. It is meant to identify staff names, offices, titles, and timing. Compensation values are intentionally not displayed here.</p>
+        <p>This profile is inferred from House Statement of Disbursements personnel-compensation rows. Staff are marked active only when they appear in the latest loaded disbursement report. Compensation values are intentionally not displayed here.</p>
       </article>
       <aside>
         <dl class="bill-meta-list">
-          <div><dt>Current/recent office</dt><dd>${escapeHtml(profile.currentOffice || "Not listed")}</dd></div>
-          <div><dt>Current/recent title</dt><dd>${escapeHtml(profile.currentTitle || "Not listed")}</dd></div>
+          <div><dt>Status</dt><dd>${statusLabel}</dd></div>
+          <div><dt>${profile.isActive ? "Current office" : "Most recent office"}</dt><dd>${escapeHtml(profile.currentOffice || "Not listed")}</dd></div>
+          <div><dt>${profile.isActive ? "Current title" : "Most recent title"}</dt><dd>${escapeHtml(profile.currentTitle || "Not listed")}</dd></div>
           <div><dt>Periods seen</dt><dd>${escapeHtml(profile.periods.join(", "))}</dd></div>
         </dl>
       </aside>
@@ -257,6 +260,8 @@ if (!fs.existsSync(rawDir)) {
 const files = fs.readdirSync(rawDir)
   .filter((name) => name.toLowerCase().endsWith(".csv"))
   .sort((a, b) => periodRank(periodFromFilename(a)) - periodRank(periodFromFilename(b)) || a.localeCompare(b));
+const sourcePeriods = [...new Set(files.map(periodFromFilename))].sort((a, b) => periodRank(a) - periodRank(b));
+const latestDisbursementPeriod = sourcePeriods.at(-1) || "";
 
 const people = new Map();
 const offices = new Map();
@@ -340,10 +345,13 @@ const profiles = [...people.values()].map((person) => {
       rowCount: role.rowCount,
       latestPeriod: role.latestPeriod,
     }));
+  const isActive = person.latestPeriod === latestDisbursementPeriod;
 
   return {
     slug,
     name: person.name,
+    isActive,
+    status: isActive ? "Active" : "Inactive",
     currentOffice: primaryRole?.office || topEntries(person.offices, 1)[0]?.label || "",
     currentTitle: primaryRole?.title || topEntries(person.titles, 1)[0]?.label || "",
     staffType: topEntries(person.groups, 1)[0]?.label || "House staff",
@@ -359,21 +367,27 @@ const profiles = [...people.values()].map((person) => {
 }).sort((a, b) => a.name.localeCompare(b.name));
 const staffTypeCounts = new Map();
 for (const profile of profiles) addCount(staffTypeCounts, profile.staffType);
+const statusCounts = new Map();
+for (const profile of profiles) addCount(statusCounts, profile.status);
 
 const data = {
   generatedAt: new Date().toISOString(),
   source: {
     statement: `House Statement of Disbursements personnel-compensation rows: ${files.map(periodFromFilename).join(", ")}`,
+    latestDisbursementPeriod,
     rowCount,
   },
   totals: {
     staffers: profiles.length,
+    activeStaffers: profiles.filter((profile) => profile.isActive).length,
+    inactiveStaffers: profiles.filter((profile) => !profile.isActive).length,
     payrollRows: rowCount,
     offices: offices.size,
     titles: titles.size,
     internRows,
   },
   filters: {
+    statuses: topEntries(statusCounts, 4),
     staffTypes: topEntries(staffTypeCounts, 20),
     offices: topEntries(offices, 80),
     titles: topEntries(titles, 80),
@@ -382,6 +396,8 @@ const data = {
   profiles: profiles.map((profile) => ({
     slug: profile.slug,
     name: profile.name,
+    isActive: profile.isActive,
+    status: profile.status,
     currentOffice: profile.currentOffice,
     currentTitle: profile.currentTitle,
     staffType: profile.staffType,

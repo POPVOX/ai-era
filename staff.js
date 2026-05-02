@@ -132,8 +132,9 @@ function renderFilters() {
 }
 
 function renderProfile(profile) {
+  const status = profile.isActive ? "Active" : "Inactive";
   return `
-    <article class="staff-card">
+    <article class="staff-card ${profile.isActive ? "" : "inactive"}">
       <a class="witness-avatar" href="${escapeHtml(profileHref(profile))}" aria-label="${escapeHtml(profile.name)} profile">${escapeHtml(initials(profile.name))}</a>
       <div class="staff-card-main">
         <div class="witness-card-head">
@@ -142,6 +143,7 @@ function renderProfile(profile) {
             <p>${escapeHtml(profile.currentTitle || "Title not listed")}</p>
           </div>
           <div class="witness-badges">
+            <span class="${profile.isActive ? "active-status" : "inactive-status"}">${status}</span>
             <span>${escapeHtml(profile.staffType)}</span>
             <span>${escapeHtml(profile.latestPeriod)}</span>
           </div>

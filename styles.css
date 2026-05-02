@@ -656,6 +656,10 @@
   box-shadow: 0 14px 36px rgba(13, 38, 67, 0.04);
 }
 
+.staff-card.inactive {
+  background: #fcfaf7;
+}
+
 .lobbyist-card {
   border-color: rgba(244, 90, 63, 0.24);
 }
@@ -2896,6 +2900,18 @@ main {
   border-color: rgba(244, 90, 63, 0.22);
   background: #ffe9e3;
   color: #9d321e;
+}
+
+.witness-badges .active-status {
+  border-color: rgba(46, 123, 104, 0.22);
+  background: #e8f4ef;
+  color: #2e7b68;
+}
+
+.witness-badges .inactive-status {
+  border-color: rgba(91, 108, 128, 0.22);
+  background: #f1eee9;
+  color: var(--muted);
 }
 
 .lobbyist-badge img {
