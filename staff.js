@@ -5,6 +5,7 @@ const state = {
   staffType: "",
   period: "",
   sort: "name",
+  showInactive: false,
 };
 
 const els = {
@@ -14,6 +15,7 @@ const els = {
   titles: document.querySelector("#staff-title-count"),
   rows: document.querySelector("#staff-row-count"),
   search: document.querySelector("#staff-search"),
+  showInactive: document.querySelector("#staff-show-inactive"),
   type: document.querySelector("#staff-type-filter"),
   period: document.querySelector("#staff-period-filter"),
   sort: document.querySelector("#staff-sort"),
@@ -73,6 +75,7 @@ function profileHref(profile) {
 
 function matches(profile) {
   const query = state.search.trim().toLowerCase();
+  if (!state.showInactive && !profile.isActive) return false;
   if (state.staffType && profile.staffType !== state.staffType) return false;
   if (state.period && !(profile.periods || []).includes(state.period)) return false;
   if (!query) return true;
@@ -90,7 +93,7 @@ function filteredProfiles() {
 }
 
 function renderStats() {
-  els.count.textContent = fmt.format(directory.totals.staffers || 0);
+  els.count.textContent = fmt.format(directory.totals.activeStaffers || 0);
   els.offices.textContent = fmt.format(directory.totals.offices || 0);
   els.titles.textContent = fmt.format(directory.totals.titles || 0);
   els.rows.textContent = fmt.format(directory.totals.payrollRows || 0);
@@ -162,7 +165,7 @@ function renderProfile(profile) {
 
 function render() {
   const rows = filteredProfiles();
-  els.heading.textContent = `${fmt.format(rows.length)} staff profiles`;
+  els.heading.textContent = `${fmt.format(rows.length)} ${state.showInactive ? "staff profiles" : "active staff profiles"}`;
   els.visible.textContent = `${fmt.format(Math.min(rows.length, 120))} shown`;
   els.empty.hidden = rows.length > 0;
   els.grid.innerHTML = rows.slice(0, 120).map(renderProfile).join("");
@@ -171,6 +174,10 @@ function render() {
 function bindEvents() {
   els.search.addEventListener("input", (event) => {
     state.search = event.target.value;
+    render();
+  });
+  els.showInactive.addEventListener("change", (event) => {
+    state.showInactive = event.target.checked;
     render();
   });
   els.type.addEventListener("change", (event) => {

@@ -2695,6 +2695,23 @@ main {
   min-width: 0;
 }
 
+.staff-inactive-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  color: var(--slate);
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.staff-inactive-toggle input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--coral);
+}
+
 .witness-layout {
   display: grid;
   grid-template-columns: 300px minmax(0, 1fr);
