@@ -240,10 +240,10 @@ function applyFilters() {
 }
 
 function render() {
-  els.statMembers.textContent = state.members.length.toLocaleString();
-  els.statStates.textContent = unique(state.members.map((member) => member.state)).length.toLocaleString();
-  els.statParties.textContent = unique(state.members.map((member) => member.party)).length.toLocaleString();
-  els.statFiltered.textContent = state.filtered.length.toLocaleString();
+  if (els.statMembers) els.statMembers.textContent = state.members.length.toLocaleString();
+  if (els.statStates) els.statStates.textContent = unique(state.members.map((member) => member.state)).length.toLocaleString();
+  if (els.statParties) els.statParties.textContent = unique(state.members.map((member) => member.party)).length.toLocaleString();
+  if (els.statFiltered) els.statFiltered.textContent = state.filtered.length.toLocaleString();
   els.resultNote.textContent = `Showing ${state.filtered.length.toLocaleString()} of ${state.members.length.toLocaleString()} loaded member profiles.`;
 
   els.empty.hidden = state.filtered.length > 0;
@@ -265,7 +265,7 @@ function memberCard(member) {
 
   const link = member.website
     ? `<a class="link-button" href="${escapeAttr(member.website)}" target="_blank" rel="noreferrer">View profile →</a>`
-    : `<span class="link-button muted">Profile pending</span>`;
+    : '';
 
   return `
     <article class="member-card ${partyClass(member.party)}-card">

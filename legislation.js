@@ -236,7 +236,9 @@ function billPageHref(label) {
     'con. res': 'H.Con.Res.',
     conres: 'H.Con.Res.',
   })[kind] || `H.${match[1]}.`;
-  return `bills/${`${normalized} ${match[2]}`.toLowerCase().replace(/\./g, '').replace(/\s+/g, '-')}.html`;
+  const slug = `${normalized} ${match[2]}`.toLowerCase().replace(/\./g, '').replace(/\s+/g, '-');
+  if (window.BILL_PAGE_MANIFEST && !window.BILL_PAGE_MANIFEST[slug]) return '';
+  return window.BILL_PAGE_MANIFEST?.[slug] || `bills/${slug}.html`;
 }
 
 function linkBillRefs(value) {
@@ -349,10 +351,7 @@ function billCard(bill) {
   const committees = bill.committees.length
     ? `<p class="bill-committees">${escapeHtml(bill.committees.slice(0, 3).join(' · '))}</p>`
     : '';
-  const links = [
-    bill.url ? `<a class="link-button" href="${escapeHtml(bill.url)}" target="_blank" rel="noopener">Source</a>` : '',
-    bill.textUrl ? `<a class="link-button muted" href="${escapeHtml(bill.textUrl)}" target="_blank" rel="noopener">Text</a>` : '',
-  ].filter(Boolean).join('');
+  const links = bill.textUrl ? `<a class="link-button muted" href="${escapeHtml(bill.textUrl)}" target="_blank" rel="noopener">Text</a>` : '';
 
   return `
     <article class="bill-card">
@@ -361,12 +360,12 @@ function billCard(bill) {
         <span class="bill-date">${escapeHtml(formatDate(bill.latestDate || bill.introducedDate))}</span>
       </div>
       <h3>${linkBillTitle(bill.title, href)}</h3>
-      <p class="bill-sponsor">${escapeHtml(bill.sponsor || 'Sponsor pending')}</p>
+      ${bill.sponsor ? `<p class="bill-sponsor">${escapeHtml(bill.sponsor)}</p>` : ''}
       <p class="bill-status">${linkBillRefs(bill.status || 'Status pending')}</p>
       ${committees}
       ${subjects}
       <div class="bill-card-footer">
-        ${links || '<span class="link-button muted">Detail page planned</span>'}
+        ${links}
       </div>
     </article>
   `;
@@ -379,7 +378,7 @@ function billRow(bill) {
     <tr>
       <td>${href ? `<a class="link-button" href="${escapeHtml(href)}">${escapeHtml(number)}</a>` : escapeHtml(number)}</td>
       <td>${linkBillTitle(bill.title, href)}</td>
-      <td>${escapeHtml(bill.sponsor || 'Sponsor pending')}</td>
+      <td>${bill.sponsor ? escapeHtml(bill.sponsor) : '—'}</td>
       <td>${linkBillRefs(bill.status || 'Status pending')}</td>
       <td>${escapeHtml(formatDate(bill.latestDate || bill.introducedDate))}</td>
       <td>${bill.url ? `<a class="link-button" href="${escapeHtml(bill.url)}" target="_blank" rel="noopener">Source</a>` : ''}</td>

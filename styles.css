@@ -4166,6 +4166,10 @@ main {
   align-items: end;
 }
 
+.directory-hero-grid.no-stats {
+  grid-template-columns: minmax(0, 920px);
+}
+
 .eyebrow-row {
   display: flex;
   flex-wrap: wrap;

@@ -3,6 +3,7 @@ import path from "node:path";
 
 const root = process.cwd();
 const billsDir = path.join(root, "bills");
+const assetsDir = path.join(root, "assets");
 const journalPath = path.join(root, "assets", "house-journal-ledger.json");
 const localLegislationUrl = process.env.POPVOX_LEGISLATION_API || "http://127.0.0.1:8771/api/legislation";
 const billPattern = /\bH\.?\s*(?:Con\.?\s*Res|J\.?\s*Res|Res|R)\.?\s*\d+\b/gi;
@@ -323,19 +324,19 @@ function renderBillPage(bill) {
         <p id="bill-summary">${escapeHtml(bill.summary || bill.shortTitle || "A plain-language summary can be generated once full bill text or official summary data is available.")}</p>
       </article>
 
-      <article class="bill-detail-panel">
+      <article class="bill-detail-panel" id="bill-people-panel">
         <p class="eyebrow">People</p>
         <dl class="bill-meta-list">
-          <div><dt>Sponsor</dt><dd id="bill-sponsor">${escapeHtml(bill.sponsor || "Loading sponsor from CongressLink...")}</dd></div>
-          <div><dt>Cosponsors</dt><dd id="bill-cosponsors">${escapeHtml(String(bill.cosponsorCount || "Loading..."))}</dd></div>
+          <div id="bill-sponsor-row" ${bill.sponsor ? "" : "hidden"}><dt>Sponsor</dt><dd id="bill-sponsor">${escapeHtml(bill.sponsor || "")}</dd></div>
+          <div id="bill-cosponsors-row" ${bill.cosponsorCount ? "" : "hidden"}><dt>Cosponsors</dt><dd id="bill-cosponsors">${escapeHtml(String(bill.cosponsorCount || ""))}</dd></div>
         </dl>
       </article>
 
       <article class="bill-detail-panel">
         <p class="eyebrow">Referral</p>
         <dl class="bill-meta-list">
-          <div><dt>Committee(s)</dt><dd id="bill-committees">${bill.committees?.length ? escapeHtml(bill.committees.join(" · ")) : "Referral metadata pending"}</dd></div>
-          <div><dt>Text</dt><dd>${textUrl ? `<a href="${escapeHtml(textUrl)}" target="_blank" rel="noopener">Open bill text</a>` : "Text link pending"}</dd></div>
+          <div id="bill-committees-row" ${bill.committees?.length ? "" : "hidden"}><dt>Committee(s)</dt><dd id="bill-committees">${bill.committees?.length ? escapeHtml(bill.committees.join(" · ")) : ""}</dd></div>
+${textUrl ? `          <div><dt>Text</dt><dd><a href="${escapeHtml(textUrl)}" target="_blank" rel="noopener">Open bill text</a></dd></div>` : ""}
         </dl>
       </article>
     </section>
@@ -419,17 +420,25 @@ function linkBillsInHtml(file, knownBills) {
   fs.writeFileSync(file, parts.join(""));
 }
 
-fs.mkdirSync(billsDir, { recursive: true });
-
 const bills = new Map();
 collectJournalBills(bills);
 collectHtmlBills(bills);
 for (const apiBill of await loadApiBills()) mergeApiBill(bills, apiBill);
 knownBillLabels = new Set(bills.keys());
 
+fs.rmSync(billsDir, { recursive: true, force: true });
+fs.mkdirSync(billsDir, { recursive: true });
+
 for (const bill of bills.values()) {
   fs.writeFileSync(path.join(billsDir, `${bill.slug}.html`), renderBillPage(bill));
 }
+
+const billPageManifest = Object.fromEntries([...bills.values()]
+  .map((bill) => [bill.slug, `bills/${bill.slug}.html`])
+  .sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true })));
+fs.mkdirSync(assetsDir, { recursive: true });
+fs.writeFileSync(path.join(assetsDir, "bill-pages-manifest.json"), `${JSON.stringify(billPageManifest)}\n`);
+fs.writeFileSync(path.join(assetsDir, "bill-pages-manifest.js"), `window.BILL_PAGE_MANIFEST = ${JSON.stringify(billPageManifest)};\n`);
 
 const knownBills = new Set(bills.keys());
 for (const file of publicHtmlFiles().filter((file) => !path.relative(root, file).startsWith(`bills${path.sep}`))) {

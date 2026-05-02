@@ -6,6 +6,10 @@ const billState = {
 };
 
 const billEls = {
+  peoplePanel: document.querySelector('#bill-people-panel'),
+  sponsorRow: document.querySelector('#bill-sponsor-row'),
+  cosponsorsRow: document.querySelector('#bill-cosponsors-row'),
+  committeesRow: document.querySelector('#bill-committees-row'),
   sponsor: document.querySelector('#bill-sponsor'),
   cosponsors: document.querySelector('#bill-cosponsors'),
   committees: document.querySelector('#bill-committees'),
@@ -54,6 +58,24 @@ function normalizeCommittees(detail) {
   }).filter(Boolean);
 }
 
+function setRow(row, element, value) {
+  if (!row || !element) return;
+  const text = String(value || '').trim();
+  row.hidden = !text;
+  element.textContent = text;
+}
+
+function updatePeoplePanel() {
+  if (!billEls.peoplePanel) return;
+  const hasVisibleRows = [billEls.sponsorRow, billEls.cosponsorsRow].some((row) => row && !row.hidden);
+  billEls.peoplePanel.hidden = !hasVisibleRows;
+}
+
+function canUseBillApi() {
+  return ['localhost', '127.0.0.1', ''].includes(window.location.hostname)
+    || window.location.protocol === 'file:';
+}
+
 function hydrateDetail(detailPayload) {
   const detail = detailPayload?.data || detailPayload;
   billState.detail = detail;
@@ -62,28 +84,34 @@ function hydrateDetail(detailPayload) {
     || detail?.sponsor?.name
     || detail?.attributes?.sponsor_bioguide_id
     || billState.data.sponsor
-    || 'Sponsor metadata pending';
+    || '';
   const cosponsors = detail?._popvox_cosponsors || [];
   const cosponsorCount = detail?.attributes?.cosponsors_count ?? billState.data.cosponsorCount;
   const committees = normalizeCommittees(detail);
   const introduced = detail?.attributes?.introduced_date || detail?.document_date || billState.data.introducedDate;
 
-  if (billEls.sponsor) billEls.sponsor.textContent = sponsor;
+  setRow(billEls.sponsorRow, billEls.sponsor, sponsor);
   if (billEls.cosponsors) {
-    billEls.cosponsors.textContent = cosponsors.length
+    const cosponsorText = cosponsors.length
       ? cosponsors.map(memberLabel).join('; ')
-      : `${Number(cosponsorCount || 0).toLocaleString()} cosponsor${Number(cosponsorCount || 0) === 1 ? '' : 's'}`;
+      : (cosponsorCount ? `${Number(cosponsorCount || 0).toLocaleString()} cosponsor${Number(cosponsorCount || 0) === 1 ? '' : 's'}` : '');
+    setRow(billEls.cosponsorsRow, billEls.cosponsors, cosponsorText);
   }
-  if (billEls.committees) billEls.committees.textContent = committees.length ? committees.join(' · ') : 'Referral metadata pending';
+  setRow(billEls.committeesRow, billEls.committees, committees.length ? committees.join(' · ') : '');
   if (billEls.introduced) billEls.introduced.textContent = introduced || 'Date pending';
   if (billEls.summary) billEls.summary.textContent = readableSummary();
+  updatePeoplePanel();
 }
 
 async function loadBillDetail() {
+  hydrateDetail(billState.data);
+
   if (!billState.data.id) {
     if (billEls.summary) billEls.summary.textContent = readableSummary();
     return;
   }
+
+  if (!canUseBillApi()) return;
 
   try {
     const response = await fetch(`../api/bill/${encodeURIComponent(billState.data.id)}`, { cache: 'no-store' });
