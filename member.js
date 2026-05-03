@@ -129,8 +129,25 @@ function compactName(member) {
   return member.fullName.replace(/^(Rep\.|Sen\.|Hon\.)\s+/i, '');
 }
 
+function normalizeLookup(value) {
+  return String(value || '')
+    .replace(/\([^)]*\)/g, ' ')
+    .replace(/^(Rep\.|Sen\.|Hon\.|Representative|Senator)\s+/i, '')
+    .replace(/[^a-z0-9]+/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+function firstLastKey(value) {
+  const tokens = normalizeLookup(value).split(' ').filter(Boolean);
+  if (tokens.length < 2) return tokens.join(' ');
+  return `${tokens[0]} ${tokens.at(-1)}`;
+}
+
 function matchMember(member, value) {
-  const target = String(value || '').trim().toLowerCase();
+  const target = normalizeLookup(value);
+  const targetFirstLast = firstLastKey(value);
   const candidates = [
     member.bioguide,
     member.id,
@@ -142,7 +159,11 @@ function matchMember(member, value) {
     member.raw?.external_id,
   ];
 
-  return candidates.some((candidate) => String(candidate || '').trim().toLowerCase() === target);
+  return candidates.some((candidate) => {
+    const normalized = normalizeLookup(candidate);
+    if (normalized && normalized === target) return true;
+    return targetFirstLast && firstLastKey(candidate) === targetFirstLast;
+  });
 }
 
 function searchUrl(member) {
