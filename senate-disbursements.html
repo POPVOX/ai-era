@@ -45,7 +45,7 @@
       <div class="expenditure-hero-card">
         <p class="eyebrow">Data caveat</p>
         <h2>PDF source, semiannual reporting</h2>
-        <p>Senate data is currently PDF-only. The Oct. 1, 2024 to Mar. 31, 2025 report period overlaps 2024/2025, so matching records from that report carry a visible caveat.</p>
+        <p>Senate data is currently PDF-only. This prototype parses reports whose periods overlap calendar year 2025; full calendar-year 2025 coverage will require the next semiannual report covering Oct. 1, 2025 to Mar. 31, 2026 once it is released.</p>
       </div>
     </section>
 
@@ -117,15 +117,17 @@
         <div class="sidebar-block">
           <p class="eyebrow">Source</p>
           <p>Reports are published as digitally signed GPO PDFs linked from the Senate's Report of the Secretary of the Senate page.</p>
+          <p>Current parsed reports are Apr. 1-Sep. 30, 2025 and Oct. 1, 2024-Mar. 31, 2025.</p>
           <p><a href="https://www.senate.gov/legislative/common/generic/report_secsen.htm" target="_blank" rel="noopener">Open Senate report index</a></p>
         </div>
         <div class="sidebar-block">
           <p class="eyebrow">Parsing note</p>
-          <p>This prototype extracts rows from PDF text and keeps report/page references so records can be checked against the source. The transaction tab loads the largest parsed transactions for browser performance.</p>
+          <p>This prototype extracts rows from PDF text and keeps report/page references so records can be checked against the source. PDF extraction can introduce row parsing errors.</p>
+          <p>The transaction tab loads the largest parsed transactions for browser performance; summary totals are calculated from all parsed rows.</p>
         </div>
         <div class="sidebar-block">
           <p class="eyebrow">2025 caveat</p>
-          <p>Records from the Oct. 1, 2024 to Mar. 31, 2025 report are included where they match 2025 dates, or where payroll rows lack line-level dates.</p>
+          <p>Transaction rows from overlapping reports are included when posted or service dates fall in 2025. Payroll rows in Senate PDFs do not always include line-level dates, so overlapping report payroll rows are included with a visible report-period caveat.</p>
         </div>
       </aside>
 

@@ -47,7 +47,7 @@
       <div class="witness-hero-card">
         <p class="eyebrow">Prototype source</p>
         <h2>Public payroll records, not compensation display</h2>
-        <p>This directory uses public disbursement records to identify who worked where and in what role. House rows come from CSV data; Senate rows are extracted from PDF reports.</p>
+        <p>This directory uses public House and Senate disbursement records to identify who worked where and in what role. House rows come from structured CSV detail grids; Senate rows are extracted from semiannual PDF reports.</p>
       </div>
     </section>
 
@@ -106,12 +106,17 @@
         <div class="sidebar-block">
           <p class="eyebrow">What this shows</p>
           <p>Each profile is inferred from public personnel-compensation rows. Offices, titles, periods, chamber, and active/inactive status are shown so this can later be enriched with prior roles and verified public profiles.</p>
-          <p>The latest public disbursement data from the House of Representatives is available at <a href="https://www.house.gov/the-house-explained/open-government/statement-of-disbursements" target="_blank" rel="noopener">house.gov</a>.</p>
+          <p>Active status means the person appears in the latest loaded report for that chamber. House status is based on the latest House detail-grid CSV. Senate status is based on the latest parsed Secretary of the Senate report.</p>
+        </div>
+        <div class="sidebar-block">
+          <p class="eyebrow">Sources</p>
+          <p>House data comes from the official <a href="https://www.house.gov/the-house-explained/open-government/statement-of-disbursements" target="_blank" rel="noopener">Statement of Disbursements</a>, a quarterly public report published by the Chief Administrative Officer.</p>
           <p>Senate records are extracted from public PDF reports available from the <a href="https://www.senate.gov/legislative/common/generic/report_secsen.htm" target="_blank" rel="noopener">Report of the Secretary of the Senate</a>.</p>
         </div>
         <div class="sidebar-block">
-          <p class="eyebrow">Not shown</p>
-          <p>Compensation values are present in the public source data but are not displayed here because this Explorer is focused on staff identity, office context, and role history. Senate PDF-derived rows may carry a report-period caveat.</p>
+          <p class="eyebrow">Limitations</p>
+          <p>Compensation values are present in the public source data but are not displayed here because this Explorer is focused on staff identity, office context, and role history.</p>
+          <p>Senate rows are PDF-derived and may be less precise than House CSV rows. Payroll rows from Senate reports that overlap 2024/2025 may not have line-level dates, so those profiles carry a visible report-period caveat.</p>
         </div>
         <div class="committee-list" id="staff-office-list"></div>
       </aside>
