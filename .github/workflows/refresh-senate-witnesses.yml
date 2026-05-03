@@ -33,7 +33,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/senate-witness-data.json assets/senate-witness-data.js senate-witnesses
+          git add assets/senate-witness-data.json assets/senate-witness-data.js senate-witnesses senate-events
           if git diff --cached --quiet; then
             echo "No refreshed Senate witness data to commit."
           else

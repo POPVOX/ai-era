@@ -4,6 +4,7 @@ import path from "node:path";
 const root = process.cwd();
 const assetsDir = path.join(root, "assets");
 const profilesDir = path.join(root, "senate-witnesses");
+const eventsDir = path.join(root, "senate-events");
 const govInfoApiKey = process.env.GOVINFO_API_KEY || "DEMO_KEY";
 const congresses = (process.env.SENATE_WITNESS_CONGRESSES || "119")
   .split(",")
@@ -82,6 +83,14 @@ function imageSearchUrl(query) {
   return `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(query)}`;
 }
 
+function eventSlug(hearing) {
+  return slugify(hearing.packageId || hearing.granuleId || hearing.title || "senate-hearing");
+}
+
+function eventLocalUrl(hearing) {
+  return `senate-events/${eventSlug(hearing)}.html`;
+}
+
 function parseDateFromText(text) {
   const months = "JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER";
   const match = text.match(new RegExp(`\\b(${months})\\s+\\d{1,2},\\s+20\\d{2}\\b`, "i"));
@@ -137,10 +146,13 @@ function splitWitnessItem(item) {
   const firstComma = cleaned.indexOf(",");
   let displayName = firstComma > 0 ? cleaned.slice(0, firstComma).trim() : cleaned.trim();
   displayName = displayName.replace(/^\(?cont\.?\)?\s*/i, "").trim();
+  displayName = displayName.replace(/\s+to be\s+.*$/i, "").trim();
+  displayName = displayName.replace(/^testimony of\s+/i, "").trim();
   if (displayName.split(/\s+/).length > 7 || displayName.length > 80) return null;
   if (displayName.split(/\s+/).length < 2 && !/^(Dr\.|Mr\.|Ms\.|Mrs\.|Hon\.)/i.test(displayName)) return null;
   if (/^(witnesses|biographical information|responses|questions|appendix|committee|subcommittee|senator|thursday|tuesday|wednesday|monday|friday|saturday|sunday)$/i.test(displayName)) return null;
-  if (/^(senator|accompanied by|addendum|advancing|advocates?|american\s|association\s|committee inserts|page\s|alphabetical list|the national|the nature|the wilderness)/i.test(displayName)) return null;
+  if (/^(senator|accompanied by|addendum|advancing|advocates?|american\s|association\s|committee inserts|page\s|alphabetical list|the national|the nature|the wilderness|joint prepared statement|letter to|magazine article|fact sheet|staff report|supplemental|open hearing|ccp cheers|citizens for|energy environment|hunton|merced irrigation|nature sustainability|ppi radically|vaulted deep)/i.test(displayName)) return null;
+  if (/: testimony$/i.test(displayName)) return null;
   if (/^(article:|article\s)/i.test(displayName)) return null;
   if (/\b(association|alliance|coalition|council|center|centre|institute|laboratory|lab|university|college|foundation|corporation|company|inc\.?|llc|project|conservancy|society|federation|chamber of commerce|department|network|portfolio|journal|report|brief|material|edison|advocacy|environmental|transportation|hydropower|geothermal|oceantic|builders|contractors)\b/i.test(displayName) && !/^(Dr\.|Mr\.|Ms\.|Mrs\.|Hon\.|The Honorable)/i.test(displayName)) return null;
   if (/^[A-Z0-9\s&'.-]{12,}$/.test(displayName) && !/^(Dr\.|Mr\.|Ms\.|Mrs\.|Hon\.|The Honorable)/.test(displayName)) return null;
@@ -296,6 +308,7 @@ function appearanceFromResult(result, text, witnesses) {
     relatedLink: result.relatedLink || "",
     committee: extractCommitteeFromText(text),
     witnessCount: witnesses.length,
+    localUrl: `senate-events/${slugify(result.packageId || result.granuleId || result.title || "senate-hearing")}.html`,
   };
 }
 
@@ -422,11 +435,12 @@ function profilePage(profile) {
       ${profile.appearances.map((appearance) => `<article class="witness-profile-appearance">
         <div>
           <span>${escapeHtml(appearance.date || appearance.dateIssued || "Date pending")}</span>
-          <h3><a href="${escapeHtml(appearance.detailsUrl)}" target="_blank" rel="noopener">${escapeHtml(appearance.title)}</a></h3>
+          <h3><a href="../${escapeHtml(appearance.localUrl || eventLocalUrl(appearance))}">${escapeHtml(appearance.title)}</a></h3>
           <p>${escapeHtml(appearance.committee?.name || "Senate committee")}</p>
           ${appearance.role ? `<small>${escapeHtml(appearance.role)}</small>` : ""}
         </div>
         <div class="witness-profile-actions">
+          <a class="link-button" href="../${escapeHtml(appearance.localUrl || eventLocalUrl(appearance))}">Event page</a>
           <a class="link-button" href="${escapeHtml(appearance.detailsUrl)}" target="_blank" rel="noopener">GovInfo</a>
           ${appearance.pdfUrl ? `<a class="link-button muted" href="${escapeHtml(appearance.pdfUrl)}" target="_blank" rel="noopener">PDF</a>` : ""}
           ${appearance.htmlUrl ? `<a class="link-button muted" href="${escapeHtml(appearance.htmlUrl)}" target="_blank" rel="noopener">HTML</a>` : ""}
@@ -437,6 +451,142 @@ function profilePage(profile) {
   <footer class="site-footer"><a class="footer-brand" href="../index.html" aria-label="POPVOX home"><img src="../assets/popvox-logo-horizontal.png" alt="POPVOX"></a><div class="footer-links"><a href="../explore.html">Explore</a><a href="../news.html">News</a><a href="../contact.html">Contact</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></footer>
 </body>
 </html>`;
+}
+
+function renderSenateEventWitness(witness) {
+  return `<article class="event-witness-card">
+    <a class="event-witness-avatar" href="../${escapeHtml(witness.profileUrl || "senate-witnesses.html")}">${escapeHtml(witness.initials)}</a>
+    <div>
+      <div class="event-witness-head">
+        <div>
+          <h3><a href="../${escapeHtml(witness.profileUrl || "senate-witnesses.html")}">${escapeHtml(witness.displayName)}</a></h3>
+          <p>${escapeHtml(witness.role || witness.organization || "Role from published hearing")}</p>
+          ${witness.organization && witness.organization !== witness.role ? `<span>${escapeHtml(witness.organization)}</span>` : ""}
+        </div>
+        <span class="event-badge">GovInfo extract</span>
+      </div>
+    </div>
+  </article>`;
+}
+
+function senateEventPage(hearing) {
+  const witnesses = hearing.witnesses || [];
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>POPVOX | ${escapeHtml(hearing.title)}</title>
+  <meta name="description" content="${escapeHtml(hearing.title)} Senate hearing page with GovInfo source documents and witnesses.">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="icon" type="image/png" href="https://s3.us-east-1.amazonaws.com/static.popvox.com/images/pvox+favicon.png">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="../index.html" aria-label="POPVOX home"><img src="../assets/popvox-logo-horizontal.png" alt="POPVOX"></a>
+      <div class="nav-links"><a class="active" href="../explore.html">Explore</a><a href="../news.html">News</a><a href="../about.html">About</a><a href="../team.html">Team</a><a href="../contact.html">Contact</a></div>
+      <div class="nav-actions"><a class="button secondary" href="../senate-witnesses.html">Senate Witness Explorer</a><a class="button" href="mailto:info@popvox.com">Request a demo</a></div>
+    </nav>
+  </header>
+  <main class="event-shell senate-event-shell">
+    <section class="event-hero">
+      <a class="back-link" href="../senate-witnesses.html">← Senate Witness Explorer</a>
+      <p class="eyebrow">Published Senate hearing</p>
+      <h1>${escapeHtml(hearing.title)}<span>.</span></h1>
+      <p>This page connects a published GovInfo Senate hearing record to extracted witnesses and official source documents. Future versions can add summaries, transcript search, and citation-backed Q&amp;A.</p>
+      <div class="event-actions">
+        ${hearing.detailsUrl ? `<a class="button" href="${escapeHtml(hearing.detailsUrl)}" target="_blank" rel="noopener">GovInfo record</a>` : ""}
+        ${hearing.pdfUrl ? `<a class="button secondary" href="${escapeHtml(hearing.pdfUrl)}" target="_blank" rel="noopener">PDF</a>` : ""}
+        ${hearing.htmlUrl ? `<a class="button secondary" href="${escapeHtml(hearing.htmlUrl)}" target="_blank" rel="noopener">HTML</a>` : ""}
+      </div>
+    </section>
+
+    <section class="event-facts" aria-label="Senate hearing information">
+      <article><span>Date</span><strong>${escapeHtml(hearing.date || hearing.dateIssued || "Date pending")}</strong></article>
+      <article><span>Committee</span><strong>${escapeHtml(hearing.committee?.name || "Senate committee")}</strong></article>
+      <article><span>GovInfo package</span><strong>${escapeHtml(hearing.packageId || "GovInfo")}</strong></article>
+      <article><span>Witnesses</span><strong>${witnesses.length}</strong></article>
+    </section>
+
+    <section class="event-layout">
+      <article class="event-main-panel">
+        <div class="directory-head">
+          <div><p class="eyebrow">Source record</p><h2>Published hearing details</h2></div>
+          <span>${escapeHtml(hearing.jacketId || hearing.granuleId || "")}</span>
+        </div>
+        <dl class="event-info-list">
+          <div><dt>Title</dt><dd>${escapeHtml(hearing.title)}</dd></div>
+          <div><dt>Committee</dt><dd>${escapeHtml(hearing.committee?.name || "Senate committee")}</dd></div>
+          <div><dt>Hearing date</dt><dd>${escapeHtml(hearing.date || "Not extracted")}</dd></div>
+          <div><dt>GovInfo date issued</dt><dd>${escapeHtml(hearing.dateIssued || "Not listed")}</dd></div>
+          <div><dt>Package</dt><dd>${escapeHtml(hearing.packageId || "Not listed")}</dd></div>
+        </dl>
+        <div class="event-future-note">
+          <p class="eyebrow">Extraction note</p>
+          <p>Witnesses are parsed from the published GovInfo HTML table of contents. The official PDF and HTML remain the source of truth.</p>
+        </div>
+      </article>
+
+      <aside class="event-side-panel">
+        <p class="eyebrow">Record contents</p>
+        <article><strong>${witnesses.length}</strong><span>${witnesses.length === 1 ? "Witness" : "Witnesses"}</span></article>
+        <article><strong>2</strong><span>Official formats</span></article>
+        <article><strong>${escapeHtml(hearing.congress || "119")}</strong><span>Congress</span></article>
+      </aside>
+    </section>
+
+    <section class="event-section">
+      <div class="directory-head"><div><p class="eyebrow">Witnesses</p><h2>People connected to this hearing</h2></div><span>${witnesses.length} listed</span></div>
+      ${witnesses.length ? witnesses.map(renderSenateEventWitness).join("") : `<div class="empty-state">No witnesses were extracted from this published hearing.</div>`}
+    </section>
+
+    <section class="event-section">
+      <div class="directory-head"><div><p class="eyebrow">Documents</p><h2>Official source materials</h2></div><span>GovInfo</span></div>
+      <div class="event-doc-grid">
+        ${hearing.pdfUrl ? `<a href="${escapeHtml(hearing.pdfUrl)}" target="_blank" rel="noopener"><span>PDF</span>${escapeHtml(hearing.title)}</a>` : ""}
+        ${hearing.htmlUrl ? `<a href="${escapeHtml(hearing.htmlUrl)}" target="_blank" rel="noopener"><span>HTML</span>${escapeHtml(hearing.title)}</a>` : ""}
+        ${hearing.detailsUrl ? `<a href="${escapeHtml(hearing.detailsUrl)}" target="_blank" rel="noopener"><span>GovInfo</span>Content details</a>` : ""}
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer"><a class="footer-brand" href="../index.html" aria-label="POPVOX home"><img src="../assets/popvox-logo-horizontal.png" alt="POPVOX"></a><div class="footer-links"><a href="../explore.html">Explore</a><a href="../news.html">News</a><a href="../contact.html">Contact</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></footer>
+</body>
+</html>`;
+}
+
+function addWitnessesToHearings(hearings, profiles) {
+  const byPackage = new Map(hearings.map((hearing) => [hearing.packageId, { ...hearing, witnesses: [] }]));
+  for (const profile of profiles) {
+    for (const appearance of profile.appearances || []) {
+      const hearing = byPackage.get(appearance.packageId);
+      if (!hearing) continue;
+      hearing.witnesses.push({
+        displayName: profile.displayName,
+        role: appearance.role || profile.title,
+        organization: appearance.organization || profile.organization,
+        profileUrl: profile.profileUrl,
+        initials: profile.displayName.split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase(),
+      });
+    }
+  }
+  return [...byPackage.values()].map((hearing) => ({
+    ...hearing,
+    witnessCount: hearing.witnesses.length,
+  }));
+}
+
+function writeSenateEventPages(hearings) {
+  fs.rmSync(eventsDir, { recursive: true, force: true });
+  fs.mkdirSync(eventsDir, { recursive: true });
+  const manifest = {};
+  for (const hearing of hearings) {
+    const slug = eventSlug(hearing);
+    hearing.localUrl = `senate-events/${slug}.html`;
+    manifest[hearing.packageId || slug] = hearing.localUrl;
+    fs.writeFileSync(path.join(eventsDir, `${slug}.html`), senateEventPage(hearing));
+  }
+  fs.writeFileSync(path.join(eventsDir, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
 }
 
 async function main() {
@@ -453,8 +603,9 @@ async function main() {
       manifest[profile.key] = profile.profileUrl;
       fs.writeFileSync(path.join(profilesDir, `${slug}.html`), profilePage(profile));
     }
+    writeSenateEventPages(existing.hearings || []);
     fs.writeFileSync(path.join(profilesDir, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
-    console.log(`Generated ${existing.profiles?.length || 0} Senate witness profile pages from existing data.`);
+    console.log(`Generated ${existing.profiles?.length || 0} Senate witness profile pages and ${existing.hearings?.length || 0} Senate event pages from existing data.`);
     return;
   }
 
@@ -495,10 +646,15 @@ async function main() {
     const slug = count ? `${base}-${count + 1}` : base;
     slugs.set(profile.key, slug);
     profile.profileUrl = `senate-witnesses/${slug}.html`;
-    fs.writeFileSync(path.join(profilesDir, `${slug}.html`), profilePage(profile));
   }
 
-  const committees = makeCommittees(hearings);
+  const hearingsWithWitnesses = addWitnessesToHearings(hearings, profileRows);
+  writeSenateEventPages(hearingsWithWitnesses);
+  for (const profile of profileRows) {
+    fs.writeFileSync(path.join(profilesDir, `${slugs.get(profile.key)}.html`), profilePage(profile));
+  }
+
+  const committees = makeCommittees(hearingsWithWitnesses);
   const data = {
     generatedAt: new Date().toISOString(),
     source: {
@@ -521,7 +677,7 @@ async function main() {
       researchNeeded: profileRows.filter((profile) => profile.enrichmentStatus === "research-needed").length,
     },
     committees,
-    hearings: hearings.sort((a, b) => String(b.date || b.dateIssued).localeCompare(String(a.date || a.dateIssued))),
+    hearings: hearingsWithWitnesses.sort((a, b) => String(b.date || b.dateIssued).localeCompare(String(a.date || a.dateIssued))),
     profiles: profileRows,
   };
 

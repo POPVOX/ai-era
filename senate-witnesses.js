@@ -116,7 +116,7 @@ function renderStats() {
 function renderHearingList() {
   const hearings = (data.hearings || []).filter((hearing) => hearing.witnessCount).slice(0, 10);
   els.hearingList.innerHTML = `<p class="eyebrow">Recent published hearings</p>${hearings.map((hearing) => `
-    <a class="senate-source-row" href="${escapeHtml(hearing.detailsUrl)}" target="_blank" rel="noopener">
+    <a class="senate-source-row" href="${escapeHtml(hearing.localUrl || hearing.detailsUrl)}"${hearing.localUrl ? "" : " target=\"_blank\" rel=\"noopener\""}>
       <span>${escapeHtml(formatDate(hearing.date || hearing.dateIssued))}</span>
       <strong>${escapeHtml(hearing.title)}</strong>
       <small>${fmt.format(hearing.witnessCount)} witnesses</small>
@@ -159,6 +159,7 @@ function renderProfile(profile) {
           <span>${escapeHtml(latest.title || "Published Senate hearing")}</span>
           <small>${escapeHtml(latest.role || "")}</small>
           <div class="witness-appearance-docs">
+            ${latest.localUrl ? `<a href="${escapeHtml(latest.localUrl)}">Event page</a>` : ""}
             ${latest.detailsUrl ? `<a href="${escapeHtml(latest.detailsUrl)}" target="_blank" rel="noopener">GovInfo</a>` : ""}
             ${latest.pdfUrl ? `<a href="${escapeHtml(latest.pdfUrl)}" target="_blank" rel="noopener">PDF</a>` : ""}
             ${latest.htmlUrl ? `<a href="${escapeHtml(latest.htmlUrl)}" target="_blank" rel="noopener">HTML</a>` : ""}

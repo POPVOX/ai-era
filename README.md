@@ -27,6 +27,7 @@ The site is intentionally lightweight. Most pages are static HTML/CSS/JS, with a
   - Committee event pages in `events/`
   - Witness profile pages in `witnesses/`
   - Senate witness profile pages in `senate-witnesses/`
+  - Senate published hearing pages in `senate-events/`
   - Staff profile pages in `staffers/`
   - Registered lobbyist profile pages in `lobbyists/`
   - Vendor transaction profiles through `vendor.html?v=:slug`
@@ -147,7 +148,8 @@ The Senate Witness Explorer uses:
 
 - `assets/senate-witness-data.{json,js}` for witness profiles extracted from published Senate hearing records.
 - `senate-witnesses/*.html` for generated Senate witness profile pages.
-- `scripts/build-senate-witness-data.mjs` to search GovInfo Congressional Hearings (`CHRG`) records, fetch Senate hearing HTML, parse panel-of-witnesses tables of contents, and attach official GovInfo PDF/HTML links.
+- `senate-events/*.html` for generated Senate published hearing pages with witnesses and official source documents.
+- `scripts/build-senate-witness-data.mjs` to search GovInfo Congressional Hearings (`CHRG`) records, fetch Senate hearing HTML, parse panel-of-witnesses tables of contents, attach official GovInfo PDF/HTML links, and generate linked event pages.
 
 GovInfo is an archival publication layer. GovInfo notes that most hearings are published two months to two years after they are held, and not all hearings are available. The Senate Witness Explorer therefore reflects published hearing records, not all scheduled Senate hearings. LinkedIn, Google Scholar, web, and image links are research starting points until verified profile URLs are attached.
 
