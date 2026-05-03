@@ -4,8 +4,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>POPVOX | House Staff Explorer</title>
-  <meta name="description" content="Search House staff names, offices, and titles inferred from public House Statement of Disbursements personnel records.">
+  <title>POPVOX | Congressional Staff Explorer</title>
+  <meta name="description" content="Search congressional staff names, offices, and titles inferred from public House CSV and Senate PDF disbursement records.">
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" type="image/png" href="https://s3.us-east-1.amazonaws.com/static.popvox.com/images/pvox+favicon.png">
 </head>
@@ -36,22 +36,22 @@
     <section class="witness-hero" aria-labelledby="staff-title">
       <div>
         <div class="eyebrow-row">
-          <span class="tag"><span class="dot"></span> House Staff Explorer</span>
-          <span class="tag navy">Statement of Disbursements</span>
+          <span class="tag"><span class="dot"></span> Congressional Staff Explorer</span>
+          <span class="tag navy">House CSV + Senate PDF data</span>
           <span class="tag navy" id="staff-updated">Loading</span>
         </div>
-        <h1 id="staff-title">Find House staff by office and role<span>.</span></h1>
-        <p class="summary">Search staff names, offices, committees, and titles inferred from public personnel-compensation rows in House disbursement data.</p>
+        <h1 id="staff-title">Find congressional staff by office and role<span>.</span></h1>
+        <p class="summary">Search staff names, offices, committees, and titles inferred from public House and Senate disbursement records.</p>
       </div>
 
       <div class="witness-hero-card">
         <p class="eyebrow">Prototype source</p>
         <h2>Public payroll records, not compensation display</h2>
-        <p>This directory uses public disbursement records to identify who worked where and in what role. Staff are marked active only when they appear in the latest loaded report.</p>
+        <p>This directory uses public disbursement records to identify who worked where and in what role. House rows come from CSV data; Senate rows are extracted from PDF reports.</p>
       </div>
     </section>
 
-    <section class="witness-stats" aria-label="House Staff Explorer statistics">
+    <section class="witness-stats" aria-label="Congressional Staff Explorer statistics">
       <article><strong id="staff-count">0</strong><span>Active profiles</span></article>
       <article><strong id="staff-office-count">0</strong><span>Offices</span></article>
       <article><strong id="staff-title-count">0</strong><span>Titles</span></article>
@@ -66,6 +66,15 @@
           <input id="staff-show-inactive" type="checkbox">
           <span>View inactive</span>
         </label>
+      </div>
+
+      <div>
+        <label class="label" for="staff-chamber-filter">Chamber</label>
+        <select id="staff-chamber-filter">
+          <option value="">All chambers</option>
+          <option value="House">House</option>
+          <option value="Senate">Senate</option>
+        </select>
       </div>
 
       <div>
@@ -96,12 +105,13 @@
       <aside class="witness-sidebar" aria-label="Staff Explorer notes">
         <div class="sidebar-block">
           <p class="eyebrow">What this shows</p>
-          <p>Each profile is inferred from public personnel-compensation rows. Offices, titles, periods, and active/inactive status are shown so this can later be enriched with prior roles and verified public profiles.</p>
+          <p>Each profile is inferred from public personnel-compensation rows. Offices, titles, periods, chamber, and active/inactive status are shown so this can later be enriched with prior roles and verified public profiles.</p>
           <p>The latest public disbursement data from the House of Representatives is available at <a href="https://www.house.gov/the-house-explained/open-government/statement-of-disbursements" target="_blank" rel="noopener">house.gov</a>.</p>
+          <p>Senate records are extracted from public PDF reports available from the <a href="https://www.senate.gov/legislative/common/generic/report_secsen.htm" target="_blank" rel="noopener">Report of the Secretary of the Senate</a>.</p>
         </div>
         <div class="sidebar-block">
           <p class="eyebrow">Not shown</p>
-          <p>Compensation values are present in the public source data but are not displayed here because this Explorer is focused on staff identity, office context, and role history.</p>
+          <p>Compensation values are present in the public source data but are not displayed here because this Explorer is focused on staff identity, office context, and role history. Senate PDF-derived rows may carry a report-period caveat.</p>
         </div>
         <div class="committee-list" id="staff-office-list"></div>
       </aside>
@@ -135,6 +145,7 @@
   </footer>
 
   <script src="assets/house-staff-data.js"></script>
+  <script src="assets/senate-disbursement-data.js"></script>
   <script src="staff.js"></script>
 </body>
 
