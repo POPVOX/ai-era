@@ -91,6 +91,7 @@ The House Expenditure Explorer uses:
 - `assets/house-expenditure-data.{json,js}` for dashboard metrics, charts, filters, and vendor rollups.
 - `assets/house-expenditure-transactions.json` as the full transaction fallback bundle.
 - `assets/house-expenditure-vendors/*.json` for fast-loading transaction profiles for the largest vendors.
+- `data/house-disbursement-sources.json` to track the official House Statement of Disbursements CSV URLs used by the expenditure and staff builds.
 
 The House Staff Explorer uses:
 
@@ -98,6 +99,14 @@ The House Staff Explorer uses:
 - `staffers/*.html` for generated staff profile pages.
 
 Staff profiles are inferred from public House Statement of Disbursements personnel rows. Compensation values are present in the public source data but are intentionally excluded from the public interface because this prototype is focused on staff identity, office context, and role history.
+
+House disbursement refreshes are checked by `.github/workflows/refresh-house-disbursements.yml` every Monday and can also be run manually from GitHub Actions. The workflow checks the next expected quarterly House CSV URL, downloads it when available, rebuilds the House Expenditure and House Staff static data, and commits the refreshed generated files.
+
+To run the same refresh locally:
+
+```bash
+npm run refresh:house-disbursements
+```
 
 The Registered Lobbyist Explorer uses:
 

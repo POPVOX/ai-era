@@ -1,0 +1,46 @@
+name: Refresh House disbursement data
+
+on:
+  schedule:
+    - cron: "17 11 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Check for updated House disbursement CSV
+        run: npm run refresh:house-disbursements
+
+      - name: Run checks
+        run: npm run check
+
+      - name: Commit refreshed data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/house-disbursement-sources.json \
+            assets/house-expenditure-data.json \
+            assets/house-expenditure-data.js \
+            assets/house-expenditure-transactions.json \
+            assets/house-expenditure-vendors \
+            assets/house-staff-data.json \
+            assets/house-staff-data.js \
+            staffers
+          if git diff --cached --quiet; then
+            echo "No refreshed House disbursement data to commit."
+          else
+            git commit -m "Refresh House disbursement data"
+            git push
+          fi

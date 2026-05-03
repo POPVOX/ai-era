@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { disbursementCsvFiles, periodFromFilename, periodRank, sourceUrlsByFile } from "./house-disbursement-utils.mjs";
 
 const root = process.cwd();
 const sourceRoot = path.join(root, "Committee Corpus + Witness Directory - CTO Share", "house-expenditure-explorer-2026-05-01");
@@ -9,12 +10,7 @@ const outJs = path.join(root, "assets", "house-expenditure-data.js");
 const outTransactions = path.join(root, "assets", "house-expenditure-transactions.json");
 const outVendorTransactions = path.join(root, "assets", "house-expenditure-vendors");
 
-const sourceUrls = {
-  "JANUARY-MARCH-2025-SOD-DETAIL-GRID-FINAL.csv": "https://www.house.gov/sites/default/files/2025-05/JANUARY-MARCH-2025-SOD-DETAIL-GRID-FINAL.csv",
-  "APRIL-JUNE-2025-SOD-DETAIL-GRID-FINAL.csv": "https://www.house.gov/sites/default/files/2025-08/APRIL-JUNE%202025%20SOD%20DETAIL%20GRID-FINAL.csv",
-  "JULY-SEPTEMBER-2025-SOD-DETAIL-GRID-FINAL.csv": "https://www.house.gov/sites/default/files/2025-11/grids/JULY-SEPTEMBER%202025%20SOD%20DETAIL%20GRID-FINAL.csv",
-  "OCT-DEC-2025-SOD-DETAIL-GRID-FINAL.csv": "https://www.house.gov/sites/default/files/2026-02/OCT-DEC-2025-SOD-DETAIL-GRID-FINAL.csv",
-};
+const sourceUrls = sourceUrlsByFile(root);
 
 const bocLabels = {
   "11": "Personnel compensation",
@@ -77,19 +73,6 @@ function parseAmount(value) {
   const negative = raw.startsWith("(") && raw.endsWith(")");
   const parsed = Number(raw.replace(/[,$()]/g, "") || 0);
   return negative ? -parsed : parsed;
-}
-
-function periodFromFilename(filename) {
-  const upper = filename.toUpperCase();
-  if (upper.includes("JANUARY-MARCH")) return "Jan-Mar 2025";
-  if (upper.includes("APRIL-JUNE")) return "Apr-Jun 2025";
-  if (upper.includes("JULY") || upper.includes("SEPT")) return "Jul-Sep 2025";
-  if (upper.includes("OCT-DEC")) return "Oct-Dec 2025";
-  return filename.replace(/\.csv$/i, "");
-}
-
-function periodRank(period) {
-  return ["Jan-Mar 2025", "Apr-Jun 2025", "Jul-Sep 2025", "Oct-Dec 2025"].indexOf(period) + 1 || 99;
 }
 
 function cleanYear(org) {
@@ -201,9 +184,7 @@ function slugify(value) {
     .slice(0, 90) || "vendor";
 }
 
-const files = fs.readdirSync(rawDir)
-  .filter((name) => name.toLowerCase().endsWith(".csv"))
-  .sort((a, b) => periodRank(periodFromFilename(a)) - periodRank(periodFromFilename(b)) || a.localeCompare(b));
+const files = disbursementCsvFiles(rawDir);
 
 let rawRows = 0;
 let subtotalRows = 0;

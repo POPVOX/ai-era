@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { disbursementCsvFiles, periodFromFilename, periodRank } from "./house-disbursement-utils.mjs";
 
 const root = process.cwd();
 const sourceRoot = path.join(root, "Committee Corpus + Witness Directory - CTO Share", "house-expenditure-explorer-2026-05-01");
@@ -48,19 +49,6 @@ function parseCsv(text) {
   }
 
   return rows;
-}
-
-function periodFromFilename(filename) {
-  const upper = filename.toUpperCase();
-  if (upper.includes("JANUARY-MARCH")) return "Jan-Mar 2025";
-  if (upper.includes("APRIL-JUNE")) return "Apr-Jun 2025";
-  if (upper.includes("JULY") || upper.includes("SEPT")) return "Jul-Sep 2025";
-  if (upper.includes("OCT-DEC")) return "Oct-Dec 2025";
-  return filename.replace(/\.csv$/i, "");
-}
-
-function periodRank(period) {
-  return ["Jan-Mar 2025", "Apr-Jun 2025", "Jul-Sep 2025", "Oct-Dec 2025"].indexOf(period) + 1 || 99;
 }
 
 function stripOrgYear(org) {
@@ -257,9 +245,7 @@ if (!fs.existsSync(rawDir)) {
   throw new Error(`Missing raw expenditure CSV directory: ${rawDir}`);
 }
 
-const files = fs.readdirSync(rawDir)
-  .filter((name) => name.toLowerCase().endsWith(".csv"))
-  .sort((a, b) => periodRank(periodFromFilename(a)) - periodRank(periodFromFilename(b)) || a.localeCompare(b));
+const files = disbursementCsvFiles(rawDir);
 const sourcePeriods = [...new Set(files.map(periodFromFilename))].sort((a, b) => periodRank(a) - periodRank(b));
 const latestDisbursementPeriod = sourcePeriods.at(-1) || "";
 
