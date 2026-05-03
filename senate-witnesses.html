@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>POPVOX | Senate Witness Explorer</title>
+  <meta name="description" content="Search Senate witnesses extracted from published GovInfo congressional hearing records.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="https://s3.us-east-1.amazonaws.com/static.popvox.com/images/pvox+favicon.png">
+</head>
+
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="index.html" aria-label="POPVOX home">
+        <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+      </a>
+
+      <div class="nav-links">
+        <a class="active" href="explore.html">Explore</a>
+        <a href="news.html">News</a>
+        <a href="about.html">About</a>
+        <a href="team.html">Team</a>
+        <a href="contact.html">Contact</a>
+      </div>
+
+      <div class="nav-actions">
+        <a class="button secondary" href="senate-committees.html">Senate Committee Explorer</a>
+        <a class="button" href="mailto:info@popvox.com">Request a demo</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="witness-shell senate-witness-shell">
+    <section class="witness-hero" aria-labelledby="senate-witness-title">
+      <div>
+        <div class="eyebrow-row">
+          <span class="tag"><span class="dot"></span> Senate Witness Explorer</span>
+          <span class="tag navy">GovInfo hearings</span>
+          <span class="tag navy" id="senate-witness-updated">Loading</span>
+        </div>
+        <h1 id="senate-witness-title">Find Senate hearing witnesses<span>.</span></h1>
+        <p class="summary">Search witnesses, organizations, published hearings, PDFs, and research links extracted from official GovInfo Senate hearing records.</p>
+      </div>
+
+      <div class="witness-hero-card">
+        <p class="eyebrow">Published hearing record</p>
+        <h2>Witnesses from GovInfo text</h2>
+        <p>GovInfo hearing transcripts include panel-of-witnesses and prepared-statement contents. This prototype extracts those names and links each witness back to official PDF and HTML hearing records.</p>
+      </div>
+    </section>
+
+    <section class="witness-stats" aria-label="Senate Witness Explorer statistics">
+      <article><strong id="senate-witness-count">0</strong><span>Witnesses</span></article>
+      <article><strong id="senate-appearance-count">0</strong><span>Appearances</span></article>
+      <article><strong id="senate-hearing-count">0</strong><span>Published hearings</span></article>
+      <article><strong id="senate-research-count">0</strong><span>Research queue</span></article>
+    </section>
+
+    <section class="witness-toolbar senate-witness-toolbar" aria-label="Senate witness filters">
+      <div class="witness-search-wrap">
+        <label class="label" for="senate-witness-search">Search witnesses</label>
+        <input id="senate-witness-search" class="search-input" type="search" placeholder="Name, organization, hearing title, keyword...">
+      </div>
+
+      <div>
+        <label class="label" for="senate-witness-status">Profile status</label>
+        <select id="senate-witness-status">
+          <option value="">All profiles</option>
+          <option value="multi">Multiple appearances</option>
+          <option value="research">Needs enrichment</option>
+          <option value="docs">Has official hearing docs</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="label" for="senate-witness-sort">Sort</label>
+        <select id="senate-witness-sort">
+          <option value="relevance">Relevance</option>
+          <option value="appearances">Most appearances</option>
+          <option value="recent">Most recent</option>
+          <option value="name">Name A-Z</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="witness-layout">
+      <aside class="witness-sidebar" aria-label="Senate Witness Explorer notes">
+        <div class="sidebar-block">
+          <p class="eyebrow">What this shows</p>
+          <p>Each profile is inferred from published Senate hearing transcripts and tables of contents available through GovInfo.</p>
+        </div>
+        <div class="sidebar-block">
+          <p class="eyebrow">Limitations</p>
+          <p>GovInfo notes that most hearings publish two months to two years after they are held, and not every hearing is available. Profile enrichment links are research starting points until verified.</p>
+          <p><a href="https://www.govinfo.gov/help/chrg" target="_blank" rel="noopener">Open GovInfo CHRG help</a></p>
+        </div>
+        <div class="committee-list" id="senate-witness-hearing-list"></div>
+      </aside>
+
+      <section class="witness-results" aria-live="polite">
+        <div class="directory-head">
+          <div>
+            <p class="eyebrow">Results</p>
+            <h2 id="senate-witness-heading">Senate witnesses</h2>
+          </div>
+          <span id="senate-witness-visible">0 visible</span>
+        </div>
+
+        <div class="witness-grid" id="senate-witness-grid"></div>
+        <div class="empty-state" id="senate-witness-empty" hidden>No Senate witnesses match those filters.</div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="footer-brand" href="index.html" aria-label="POPVOX home">
+      <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+    </a>
+    <div class="footer-links">
+      <a href="explore.html">Explore</a>
+      <a href="news.html">News</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+  </footer>
+
+  <script src="assets/senate-witness-data.js"></script>
+  <script src="senate-witnesses.js"></script>
+</body>
+
+</html>

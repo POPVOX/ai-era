@@ -3707,6 +3707,43 @@ main {
   font-size: 10px;
 }
 
+.senate-witness-toolbar {
+  grid-template-columns: minmax(280px, 1fr) minmax(190px, 0.26fr) minmax(170px, 0.2fr);
+}
+
+.senate-witness-card .witness-badges .navy {
+  border-color: rgba(13, 43, 73, 0.22);
+  background: rgba(13, 43, 73, 0.08);
+  color: var(--ink);
+}
+
+.senate-source-row {
+  display: block;
+  padding: 13px 0;
+  border-top: 1px solid var(--line);
+  color: inherit;
+}
+
+.senate-source-row span,
+.senate-source-row small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.senate-source-row strong {
+  display: block;
+  margin: 5px 0;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.senate-profile-shell .witness-profile-overview article p:last-child {
+  max-width: 760px;
+}
+
 .committee-detail-hero {
   padding: 68px 48px 36px;
 }

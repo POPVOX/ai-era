@@ -14,6 +14,7 @@ The site is intentionally lightweight. Most pages are static HTML/CSS/JS, with a
   - Congressional Staff Explorer
   - Registered Lobbyist Explorer
   - Witness Explorer
+  - Senate Witness Explorer
   - House Journal Explorer
   - Executive Reports Dashboard
   - House Rules Explorer
@@ -25,6 +26,7 @@ The site is intentionally lightweight. Most pages are static HTML/CSS/JS, with a
   - Committee pages in `committees/`
   - Committee event pages in `events/`
   - Witness profile pages in `witnesses/`
+  - Senate witness profile pages in `senate-witnesses/`
   - Staff profile pages in `staffers/`
   - Registered lobbyist profile pages in `lobbyists/`
   - Vendor transaction profiles through `vendor.html?v=:slug`
@@ -141,6 +143,20 @@ To refresh Senate committee data with historical Congress.gov meetings locally:
 CONGRESS_GOV_API_KEY="your-token" CONGRESS_GOV_SENATE_MEETING_CONGRESSES="119,118,117" npm run refresh:senate-committee-history
 ```
 
+The Senate Witness Explorer uses:
+
+- `assets/senate-witness-data.{json,js}` for witness profiles extracted from published Senate hearing records.
+- `senate-witnesses/*.html` for generated Senate witness profile pages.
+- `scripts/build-senate-witness-data.mjs` to search GovInfo Congressional Hearings (`CHRG`) records, fetch Senate hearing HTML, parse panel-of-witnesses tables of contents, and attach official GovInfo PDF/HTML links.
+
+GovInfo is an archival publication layer. GovInfo notes that most hearings are published two months to two years after they are held, and not all hearings are available. The Senate Witness Explorer therefore reflects published hearing records, not all scheduled Senate hearings. LinkedIn, Google Scholar, web, and image links are research starting points until verified profile URLs are attached.
+
+To refresh Senate witness data locally:
+
+```bash
+GOVINFO_API_KEY="your-token" SENATE_WITNESS_CONGRESSES="119" npm run build:senate-witnesses
+```
+
 Generated pages and generated data are committed so the site can be deployed as a mostly static site. Live CongressLink-backed pages still need the local/server proxy routes listed above unless an equivalent production proxy is provided.
 
 The local folder `Committee Corpus + Witness Directory - CTO Share/` is source/reference material used during development. It is intentionally ignored by Git because it is large and contains raw working files that do not need to ship with the public site.
@@ -155,6 +171,9 @@ The local folder `Committee Corpus + Witness Directory - CTO Share/` is source/r
 - `CONGRESS_GOV_API_KEY`: optional Congress.gov API token for Senate historical committee meeting refreshes.
 - `CONGRESS_GOV_SENATE_MEETING_CONGRESSES`: comma-separated congresses to pull for Senate committee meetings. Defaults to `119`.
 - `SENATE_MEETING_DETAIL_LIMIT`: optional cap on detailed Senate meeting records fetched during a refresh. Defaults to `150`.
+- `GOVINFO_API_KEY`: optional GovInfo API token for Senate witness refreshes. Defaults to `DEMO_KEY`, which is suitable only for very small tests.
+- `SENATE_WITNESS_CONGRESSES`: comma-separated congresses to pull for published Senate hearing witnesses. Defaults to `119`.
+- `SENATE_WITNESS_MAX_HEARINGS`: optional cap on GovInfo Senate hearing records fetched. Defaults to `260`.
 - `LDA_API_KEY`: optional LDA.gov API token for higher refresh rate limits. The LDA API also supports anonymous requests with stricter throttling.
 - `LDA_API_BASE`: optional override for the LDA API host. Defaults to `https://lda.gov/api/v1`.
 - `LDA_FILING_YEARS`: comma-separated filing years to refresh. Defaults to the current calendar year.
@@ -184,6 +203,7 @@ Then spot-check:
 - `/legislation.html`
 - `/committees.html`
 - `/senate-committees.html`
+- `/senate-witnesses.html`
 - `/staff.html`
 - `/senate-disbursements.html`
 - `/lobbyists.html`
