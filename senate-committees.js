@@ -69,7 +69,7 @@ function memberLine(member) {
 }
 
 function renderStats() {
-  els.updated.textContent = data.generatedAt ? `Updated ${formatDate(data.generatedAt)}` : "Local prototype";
+  els.updated.textContent = data.generatedAt ? `Updated ${formatDate(data.generatedAt)}` : "Local data";
   els.count.textContent = fmt.format(data.metrics.committeeCount || 0);
   els.subcommittees.textContent = fmt.format(data.metrics.subcommitteeCount || 0);
   els.members.textContent = fmt.format(data.metrics.senatorCount || 0);

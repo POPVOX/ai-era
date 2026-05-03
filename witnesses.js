@@ -133,7 +133,7 @@ function renderStats() {
   els.appearanceCount.textContent = fmt.format(directory.totals.appearances || 0);
   els.committeeCount.textContent = fmt.format(directory.totals.committees || 0);
   els.lobbyistCount.textContent = fmt.format(directory.totals.possibleLobbyists || 0);
-  els.updated.textContent = directory.generatedAt ? `Updated ${formatDate(directory.generatedAt.slice(0, 10))}` : "Local prototype";
+  els.updated.textContent = directory.generatedAt ? `Updated ${formatDate(directory.generatedAt.slice(0, 10))}` : "Local data";
 }
 
 function renderFilters() {

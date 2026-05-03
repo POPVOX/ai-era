@@ -38,7 +38,7 @@ function escapeHtml(value) {
 }
 
 function formatDate(value) {
-  if (!value) return "Local prototype";
+  if (!value) return "Local data";
   const date = new Date(`${String(value).slice(0, 10)}T12:00:00`);
   return Number.isNaN(date.getTime()) ? value : dateFmt.format(date);
 }
@@ -85,7 +85,7 @@ function renderStats() {
   els.filings.textContent = fmt.format(directory.totals.filingLinks || 0);
   els.clients.textContent = fmt.format(directory.totals.clients || 0);
   els.registrants.textContent = fmt.format(directory.totals.registrants || 0);
-  els.updated.textContent = directory.generatedAt ? `Updated ${formatDate(directory.generatedAt)}` : "Local prototype";
+  els.updated.textContent = directory.generatedAt ? `Updated ${formatDate(directory.generatedAt)}` : "Local data";
 }
 
 function renderFilters() {

@@ -494,7 +494,7 @@ function senateEventPage(hearing) {
       <a class="back-link" href="../senate-witnesses.html">← Senate Witness Explorer</a>
       <p class="eyebrow">Published Senate hearing</p>
       <h1>${escapeHtml(hearing.title)}<span>.</span></h1>
-      <p>This page connects a published GovInfo Senate hearing record to extracted witnesses and official source documents. Future versions can add summaries, transcript search, and citation-backed Q&amp;A.</p>
+      <p>This page connects a published GovInfo Senate hearing record to extracted witnesses and official source documents.</p>
       <div class="event-actions">
         ${hearing.detailsUrl ? `<a class="button" href="${escapeHtml(hearing.detailsUrl)}" target="_blank" rel="noopener">GovInfo record</a>` : ""}
         ${hearing.pdfUrl ? `<a class="button secondary" href="${escapeHtml(hearing.pdfUrl)}" target="_blank" rel="noopener">PDF</a>` : ""}

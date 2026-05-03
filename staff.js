@@ -43,7 +43,7 @@ function escapeHtml(value) {
 }
 
 function formatDate(value) {
-  if (!value) return "Local prototype";
+  if (!value) return "Local data";
   const date = new Date(`${String(value).slice(0, 10)}T12:00:00`);
   return Number.isNaN(date.getTime()) ? value : dateFmt.format(date);
 }
@@ -182,7 +182,7 @@ function renderStats() {
   els.offices.textContent = fmt.format(offices);
   els.titles.textContent = fmt.format(titles);
   els.rows.textContent = fmt.format(rowCount);
-  els.updated.textContent = latest ? `Updated ${formatDate(latest)}` : "Local prototype";
+  els.updated.textContent = latest ? `Updated ${formatDate(latest)}` : "Local data";
 }
 
 function renderFilters() {

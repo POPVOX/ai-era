@@ -229,7 +229,7 @@ for (const event of events) {
       <a class="back-link" href="${escapeHtml(committeePage)}">← ${escapeHtml(event.committee.replace(/^Committee on /, ""))}</a>
       <p class="eyebrow">${escapeHtml(eventType)}</p>
       <h1>${escapeHtml(event.title || "Untitled event")}<span>.</span></h1>
-      <p>${escapeHtml(event.notes || "A source-backed event record from the House committee corpus. Future versions can add embeddings, summaries, transcript Q&A, and queryable hearing analysis.")}</p>
+      <p>${escapeHtml(event.notes || "A source-backed event record from the House committee corpus, with connected witnesses, documents, and official source materials.")}</p>
       <div class="event-actions">
         ${sourceUrl ? `<a class="button" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener">Official House event</a>` : ""}
         <a class="button secondary" href="../witnesses.html">Witness Explorer</a>
@@ -257,8 +257,8 @@ for (const event of events) {
           <div><dt>Last updated</dt><dd>${escapeHtml(event.lastUpdated || "Not listed")}</dd></div>
         </dl>
         <div class="event-future-note">
-          <p class="eyebrow">Future intelligence layer</p>
-          <p>When embeddings are available, this record can support questions like what happened, who testified, what documents changed, what issues were raised, and concise summaries with citations back to source materials.</p>
+          <p class="eyebrow">Record intelligence</p>
+          <p>This record is organized to support questions about what happened, who testified, what documents changed, and what issues were raised, with citations back to source materials.</p>
         </div>
       </article>
 

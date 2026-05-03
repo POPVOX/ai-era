@@ -106,7 +106,7 @@ function filteredProfiles() {
 }
 
 function renderStats() {
-  els.updated.textContent = data.generatedAt ? `Updated ${formatDate(data.generatedAt)}` : "Local prototype";
+  els.updated.textContent = data.generatedAt ? `Updated ${formatDate(data.generatedAt)}` : "Local data";
   els.witnessCount.textContent = fmt.format(data.totals.witnesses || 0);
   els.appearanceCount.textContent = fmt.format(data.totals.appearances || 0);
   els.hearingCount.textContent = fmt.format(data.totals.hearings || 0);

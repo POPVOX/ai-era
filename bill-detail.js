@@ -169,7 +169,7 @@ function answerQuestion(question) {
   if (q.includes('text') || q.includes('read')) {
     const url = billState.data.textUrl || billState.data.congressGovUrl;
     return url
-      ? `<p>The best available text link for this prototype is <a href="${escapeHtml(url)}" target="_blank" rel="noopener">the bill text/source page</a>.</p>`
+      ? `<p>The best available text link is <a href="${escapeHtml(url)}" target="_blank" rel="noopener">the bill text/source page</a>.</p>`
       : '<p>A bill text link is not available in the current data yet.</p>';
   }
   return `<p><strong>${escapeHtml(billState.data.label)}</strong> is currently marked <strong>${escapeHtml(status)}</strong> and was introduced on ${escapeHtml(introduced)}.</p><p>${escapeHtml(summary)}</p>`;
