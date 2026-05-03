@@ -219,6 +219,36 @@ function renderFilters() {
   });
 }
 
+function applyInitialUrlFilters() {
+  const params = new URLSearchParams(window.location.search);
+  const search = params.get("search") || params.get("q") || "";
+  const chamber = params.get("chamber") || "";
+  const staffType = params.get("type") || "";
+  const period = params.get("period") || "";
+  const inactive = params.get("inactive") || params.get("showInactive") || "";
+
+  if (search) {
+    state.search = search;
+    els.search.value = search;
+  }
+  if (chamber && [...els.chamber.options].some((option) => option.value === chamber)) {
+    state.chamber = chamber;
+    els.chamber.value = chamber;
+  }
+  if (staffType && [...els.type.options].some((option) => option.value === staffType)) {
+    state.staffType = staffType;
+    els.type.value = staffType;
+  }
+  if (period && [...els.period.options].some((option) => option.value === period)) {
+    state.period = period;
+    els.period.value = period;
+  }
+  if (/^(1|true|yes)$/i.test(inactive)) {
+    state.showInactive = true;
+    els.showInactive.checked = true;
+  }
+}
+
 function renderProfile(profile) {
   const status = profile.isActive ? "Active" : "Inactive";
   const caveat = profile.hasOverlapCaveat ? '<span class="inactive-status">Report period overlaps 2024/2025</span>' : "";
@@ -296,5 +326,6 @@ function bindEvents() {
 
 renderStats();
 renderFilters();
+applyInitialUrlFilters();
 bindEvents();
 render();

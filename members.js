@@ -209,6 +209,21 @@ function hydrateFilters() {
   fillSelect(els.topCommittee, committees, 'Any committee');
 }
 
+function applyInitialUrlFilters() {
+  const params = new URLSearchParams(window.location.search);
+  const search = params.get('search') || params.get('q') || '';
+  const party = params.get('party') || '';
+  const chamber = params.get('chamber') || '';
+  const memberState = params.get('state') || '';
+  const committee = params.get('committee') || '';
+
+  if (search) els.search.value = search;
+  if (party && [...els.party.options].some((option) => option.value === party)) els.party.value = party;
+  if (chamber && [...els.chamber.options].some((option) => option.value === chamber)) els.chamber.value = chamber;
+  if (memberState && [...els.memberState.options].some((option) => option.value === memberState)) els.memberState.value = memberState;
+  if (committee && [...els.committee.options].some((option) => option.value === committee)) els.committee.value = committee;
+}
+
 function applyFilters() {
   const query = els.search.value.trim().toLowerCase();
   const party = els.party.value;
@@ -346,6 +361,7 @@ async function loadMembers() {
 
     state.members = (payload.data || []).map(normalizeMember);
     hydrateFilters();
+    applyInitialUrlFilters();
     applyFilters();
     els.status.textContent = `Live · ${state.members.length} members`;
   } catch (error) {

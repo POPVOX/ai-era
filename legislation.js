@@ -301,6 +301,21 @@ function hydrateFilters() {
   fillSelect(els.topCommittee, committees, 'Any committee');
 }
 
+function applyInitialUrlFilters() {
+  const params = new URLSearchParams(window.location.search);
+  const search = params.get('search') || params.get('q') || '';
+  const sponsor = params.get('sponsor') || '';
+  const type = params.get('type') || '';
+  const status = params.get('status') || '';
+  const committee = params.get('committee') || '';
+
+  if (search) els.search.value = search;
+  if (sponsor && [...els.sponsor.options].some((option) => option.value === sponsor)) els.sponsor.value = sponsor;
+  if (type && [...els.type.options].some((option) => option.value === type)) els.type.value = type;
+  if (status && [...els.statusFilter.options].some((option) => option.value === status)) els.statusFilter.value = status;
+  if (committee && [...els.committee.options].some((option) => option.value === committee)) els.committee.value = committee;
+}
+
 function applyFilters() {
   const query = els.search.value.trim().toLowerCase();
   const type = els.type.value;
@@ -413,6 +428,7 @@ async function loadLegislation() {
     state.bills = asArray(payload).map(normalizeBill);
     state.filtered = [...state.bills];
     hydrateFilters();
+    applyInitialUrlFilters();
     applyFilters();
     els.status.textContent = `${state.bills.length.toLocaleString()} loaded`;
   } catch (error) {

@@ -246,8 +246,6 @@ function sourceRows(member) {
 
 function relatedCards(member) {
   const name = encodeURIComponent(compactName(member));
-  const chamber = encodeURIComponent(member.chamber || '');
-  const state = encodeURIComponent(member.state || '');
 
   return [
     {
@@ -260,7 +258,7 @@ function relatedCards(member) {
       label: 'Committees',
       title: 'Committee Explorer',
       text: 'Move from member context to committee, hearing, markup, and witness records.',
-      href: `committees.html?chamber=${chamber}&search=${state}`,
+      href: member.chamber === 'Senate' ? 'senate-committees.html' : 'committees.html',
     },
     {
       label: 'Staff',

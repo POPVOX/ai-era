@@ -240,6 +240,20 @@ function hydrateFilters() {
   fillSelect(els.topDate, dates, 'Any date');
 }
 
+function applyInitialUrlFilters() {
+  const params = new URLSearchParams(window.location.search);
+  const search = params.get('search') || params.get('q') || '';
+  const type = params.get('type') || '';
+  const date = params.get('date') || '';
+
+  if (search) {
+    els.search.value = search;
+    els.topSearch.value = search;
+  }
+  if (type && [...els.type.options].some((option) => option.value === type)) els.type.value = type;
+  if (date && [...els.date.options].some((option) => option.value === date)) els.date.value = date;
+}
+
 function applyFilters() {
   const query = [els.search.value, els.topSearch.value].filter(Boolean).join(' ').trim().toLowerCase();
   const type = els.type.value;
@@ -365,11 +379,13 @@ async function loadLedger() {
     state.actions = rows.map(normalizeAction);
     state.filtered = [...state.actions];
     hydrateFilters();
+    applyInitialUrlFilters();
     applyFilters();
   } catch (error) {
     state.actions = sampleJournalLedger.map(normalizeAction);
     state.filtered = [...state.actions];
     hydrateFilters();
+    applyInitialUrlFilters();
     applyFilters();
     els.dataStatus.textContent = 'Sample data';
     console.warn(error);
