@@ -73,7 +73,7 @@ function renderStats() {
   els.count.textContent = fmt.format(data.metrics.committeeCount || 0);
   els.subcommittees.textContent = fmt.format(data.metrics.subcommitteeCount || 0);
   els.members.textContent = fmt.format(data.metrics.senatorCount || 0);
-  els.hearings.textContent = fmt.format(data.metrics.upcomingHearingCount || 0);
+  els.hearings.textContent = fmt.format((data.metrics.upcomingHearingCount || 0) + (data.metrics.historicalMeetingCount || 0));
 }
 
 function textFor(committee) {
@@ -91,6 +91,7 @@ function textFor(committee) {
       ...(subcommittee.members || []).map((member) => `${member.name} ${member.state} ${member.party} ${member.position}`),
     ]),
     ...(committee.upcomingHearings || []).map((hearing) => `${hearing.matter} ${hearing.subcommittee} ${hearing.room}`),
+    ...(committee.historicalMeetings || []).map((meeting) => `${meeting.title} ${meeting.type} ${meeting.status} ${meeting.location} ${(meeting.witnesses || []).map((witness) => `${witness.name} ${witness.organization}`).join(" ")} ${(meeting.bills || []).map((bill) => `${bill.type} ${bill.number}`).join(" ")}`),
   ].join(" ").toLowerCase();
 }
 
@@ -106,7 +107,7 @@ function visibleCommittees() {
   rows.sort((a, b) => {
     if (state.sort === "members") return (b.memberCount || 0) - (a.memberCount || 0) || a.displayName.localeCompare(b.displayName);
     if (state.sort === "subcommittees") return (b.subcommitteeCount || 0) - (a.subcommitteeCount || 0) || a.displayName.localeCompare(b.displayName);
-    if (state.sort === "hearings") return (b.upcomingHearings?.length || 0) - (a.upcomingHearings?.length || 0) || a.displayName.localeCompare(b.displayName);
+    if (state.sort === "hearings") return ((b.upcomingHearings?.length || 0) + (b.historicalMeetings?.length || 0)) - ((a.upcomingHearings?.length || 0) + (a.historicalMeetings?.length || 0)) || a.displayName.localeCompare(b.displayName);
     return a.displayName.localeCompare(b.displayName);
   });
   return rows;
@@ -136,6 +137,34 @@ function renderHearing(hearing) {
   </article>`;
 }
 
+function formatDateTime(value) {
+  if (!value) return "Date pending";
+  return formatDate(value);
+}
+
+function renderHistoricalMeeting(meeting) {
+  const witnessCount = meeting.witnesses?.length || 0;
+  const documentCount = (meeting.witnessDocuments?.length || 0) + (meeting.meetingDocuments?.length || 0);
+  const relatedCount = (meeting.bills?.length || 0) + (meeting.nominations?.length || 0);
+  return `<article class="senate-hearing-row historical">
+    <div>
+      <span>${escapeHtml(formatDateTime(meeting.date))}${meeting.status ? ` | ${escapeHtml(meeting.status)}` : ""}</span>
+      <h4>${meeting.congressGovUrl ? `<a href="${escapeHtml(meeting.congressGovUrl)}" target="_blank" rel="noopener">${escapeHtml(meeting.title || "Committee meeting")}</a>` : escapeHtml(meeting.title || "Committee meeting")}</h4>
+      <p>${escapeHtml([meeting.type, meeting.location].filter(Boolean).join(" | ") || "Details pending")}</p>
+      <div class="senate-meeting-chips">
+        <span>${fmt.format(witnessCount)} witnesses</span>
+        <span>${fmt.format(documentCount)} docs</span>
+        <span>${fmt.format(relatedCount)} related items</span>
+      </div>
+    </div>
+    <div class="witness-link-row">
+      ${meeting.congressGovUrl ? `<a href="${escapeHtml(meeting.congressGovUrl)}" target="_blank" rel="noopener">Congress.gov</a>` : ""}
+      ${meeting.transcript?.url ? `<a href="${escapeHtml(meeting.transcript.url)}" target="_blank" rel="noopener">Transcript</a>` : ""}
+      ${meeting.videos?.[0]?.url ? `<a href="${escapeHtml(meeting.videos[0].url)}" target="_blank" rel="noopener">Video</a>` : ""}
+    </div>
+  </article>`;
+}
+
 function renderDetail(committee) {
   if (!committee) {
     els.detail.innerHTML = "";
@@ -143,6 +172,8 @@ function renderDetail(committee) {
   }
   const subcommittees = committee.subcommittees || [];
   const hearings = committee.upcomingHearings || [];
+  const historicalMeetings = committee.historicalMeetings || [];
+  const historicalNote = data.apiRefresh?.congressGovHistoricalMeetings?.note || "";
   els.detail.innerHTML = `
     <article class="senate-committee-feature">
       <div class="senate-committee-feature-head">
@@ -156,7 +187,7 @@ function renderDetail(committee) {
         <div><span>Chair</span><strong>${escapeHtml(memberLine(committee.chair))}</strong></div>
         <div><span>Ranking member</span><strong>${escapeHtml(memberLine(committee.ranking))}</strong></div>
         <div><span>Members</span><strong>${fmt.format(committee.memberCount || 0)}</strong></div>
-        <div><span>Subcommittees</span><strong>${fmt.format(committee.subcommitteeCount || 0)}</strong></div>
+        <div><span>Meetings</span><strong>${fmt.format(hearings.length + historicalMeetings.length)}</strong></div>
       </div>
       <div class="senate-detail-columns">
         <section>
@@ -176,10 +207,13 @@ function renderDetail(committee) {
         </section>
         <section>
           <div class="directory-head compact-head">
-            <div><p class="eyebrow">Upcoming</p><h4>${fmt.format(hearings.length)} hearings or meetings</h4></div>
+            <div><p class="eyebrow">Meetings</p><h4>${fmt.format(hearings.length + historicalMeetings.length)} loaded</h4></div>
           </div>
           <div class="senate-hearing-list">
-            ${hearings.length ? hearings.map(renderHearing).join("") : `<p class="committee-empty">No upcoming hearings in the live Senate schedule feed for this committee.</p>`}
+            ${hearings.length ? `<p class="senate-meeting-label">Upcoming from Senate.gov</p>${hearings.map(renderHearing).join("")}` : ""}
+            ${historicalMeetings.length ? `<p class="senate-meeting-label">Historical from Congress.gov</p>${historicalMeetings.slice(0, 20).map(renderHistoricalMeeting).join("")}` : ""}
+            ${historicalMeetings.length > 20 ? `<p class="committee-empty">Showing the 20 most recent historical meetings for this committee.</p>` : ""}
+            ${!hearings.length && !historicalMeetings.length ? `<p class="committee-empty">${escapeHtml(historicalNote || "No upcoming or historical meetings are loaded for this committee yet.")}</p>` : ""}
           </div>
         </section>
       </div>
@@ -199,7 +233,7 @@ function renderCard(committee) {
     <div class="committee-card-metrics">
       <span>${fmt.format(committee.memberCount || 0)} members</span>
       <span>${fmt.format(committee.subcommitteeCount || 0)} subcommittees</span>
-      <span>${fmt.format(committee.upcomingHearings?.length || 0)} upcoming</span>
+      <span>${fmt.format((committee.upcomingHearings?.length || 0) + (committee.historicalMeetings?.length || 0))} meetings</span>
     </div>
     <button class="link-button" type="button" data-code="${escapeHtml(committee.code)}">View rosters</button>
   </article>`;

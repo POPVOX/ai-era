@@ -21,6 +21,10 @@ jobs:
           node-version: "22"
 
       - name: Build Senate committee data
+        env:
+          CONGRESS_GOV_API_KEY: ${{ secrets.CONGRESS_GOV_API_KEY }}
+          CONGRESS_GOV_SENATE_MEETING_CONGRESSES: "119,118,117"
+          SENATE_MEETING_DETAIL_LIMIT: "300"
         run: npm run build:senate-committees
 
       - name: Run checks

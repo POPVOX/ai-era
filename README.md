@@ -130,10 +130,16 @@ Senate reports are currently PDF-only. The Oct. 1, 2024 to Mar. 31, 2025 report 
 The Senate Committee Explorer uses:
 
 - `assets/senate-committee-data.{json,js}` for Senate committees, subcommittees, committee members, subcommittee rosters, and upcoming hearings.
-- `scripts/build-senate-committee-data.mjs` to refresh official Senate.gov committee membership XML files and the Senate hearings and meetings XML feed.
+- `scripts/build-senate-committee-data.mjs` to refresh official Senate.gov committee membership XML files, the Senate hearings and meetings XML feed, and Congress.gov historical committee meeting records when a Congress.gov key is configured.
 - `.github/workflows/refresh-senate-committees.yml` to rebuild the Senate committee data weekly.
 
-Senate committee membership XML represents current rosters. The Senate hearings XML is a live/upcoming schedule, not a historical archive. Historical Senate hearing reconstruction should use Congress.gov event pages, committee website archives, and GovInfo published hearing records.
+Senate committee membership XML represents current rosters. The Senate hearings XML is a live/upcoming schedule, not a historical archive. Historical Senate meetings come from the Congress.gov committee-meeting API, which can include witnesses, witness documents, meeting documents, transcripts, videos, and related bills or nominations when those details are available. Congress.gov states Senate meeting announcements are available from June 2019 to present.
+
+To refresh Senate committee data with historical Congress.gov meetings locally:
+
+```bash
+CONGRESS_GOV_API_KEY="your-token" CONGRESS_GOV_SENATE_MEETING_CONGRESSES="119,118,117" npm run refresh:senate-committee-history
+```
 
 Generated pages and generated data are committed so the site can be deployed as a mostly static site. Live CongressLink-backed pages still need the local/server proxy routes listed above unless an equivalent production proxy is provided.
 
@@ -146,6 +152,9 @@ The local folder `Committee Corpus + Witness Directory - CTO Share/` is source/r
 - `CONGRESSLINK_API_BASE`: optional override for the CongressLink API host.
 - `CONGRESSLINK_MEMBERS_ENDPOINTS`: optional comma-separated member endpoints. Defaults to House and Senate member endpoints.
 - `CONGRESSLINK_LEGISLATION_ENDPOINT`: optional bill endpoint override.
+- `CONGRESS_GOV_API_KEY`: optional Congress.gov API token for Senate historical committee meeting refreshes.
+- `CONGRESS_GOV_SENATE_MEETING_CONGRESSES`: comma-separated congresses to pull for Senate committee meetings. Defaults to `119`.
+- `SENATE_MEETING_DETAIL_LIMIT`: optional cap on detailed Senate meeting records fetched during a refresh. Defaults to `150`.
 - `LDA_API_KEY`: optional LDA.gov API token for higher refresh rate limits. The LDA API also supports anonymous requests with stricter throttling.
 - `LDA_API_BASE`: optional override for the LDA API host. Defaults to `https://lda.gov/api/v1`.
 - `LDA_FILING_YEARS`: comma-separated filing years to refresh. Defaults to the current calendar year.

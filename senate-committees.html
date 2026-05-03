@@ -38,16 +38,17 @@
         <div class="eyebrow-row">
           <span class="tag"><span class="dot"></span> Senate Committee Explorer</span>
           <span class="tag navy">Senate.gov XML</span>
+          <span class="tag navy">Congress.gov ready</span>
           <span class="tag navy" id="senate-committee-updated">Loading</span>
         </div>
         <h1 id="senate-committee-title">Map Senate committees and subcommittees<span>.</span></h1>
-        <p class="summary">A first public view of Senate committee structure: full committee rosters, subcommittee assignments, chairs, ranking members, and upcoming hearings.</p>
+        <p class="summary">A first public view of Senate committee structure: full committee rosters, subcommittee assignments, chairs, ranking members, upcoming hearings, and Congress.gov-ready historical meetings.</p>
       </div>
 
       <div class="witness-hero-card">
         <p class="eyebrow">Data caveat</p>
-        <h2>Current rosters, live schedule</h2>
-        <p>Membership comes from current Senate.gov XML. Upcoming hearings come from the live Senate schedule feed. Historical hearing reconstruction needs Congress.gov event pages, GovInfo, and committee archives.</p>
+        <h2>Current rosters, expandable history</h2>
+        <p>Membership comes from current Senate.gov XML. Upcoming hearings come from the live Senate schedule feed. Historical meetings can be refreshed from Congress.gov when a Congress.gov API key is configured.</p>
       </div>
     </section>
 
@@ -55,7 +56,7 @@
       <article><strong id="senate-committee-count">0</strong><span>Committees</span></article>
       <article><strong id="senate-subcommittee-count">0</strong><span>Subcommittees</span></article>
       <article><strong id="senate-member-count">0</strong><span>Senators</span></article>
-      <article><strong id="senate-hearing-count">0</strong><span>Upcoming hearings</span></article>
+      <article><strong id="senate-hearing-count">0</strong><span>Meetings loaded</span></article>
     </section>
 
     <section class="witness-toolbar senate-committee-toolbar" aria-label="Senate committee filters">
@@ -91,7 +92,7 @@
           <option value="name">Name A-Z</option>
           <option value="members">Most members</option>
           <option value="subcommittees">Most subcommittees</option>
-          <option value="hearings">Upcoming hearings</option>
+          <option value="hearings">Most meetings</option>
         </select>
       </div>
     </section>
@@ -105,12 +106,12 @@
         </div>
         <div class="sidebar-block">
           <p class="eyebrow">Hearings</p>
-          <p>Upcoming hearings are pulled from the Senate.gov hearings and meetings XML feed. Past scheduled hearings require a separate Congress.gov event reconstruction layer.</p>
+          <p>Upcoming hearings are pulled from the Senate.gov hearings and meetings XML feed. Historical meetings are pulled from Congress.gov when the Congress.gov API key is available.</p>
           <p><a href="https://www.senate.gov/committees/hearings_meetings.htm" target="_blank" rel="noopener">Open Senate hearing schedule</a></p>
         </div>
         <div class="sidebar-block">
           <p class="eyebrow">Next layer</p>
-          <p>Witness lists, prepared testimony, transcripts, and archived videos will need to be reconciled from committee websites, Congress.gov, and GovInfo.</p>
+          <p>Congress.gov meeting records can include witnesses, prepared testimony, transcripts, videos, and related legislation when committees publish those details.</p>
           <p><a href="https://www.congress.gov/help/committee-schedule-meetings-hearings" target="_blank" rel="noopener">Open Congress.gov schedule notes</a></p>
         </div>
         <div class="committee-list" id="senate-committee-list"></div>
