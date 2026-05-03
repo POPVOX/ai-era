@@ -255,6 +255,16 @@ function linkBillTitle(title, href) {
   return href ? `<a href="${escapeHtml(href)}">${escapeHtml(value)}</a>` : escapeHtml(value);
 }
 
+function memberProfileHrefFromName(name) {
+  const clean = String(name || '').replace(/^(Rep\.|Sen\.|Hon\.)\s+/i, '').trim();
+  return clean ? `member.html?id=${encodeURIComponent(clean)}` : '';
+}
+
+function linkSponsorName(name) {
+  const href = memberProfileHrefFromName(name);
+  return href ? `<a href="${escapeHtml(href)}">${escapeHtml(name)}</a>` : escapeHtml(name);
+}
+
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, (ch) => ({
     '&': '&amp;',
@@ -360,7 +370,7 @@ function billCard(bill) {
         <span class="bill-date">${escapeHtml(formatDate(bill.latestDate || bill.introducedDate))}</span>
       </div>
       <h3>${linkBillTitle(bill.title, href)}</h3>
-      ${bill.sponsor ? `<p class="bill-sponsor">${escapeHtml(bill.sponsor)}</p>` : ''}
+      ${bill.sponsor ? `<p class="bill-sponsor">${linkSponsorName(bill.sponsor)}</p>` : ''}
       <p class="bill-status">${linkBillRefs(bill.status || 'Status pending')}</p>
       ${committees}
       ${subjects}
@@ -378,7 +388,7 @@ function billRow(bill) {
     <tr>
       <td>${href ? `<a class="link-button" href="${escapeHtml(href)}">${escapeHtml(number)}</a>` : escapeHtml(number)}</td>
       <td>${linkBillTitle(bill.title, href)}</td>
-      <td>${bill.sponsor ? escapeHtml(bill.sponsor) : '—'}</td>
+      <td>${bill.sponsor ? linkSponsorName(bill.sponsor) : '—'}</td>
       <td>${linkBillRefs(bill.status || 'Status pending')}</td>
       <td>${escapeHtml(formatDate(bill.latestDate || bill.introducedDate))}</td>
       <td>${bill.url ? `<a class="link-button" href="${escapeHtml(bill.url)}" target="_blank" rel="noopener">Source</a>` : ''}</td>

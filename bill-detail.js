@@ -37,6 +37,28 @@ function memberLabel(member) {
   return [role, member.full_name || member.name, constituency].filter(Boolean).join(' ');
 }
 
+function compactMemberName(value) {
+  return String(value || '')
+    .replace(/^(Rep\.|Sen\.|Hon\.)\s+/i, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function memberProfileHref(member, label) {
+  const id = member?.bioguide_id
+    || member?.bioguideId
+    || member?.external_id
+    || member?.id
+    || compactMemberName(member?.full_name || member?.name || label);
+  return id ? `../member.html?id=${encodeURIComponent(id)}` : '';
+}
+
+function memberProfileLink(member, label) {
+  const text = label || memberLabel(member);
+  const href = memberProfileHref(member, text);
+  return href ? `<a href="${escapeHtml(href)}">${escapeHtml(text)}</a>` : escapeHtml(text);
+}
+
 function readableSummary() {
   const summary = billState.detail?.description || billState.detail?.summary || billState.data.summary;
   if (summary) return summary;
@@ -65,6 +87,13 @@ function setRow(row, element, value) {
   element.textContent = text;
 }
 
+function setRowHtml(row, element, html, textFallback) {
+  if (!row || !element) return;
+  const text = String(textFallback || '').trim();
+  row.hidden = !text;
+  element.innerHTML = html || '';
+}
+
 function updatePeoplePanel() {
   if (!billEls.peoplePanel) return;
   const hasVisibleRows = [billEls.sponsorRow, billEls.cosponsorsRow].some((row) => row && !row.hidden);
@@ -80,7 +109,8 @@ function hydrateDetail(detailPayload) {
   const detail = detailPayload?.data || detailPayload;
   billState.detail = detail;
 
-  const sponsor = memberLabel(detail?._popvox_sponsor)
+  const sponsorMember = detail?._popvox_sponsor || detail?.sponsor;
+  const sponsor = memberLabel(sponsorMember)
     || detail?.sponsor?.name
     || detail?.attributes?.sponsor_bioguide_id
     || billState.data.sponsor
@@ -90,12 +120,15 @@ function hydrateDetail(detailPayload) {
   const committees = normalizeCommittees(detail);
   const introduced = detail?.attributes?.introduced_date || detail?.document_date || billState.data.introducedDate;
 
-  setRow(billEls.sponsorRow, billEls.sponsor, sponsor);
+  setRowHtml(billEls.sponsorRow, billEls.sponsor, sponsor ? memberProfileLink(sponsorMember, sponsor) : '', sponsor);
   if (billEls.cosponsors) {
     const cosponsorText = cosponsors.length
       ? cosponsors.map(memberLabel).join('; ')
       : (cosponsorCount ? `${Number(cosponsorCount || 0).toLocaleString()} cosponsor${Number(cosponsorCount || 0) === 1 ? '' : 's'}` : '');
-    setRow(billEls.cosponsorsRow, billEls.cosponsors, cosponsorText);
+    const cosponsorHtml = cosponsors.length
+      ? cosponsors.map((member) => memberProfileLink(member)).join('; ')
+      : escapeHtml(cosponsorText);
+    setRowHtml(billEls.cosponsorsRow, billEls.cosponsors, cosponsorHtml, cosponsorText);
   }
   setRow(billEls.committeesRow, billEls.committees, committees.length ? committees.join(' · ') : '');
   if (billEls.introduced) billEls.introduced.textContent = introduced || 'Date pending';
