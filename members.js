@@ -179,6 +179,11 @@ function displayDistrict(member) {
   return [member.state || member.district, member.chamber].filter(Boolean).join(' · ') || 'Jurisdiction pending';
 }
 
+function memberProfileUrl(member) {
+  const id = member.bioguide || member.id || member.fullName;
+  return `member.html?id=${encodeURIComponent(id)}`;
+}
+
 function fillSelect(select, values, label) {
   const current = select.value;
   select.innerHTML = `<option value="">${label}</option>`;
@@ -263,8 +268,9 @@ function memberCard(member) {
     ? `<img class="avatar image" src="${escapeAttr(member.image)}" alt="">`
     : `<div class="avatar ${avatarClass(member.party)}">${escapeHtml(initials(member))}</div>`;
 
-  const link = member.website
-    ? `<a class="link-button" href="${escapeAttr(member.website)}" target="_blank" rel="noreferrer">View profile →</a>`
+  const profileUrl = memberProfileUrl(member);
+  const officialLink = member.website
+    ? `<a class="link-button secondary-link" href="${escapeAttr(member.website)}" target="_blank" rel="noreferrer">Official site</a>`
     : '';
 
   return `
@@ -272,7 +278,7 @@ function memberCard(member) {
       <div class="member-top">
         ${avatar}
         <div>
-          <h3 class="member-name">${escapeHtml(member.fullName)}</h3>
+          <h3 class="member-name"><a href="${escapeAttr(profileUrl)}">${escapeHtml(member.fullName)}</a></h3>
           <p class="member-district">${escapeHtml(displayDistrict(member))}</p>
         </div>
         <span class="party-marker ${partyClass(member.party)}" aria-label="${escapeAttr(member.party || 'Party unknown')}">${escapeHtml(partyShort(member.party))}</span>
@@ -285,21 +291,28 @@ function memberCard(member) {
       ${focus}
       <div class="member-footer">
         <div class="signal"><i style="height:35%"></i><i style="height:65%"></i><i style="height:45%"></i><i style="height:80%"></i></div>
-        ${link}
+        <div class="member-card-actions">
+          <a class="link-button" href="${escapeAttr(profileUrl)}">Open profile →</a>
+          ${officialLink}
+        </div>
       </div>
     </article>
   `;
 }
 
 function memberRow(member) {
+  const profileUrl = memberProfileUrl(member);
   return `
     <tr>
-      <td>${escapeHtml(member.fullName)}</td>
+      <td><a href="${escapeAttr(profileUrl)}">${escapeHtml(member.fullName)}</a></td>
       <td>${escapeHtml(member.party || '—')}</td>
       <td>${escapeHtml(member.district || member.state || '—')}</td>
       <td>${escapeHtml(member.chamber || '—')}</td>
       <td>${escapeHtml(member.role || '—')}</td>
-      <td>${member.website ? `<a href="${escapeAttr(member.website)}" target="_blank" rel="noreferrer">Website</a>` : '—'}</td>
+      <td>
+        <a href="${escapeAttr(profileUrl)}">Profile</a>
+        ${member.website ? ` · <a href="${escapeAttr(member.website)}" target="_blank" rel="noreferrer">Website</a>` : ''}
+      </td>
     </tr>
   `;
 }

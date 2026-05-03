@@ -4861,6 +4861,126 @@ select:focus {
   box-shadow: 0 16px 32px rgba(13, 39, 69, 0.1);
 }
 
+.member-name a {
+  color: inherit;
+}
+
+.member-name a:hover {
+  color: var(--coral);
+}
+
+.member-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.link-button.secondary-link {
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.member-profile-shell {
+  padding: 34px 0 82px;
+}
+
+.member-profile-hero .witness-profile-avatar {
+  background:
+    radial-gradient(circle at 74% 18%, rgba(244, 90, 63, 0.9) 0 8%, transparent 9%),
+    linear-gradient(135deg, var(--ink), #28425f);
+}
+
+.member-profile-overview {
+  align-items: start;
+}
+
+.member-source-list {
+  display: grid;
+  gap: 12px;
+}
+
+.member-source-row {
+  display: grid;
+  gap: 4px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.member-source-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.member-source-row span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.member-source-row strong {
+  color: var(--ink);
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.member-profile-links {
+  margin-top: 18px;
+}
+
+.member-committee-grid,
+.member-related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.member-committee-grid article,
+.member-related-card {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(248, 243, 238, 0.62);
+}
+
+.member-committee-grid h3,
+.member-related-card h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.member-committee-grid p,
+.member-related-card p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.48;
+}
+
+.member-related-card {
+  display: grid;
+  gap: 8px;
+  transition: border-color 0.18s ease, transform 0.18s ease;
+}
+
+.member-related-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(244, 90, 63, 0.42);
+}
+
+.member-related-card span {
+  color: var(--coral);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
 .bill-card {
   position: relative;
   display: flex;
@@ -6245,6 +6365,11 @@ a.bill-number:hover {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .member-committee-grid,
+  .member-related-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .insight-row {
     grid-template-columns: 1fr;
   }
@@ -6523,6 +6648,8 @@ a.bill-number:hover {
 
   .stats-grid,
   .member-grid,
+  .member-committee-grid,
+  .member-related-grid,
   .legislation-grid,
   .witness-stats,
   .committee-stats {

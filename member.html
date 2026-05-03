@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>POPVOX | Lawmaker Profile</title>
+  <meta name="description" content="Lawmaker profile with district, committee, and source context from CongressLink data.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="https://s3.us-east-1.amazonaws.com/static.popvox.com/images/pvox+favicon.png">
+</head>
+
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="index.html" aria-label="POPVOX home">
+        <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+      </a>
+
+      <div class="nav-links">
+        <a class="active" href="explore.html">Explore</a>
+        <a href="news.html">News</a>
+        <a href="about.html">About</a>
+        <a href="team.html">Team</a>
+        <a href="contact.html">Contact</a>
+      </div>
+
+      <div class="nav-actions">
+        <a class="button secondary" href="members.html">Lawmaker Explorer</a>
+        <a class="button" href="mailto:info@popvox.com">Request a demo</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="member-profile-shell">
+    <section class="witness-profile-hero member-profile-hero">
+      <a class="back-link" href="members.html">← Lawmaker Explorer</a>
+      <div class="witness-profile-hero-grid">
+        <div class="witness-profile-identity">
+          <div id="member-profile-avatar" class="witness-profile-avatar">PV</div>
+          <div>
+            <p class="eyebrow">Lawmaker profile</p>
+            <h1 id="member-profile-name">Loading lawmaker<span>.</span></h1>
+            <p id="member-profile-role">Loading member data from CongressLink.</p>
+            <strong id="member-profile-district"></strong>
+          </div>
+        </div>
+        <div class="witness-profile-badges" id="member-profile-badges"></div>
+      </div>
+    </section>
+
+    <section class="expenditure-stats" aria-label="Lawmaker profile statistics">
+      <article><strong id="member-stat-chamber">—</strong><span>Chamber</span></article>
+      <article><strong id="member-stat-party">—</strong><span>Party</span></article>
+      <article><strong id="member-stat-state">—</strong><span>State</span></article>
+      <article><strong id="member-stat-committees">0</strong><span>Committees</span></article>
+    </section>
+
+    <section class="witness-profile-overview member-profile-overview">
+      <article>
+        <p class="eyebrow">Profile</p>
+        <h2>Public context</h2>
+        <p id="member-profile-summary">Loading public profile context.</p>
+        <div class="witness-profile-links member-profile-links" id="member-profile-links"></div>
+      </article>
+
+      <aside>
+        <p class="eyebrow">Source identifiers</p>
+        <div class="member-source-list" id="member-source-list"></div>
+      </aside>
+    </section>
+
+    <section class="witness-profile-section">
+      <p class="eyebrow">Committee roles</p>
+      <h2>Committee assignments</h2>
+      <div class="member-committee-grid" id="member-committee-grid"></div>
+    </section>
+
+    <section class="witness-profile-section">
+      <p class="eyebrow">Related records</p>
+      <h2>Explore connected public data</h2>
+      <div class="member-related-grid" id="member-related-grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="footer-brand" href="index.html" aria-label="POPVOX home">
+      <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+    </a>
+    <div class="footer-links">
+      <a href="explore.html">Explore</a>
+      <a href="news.html">News</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+  </footer>
+
+  <script src="member.js"></script>
+</body>
+
+</html>
