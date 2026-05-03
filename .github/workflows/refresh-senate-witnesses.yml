@@ -26,6 +26,9 @@ jobs:
           SENATE_WITNESS_CONGRESSES: "119"
         run: npm run build:senate-witnesses
 
+      - name: Link published hearings into Senate committees
+        run: npm run link:senate-published-hearings
+
       - name: Run checks
         run: npm run check
 
@@ -33,7 +36,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/senate-witness-data.json assets/senate-witness-data.js senate-witnesses senate-events
+          git add assets/senate-witness-data.json assets/senate-witness-data.js assets/senate-committee-data.json assets/senate-committee-data.js senate-witnesses senate-events
           if git diff --cached --quiet; then
             echo "No refreshed Senate witness data to commit."
           else

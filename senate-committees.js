@@ -73,7 +73,7 @@ function renderStats() {
   els.count.textContent = fmt.format(data.metrics.committeeCount || 0);
   els.subcommittees.textContent = fmt.format(data.metrics.subcommitteeCount || 0);
   els.members.textContent = fmt.format(data.metrics.senatorCount || 0);
-  els.hearings.textContent = fmt.format((data.metrics.upcomingHearingCount || 0) + (data.metrics.historicalMeetingCount || 0));
+  els.hearings.textContent = fmt.format((data.metrics.upcomingHearingCount || 0) + (data.metrics.historicalMeetingCount || 0) + (data.metrics.publishedHearingCount || 0));
 }
 
 function textFor(committee) {
@@ -92,6 +92,7 @@ function textFor(committee) {
     ]),
     ...(committee.upcomingHearings || []).map((hearing) => `${hearing.matter} ${hearing.subcommittee} ${hearing.room}`),
     ...(committee.historicalMeetings || []).map((meeting) => `${meeting.title} ${meeting.type} ${meeting.status} ${meeting.location} ${(meeting.witnesses || []).map((witness) => `${witness.name} ${witness.organization}`).join(" ")} ${(meeting.bills || []).map((bill) => `${bill.type} ${bill.number}`).join(" ")}`),
+    ...(committee.publishedHearings || []).map((hearing) => `${hearing.title} ${(hearing.witnesses || []).map((witness) => `${witness.displayName} ${witness.organization}`).join(" ")}`),
   ].join(" ").toLowerCase();
 }
 
@@ -107,7 +108,7 @@ function visibleCommittees() {
   rows.sort((a, b) => {
     if (state.sort === "members") return (b.memberCount || 0) - (a.memberCount || 0) || a.displayName.localeCompare(b.displayName);
     if (state.sort === "subcommittees") return (b.subcommitteeCount || 0) - (a.subcommitteeCount || 0) || a.displayName.localeCompare(b.displayName);
-    if (state.sort === "hearings") return ((b.upcomingHearings?.length || 0) + (b.historicalMeetings?.length || 0)) - ((a.upcomingHearings?.length || 0) + (a.historicalMeetings?.length || 0)) || a.displayName.localeCompare(b.displayName);
+    if (state.sort === "hearings") return ((b.upcomingHearings?.length || 0) + (b.historicalMeetings?.length || 0) + (b.publishedHearings?.length || 0)) - ((a.upcomingHearings?.length || 0) + (a.historicalMeetings?.length || 0) + (a.publishedHearings?.length || 0)) || a.displayName.localeCompare(b.displayName);
     return a.displayName.localeCompare(b.displayName);
   });
   return rows;
@@ -165,6 +166,31 @@ function renderHistoricalMeeting(meeting) {
   </article>`;
 }
 
+function renderPublishedHearing(hearing) {
+  const witnesses = hearing.witnesses || [];
+  const sourceLinks = [
+    hearing.localUrl ? `<a href="${escapeHtml(hearing.localUrl)}">Event page</a>` : "",
+    hearing.pdfUrl ? `<a href="${escapeHtml(hearing.pdfUrl)}" target="_blank" rel="noopener">PDF</a>` : "",
+    hearing.htmlUrl ? `<a href="${escapeHtml(hearing.htmlUrl)}" target="_blank" rel="noopener">HTML</a>` : "",
+  ].filter(Boolean).join("");
+  const witnessLinks = witnesses.slice(0, 4).map((witness) => (
+    witness.profileUrl
+      ? `<a href="${escapeHtml(witness.profileUrl)}">${escapeHtml(witness.displayName)}</a>`
+      : `<span>${escapeHtml(witness.displayName)}</span>`
+  )).join("");
+  return `<article class="senate-hearing-row published">
+    <div>
+      <span>${escapeHtml(formatDate(hearing.date || hearing.dateIssued))} | GovInfo published hearing</span>
+      <h4>${hearing.localUrl ? `<a href="${escapeHtml(hearing.localUrl)}">${escapeHtml(hearing.title || "Published Senate hearing")}</a>` : escapeHtml(hearing.title || "Published Senate hearing")}</h4>
+      <p>${fmt.format(hearing.witnessCount || witnesses.length || 0)} extracted witness slots${hearing.packageId ? ` | ${escapeHtml(hearing.packageId)}` : ""}</p>
+      ${witnessLinks ? `<div class="senate-witness-mini-list">${witnessLinks}${witnesses.length > 4 ? `<span>${fmt.format(witnesses.length - 4)} more</span>` : ""}</div>` : ""}
+    </div>
+    <div class="witness-link-row">
+      ${sourceLinks}
+    </div>
+  </article>`;
+}
+
 function renderDetail(committee) {
   if (!committee) {
     els.detail.innerHTML = "";
@@ -173,6 +199,7 @@ function renderDetail(committee) {
   const subcommittees = committee.subcommittees || [];
   const hearings = committee.upcomingHearings || [];
   const historicalMeetings = committee.historicalMeetings || [];
+  const publishedHearings = committee.publishedHearings || [];
   const historicalNote = data.apiRefresh?.congressGovHistoricalMeetings?.note || "";
   els.detail.innerHTML = `
     <article class="senate-committee-feature">
@@ -187,7 +214,7 @@ function renderDetail(committee) {
         <div><span>Chair</span><strong>${escapeHtml(memberLine(committee.chair))}</strong></div>
         <div><span>Ranking member</span><strong>${escapeHtml(memberLine(committee.ranking))}</strong></div>
         <div><span>Members</span><strong>${fmt.format(committee.memberCount || 0)}</strong></div>
-        <div><span>Meetings</span><strong>${fmt.format(hearings.length + historicalMeetings.length)}</strong></div>
+        <div><span>Events</span><strong>${fmt.format(hearings.length + historicalMeetings.length + publishedHearings.length)}</strong></div>
       </div>
       <div class="senate-detail-columns">
         <section>
@@ -207,13 +234,15 @@ function renderDetail(committee) {
         </section>
         <section>
           <div class="directory-head compact-head">
-            <div><p class="eyebrow">Meetings</p><h4>${fmt.format(hearings.length + historicalMeetings.length)} loaded</h4></div>
+            <div><p class="eyebrow">Meetings and published hearings</p><h4>${fmt.format(hearings.length + historicalMeetings.length + publishedHearings.length)} loaded</h4></div>
           </div>
           <div class="senate-hearing-list">
             ${hearings.length ? `<p class="senate-meeting-label">Upcoming from Senate.gov</p>${hearings.map(renderHearing).join("")}` : ""}
             ${historicalMeetings.length ? `<p class="senate-meeting-label">Historical from Congress.gov</p>${historicalMeetings.slice(0, 20).map(renderHistoricalMeeting).join("")}` : ""}
+            ${publishedHearings.length ? `<p class="senate-meeting-label">Published hearings from GovInfo</p>${publishedHearings.slice(0, 20).map(renderPublishedHearing).join("")}` : ""}
             ${historicalMeetings.length > 20 ? `<p class="committee-empty">Showing the 20 most recent historical meetings for this committee.</p>` : ""}
-            ${!hearings.length && !historicalMeetings.length ? `<p class="committee-empty">${escapeHtml(historicalNote || "No upcoming or historical meetings are loaded for this committee yet.")}</p>` : ""}
+            ${publishedHearings.length > 20 ? `<p class="committee-empty">Showing the 20 most recent published GovInfo hearings for this committee.</p>` : ""}
+            ${!hearings.length && !historicalMeetings.length && !publishedHearings.length ? `<p class="committee-empty">${escapeHtml(historicalNote || "No upcoming, historical, or published hearings are loaded for this committee yet.")}</p>` : ""}
           </div>
         </section>
       </div>
@@ -233,7 +262,7 @@ function renderCard(committee) {
     <div class="committee-card-metrics">
       <span>${fmt.format(committee.memberCount || 0)} members</span>
       <span>${fmt.format(committee.subcommitteeCount || 0)} subcommittees</span>
-      <span>${fmt.format((committee.upcomingHearings?.length || 0) + (committee.historicalMeetings?.length || 0))} meetings</span>
+      <span>${fmt.format((committee.upcomingHearings?.length || 0) + (committee.historicalMeetings?.length || 0) + (committee.publishedHearings?.length || 0))} events</span>
     </div>
     <button class="link-button" type="button" data-code="${escapeHtml(committee.code)}">View rosters</button>
   </article>`;

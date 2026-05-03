@@ -3643,6 +3643,11 @@ main {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.88), rgba(250, 247, 243, 0.92));
 }
 
+.senate-hearing-row.published {
+  border-color: rgba(244, 90, 63, 0.24);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(244, 90, 63, 0.06));
+}
+
 .senate-subcommittee-list p,
 .senate-hearing-row p {
   margin: 8px 0 0;
@@ -3683,6 +3688,30 @@ main {
   color: var(--ink);
   font-size: 11px;
   font-weight: 850;
+}
+
+.senate-witness-mini-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.senate-witness-mini-list a,
+.senate-witness-mini-list span {
+  padding: 5px 8px;
+  border: 1px solid rgba(13, 43, 73, 0.12);
+  border-radius: 999px;
+  background: rgba(13, 43, 73, 0.06);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.senate-witness-mini-list a:hover {
+  border-color: rgba(244, 90, 63, 0.4);
+  color: var(--coral);
 }
 
 .senate-member-pills {
