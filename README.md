@@ -18,6 +18,7 @@ The site is intentionally lightweight. Most pages are static HTML/CSS/JS, with a
   - Executive Reports Dashboard
   - House Rules Explorer
   - House Expenditure Explorer
+  - Senate Disbursement Explorer
 - Generated detail pages:
   - Bill pages in `bills/`
   - Committee pages in `committees/`
@@ -116,6 +117,14 @@ The Registered Lobbyist Explorer uses:
 
 Lobbyist profiles summarize public filing relationships. They should be treated as a source-record index, not as an assertion about current representation without checking the linked filing.
 
+The Senate Disbursement Explorer uses:
+
+- `assets/senate-disbursement-data.{json,js}` for staff profiles, vendors, transaction rows, charts, and source references extracted from public PDF reports.
+- `scripts/build-senate-disbursement-data.py` to download and parse the 2025-overlapping Secretary of the Senate reports from GovInfo.
+- `.github/workflows/refresh-senate-disbursements.yml` to rebuild the Senate data weekly.
+
+Senate reports are currently PDF-only. The Oct. 1, 2024 to Mar. 31, 2025 report period overlaps 2024/2025; matching records from that report are included with a visible caveat.
+
 Generated pages and generated data are committed so the site can be deployed as a mostly static site. Live CongressLink-backed pages still need the local/server proxy routes listed above unless an equivalent production proxy is provided.
 
 The local folder `Committee Corpus + Witness Directory - CTO Share/` is source/reference material used during development. It is intentionally ignored by Git because it is large and contains raw working files that do not need to ship with the public site.
@@ -156,6 +165,7 @@ Then spot-check:
 - `/legislation.html`
 - `/committees.html`
 - `/staff.html`
+- `/senate-disbursements.html`
 - `/lobbyists.html`
 - `/witnesses.html`
 - `/journal.html`

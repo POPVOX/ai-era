@@ -3,6 +3,11 @@ node_modules/
 .env
 .env.*
 .claude/
+__pycache__/
+*.pyc
 
 # Local source/reference material used to generate public static data.
 Committee Corpus + Witness Directory - CTO Share/
+
+# Downloaded Senate source PDFs are reproducible from govinfo URLs.
+data/senate-disbursements/raw/*.pdf
