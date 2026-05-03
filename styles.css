@@ -3529,6 +3529,13 @@ main {
   cursor: pointer;
 }
 
+.senate-committee-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: auto;
+}
+
 .senate-committee-detail {
   margin-bottom: 18px;
 }

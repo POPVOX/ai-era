@@ -252,6 +252,7 @@ function renderDetail(committee) {
 
 function renderCard(committee) {
   const selected = state.selectedCode === committee.code;
+  const pageUrl = committee.localUrl || `senate-committees/${committee.slug || committee.code}.html`;
   return `<article class="committee-card senate-committee-card${selected ? " selected" : ""}" data-code="${escapeHtml(committee.code)}">
     <div class="committee-card-head">
       <div class="committee-mini-icon" aria-hidden="true"></div>
@@ -264,7 +265,10 @@ function renderCard(committee) {
       <span>${fmt.format(committee.subcommitteeCount || 0)} subcommittees</span>
       <span>${fmt.format((committee.upcomingHearings?.length || 0) + (committee.historicalMeetings?.length || 0) + (committee.publishedHearings?.length || 0))} events</span>
     </div>
-    <button class="link-button" type="button" data-code="${escapeHtml(committee.code)}">View rosters</button>
+    <div class="senate-committee-card-actions">
+      <button class="link-button" type="button" data-code="${escapeHtml(committee.code)}">Preview</button>
+      <a class="link-button" href="${escapeHtml(pageUrl)}">Open page</a>
+    </div>
   </article>`;
 }
 
@@ -316,6 +320,7 @@ function bindEvents() {
     render();
   });
   document.addEventListener("click", (event) => {
+    if (event.target.closest("a[href]")) return;
     const trigger = event.target.closest("[data-code]");
     if (trigger) selectCommittee(trigger.dataset.code);
   });

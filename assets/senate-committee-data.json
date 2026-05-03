@@ -1420,7 +1420,8 @@
           "witnessCount": 0,
           "witnesses": []
         }
-      ]
+      ],
+      "localUrl": "senate-committees/senate-committee-on-agriculture-nutrition-and-forestry.html"
     },
     {
       "chamber": "Senate",
@@ -4275,7 +4276,8 @@
           "congressGovUrl": "https://www.congress.gov/event/119th-congress/senate-event/337303"
         }
       ],
-      "publishedHearings": []
+      "publishedHearings": [],
+      "localUrl": "senate-committees/senate-committee-on-appropriations.html"
     },
     {
       "chamber": "Senate",
@@ -7360,7 +7362,8 @@
           "witnessCount": 0,
           "witnesses": []
         }
-      ]
+      ],
+      "localUrl": "senate-committees/senate-committee-on-armed-services.html"
     },
     {
       "chamber": "Senate",
@@ -8784,7 +8787,8 @@
           "witnessCount": 0,
           "witnesses": []
         }
-      ]
+      ],
+      "localUrl": "senate-committees/senate-committee-on-banking-housing-and-urban-affairs.html"
     },
     {
       "chamber": "Senate",
@@ -9151,7 +9155,8 @@
             }
           ]
         }
-      ]
+      ],
+      "localUrl": "senate-committees/senate-committee-on-the-budget.html"
     },
     {
       "chamber": "Senate",
@@ -13271,7 +13276,8 @@
             }
           ]
         }
-      ]
+      ],
+      "localUrl": "senate-committees/senate-committee-on-commerce-science-and-transportation.html"
     },
     {
       "chamber": "Senate",
@@ -15873,7 +15879,8 @@
           "witnessCount": 0,
           "witnesses": []
         }
-      ]
+      ],
+      "localUrl": "senate-committees/senate-committee-on-energy-and-natural-resources.html"
     },
     {
       "chamber": "Senate",
@@ -17341,7 +17348,8 @@
           "witnessCount": 0,
           "witnesses": []
         }
-      ]
+      ],
+      "localUrl": "senate-committees/senate-committee-on-environment-and-public-works.html"
     },
     {
       "chamber": "Senate",
@@ -18661,7 +18669,8 @@
           "congressGovUrl": "https://www.congress.gov/event/119th-congress/senate-event/337269"
         }
       ],
-      "publishedHearings": []
+      "publishedHearings": [],
+      "localUrl": "senate-committees/senate-committee-on-finance.html"
     },
     {
       "chamber": "Senate",
@@ -21521,7 +21530,8 @@
           "witnessCount": 0,
           "witnesses": []
         }
-      ]
+      ],
+      "localUrl": "senate-committees/senate-committee-on-foreign-relations.html"
     },
     {
       "chamber": "Senate",
@@ -23518,7 +23528,8 @@
           "congressGovUrl": "https://www.congress.gov/event/119th-congress/senate-event/337277"
         }
       ],
-      "publishedHearings": []
+      "publishedHearings": [],
+      "localUrl": "senate-committees/senate-committee-on-health-education-labor-and-pensions.html"
     },
     {
       "chamber": "Senate",
@@ -24995,7 +25006,8 @@
           "witnessCount": 0,
           "witnesses": []
         }
-      ]
+      ],
+      "localUrl": "senate-committees/senate-committee-on-homeland-security-and-governmental-affairs.html"
     },
     {
       "chamber": "Senate",
@@ -25487,7 +25499,8 @@
           "witnessCount": 0,
           "witnesses": []
         }
-      ]
+      ],
+      "localUrl": "senate-committees/senate-committee-on-indian-affairs.html"
     },
     {
       "chamber": "Senate",
@@ -25558,7 +25571,8 @@
       },
       "upcomingHearings": [],
       "historicalMeetings": [],
-      "publishedHearings": []
+      "publishedHearings": [],
+      "localUrl": "senate-committees/senate-joint-committee-of-congress-on-the-library.html"
     },
     {
       "chamber": "Senate",
@@ -25629,7 +25643,8 @@
       },
       "upcomingHearings": [],
       "historicalMeetings": [],
-      "publishedHearings": []
+      "publishedHearings": [],
+      "localUrl": "senate-committees/senate-joint-committee-on-printing.html"
     },
     {
       "chamber": "Senate",
@@ -25700,7 +25715,8 @@
       },
       "upcomingHearings": [],
       "historicalMeetings": [],
-      "publishedHearings": []
+      "publishedHearings": [],
+      "localUrl": "senate-committees/senate-joint-committee-on-taxation.html"
     },
     {
       "chamber": "Senate",
@@ -25818,7 +25834,8 @@
       },
       "upcomingHearings": [],
       "historicalMeetings": [],
-      "publishedHearings": []
+      "publishedHearings": [],
+      "localUrl": "senate-committees/senate-joint-economic-committee.html"
     },
     {
       "chamber": "Senate",
@@ -29884,7 +29901,8 @@
           "witnessCount": 0,
           "witnesses": []
         }
-      ]
+      ],
+      "localUrl": "senate-committees/senate-committee-on-the-judiciary.html"
     },
     {
       "chamber": "Senate",
@@ -30112,7 +30130,8 @@
           "congressGovUrl": "https://www.congress.gov/event/119th-congress/senate-event/337739"
         }
       ],
-      "publishedHearings": []
+      "publishedHearings": [],
+      "localUrl": "senate-committees/senate-committee-on-rules-and-administration.html"
     },
     {
       "chamber": "Senate",
@@ -30191,7 +30210,8 @@
       },
       "upcomingHearings": [],
       "historicalMeetings": [],
-      "publishedHearings": []
+      "publishedHearings": [],
+      "localUrl": "senate-committees/senate-select-committee-on-ethics.html"
     },
     {
       "chamber": "Senate",
@@ -31326,7 +31346,8 @@
           "witnessCount": 0,
           "witnesses": []
         }
-      ]
+      ],
+      "localUrl": "senate-committees/senate-select-committee-on-intelligence.html"
     },
     {
       "chamber": "Senate",
@@ -32145,7 +32166,8 @@
           "witnessCount": 0,
           "witnesses": []
         }
-      ]
+      ],
+      "localUrl": "senate-committees/senate-committee-on-small-business-and-entrepreneurship.html"
     },
     {
       "chamber": "Senate",
@@ -33447,7 +33469,8 @@
             }
           ]
         }
-      ]
+      ],
+      "localUrl": "senate-committees/senate-special-committee-on-aging.html"
     },
     {
       "chamber": "Senate",
@@ -35199,7 +35222,8 @@
           "witnessCount": 0,
           "witnesses": []
         }
-      ]
+      ],
+      "localUrl": "senate-committees/senate-committee-on-veterans-affairs.html"
     }
   ],
   "upcomingHearings": [

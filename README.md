@@ -25,6 +25,7 @@ The site is intentionally lightweight. Most pages are static HTML/CSS/JS, with a
   - Bill pages in `bills/`
   - Committee pages in `committees/`
   - Committee event pages in `events/`
+  - Senate committee pages in `senate-committees/`
   - Witness profile pages in `witnesses/`
   - Senate witness profile pages in `senate-witnesses/`
   - Senate published hearing pages in `senate-events/`
@@ -135,6 +136,7 @@ The Senate Committee Explorer uses:
 - `assets/senate-committee-data.{json,js}` for Senate committees, subcommittees, committee members, subcommittee rosters, upcoming meetings, historical Congress.gov meetings, and linked published GovInfo hearings.
 - `scripts/build-senate-committee-data.mjs` to refresh official Senate.gov committee membership XML files, the Senate hearings and meetings XML feed, and Congress.gov historical committee meeting records when a Congress.gov key is configured.
 - `scripts/link-senate-published-hearings.mjs` to connect generated GovInfo Senate hearing pages from the Senate Witness Explorer into matching Senate committee records.
+- `scripts/build-senate-committee-pages.mjs` to generate static Senate committee profile pages from the linked committee dataset.
 - `.github/workflows/refresh-senate-committees.yml` to rebuild the Senate committee data weekly.
 
 Senate committee membership XML represents current rosters. The Senate hearings XML is a live/upcoming schedule, not a historical archive. Historical Senate meetings come from the Congress.gov committee-meeting API, which can include witnesses, witness documents, meeting documents, transcripts, videos, and related bills or nominations when those details are available. Congress.gov states Senate meeting announcements are available from June 2019 to present. Published hearing pages come from GovInfo and are linked to committees when the extracted committee name matches the current Senate.gov roster.
