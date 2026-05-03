@@ -97,6 +97,26 @@ function renderFilters() {
   }
 }
 
+function applyInitialUrlFilters() {
+  const params = new URLSearchParams(window.location.search);
+  const search = params.get("search") || params.get("q") || "";
+  const type = params.get("type") || "";
+  const period = params.get("period") || "";
+
+  if (search) {
+    state.search = search;
+    els.search.value = search;
+  }
+  if (type && [...els.type.options].some((option) => option.value === type)) {
+    state.type = type;
+    els.type.value = type;
+  }
+  if (period && [...els.period.options].some((option) => option.value === period)) {
+    state.period = period;
+    els.period.value = period;
+  }
+}
+
 function textFor(item) {
   return [
     item.label,
@@ -243,5 +263,6 @@ function bindEvents() {
 renderStats();
 renderCharts();
 renderFilters();
+applyInitialUrlFilters();
 bindEvents();
 render();

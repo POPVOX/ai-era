@@ -113,6 +113,7 @@ function hydrate() {
   fillSelect(els.office, directory.options.officeTypes || [], 'All office types');
   fillSelect(els.expense, directory.options.expenseKinds || [], 'All expense types');
   fillSelect(els.period, directory.options.periods || [], 'All periods');
+  applyInitialUrlFilters();
   renderMetricShell();
   renderBars(els.officeBars, directory.charts.byOfficeType, directory.metrics.total);
   renderDonut(directory.charts.byExpenseKind, directory.metrics.total);
@@ -120,6 +121,19 @@ function hydrate() {
   renderTopTransactions();
   state.selected = state.vendors[1] || state.vendors[0] || null;
   applyFilters();
+}
+
+function applyInitialUrlFilters() {
+  const params = new URLSearchParams(window.location.search);
+  const search = params.get('search') || params.get('q') || '';
+  const office = params.get('office') || '';
+  const expense = params.get('expense') || '';
+  const period = params.get('period') || '';
+
+  if (search) els.search.value = search;
+  if (office && [...els.office.options].some((option) => option.value === office)) els.office.value = office;
+  if (expense && [...els.expense.options].some((option) => option.value === expense)) els.expense.value = expense;
+  if (period && [...els.period.options].some((option) => option.value === period)) els.period.value = period;
 }
 
 function matches(vendor) {

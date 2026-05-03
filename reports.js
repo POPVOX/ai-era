@@ -223,6 +223,46 @@ function syncSelectPair(primary, secondary, key, value) {
   render();
 }
 
+function applyInitialUrlFilters() {
+  const params = new URLSearchParams(window.location.search);
+  const search = params.get('search') || params.get('q') || '';
+  const congress = params.get('congress') || '';
+  const agency = params.get('agency') || '';
+  const committee = params.get('committee') || '';
+  const authority = params.get('authority') || '';
+  const status = params.get('status') || '';
+
+  if (search) {
+    state.search = search;
+    els.search.value = search;
+  }
+  if (congress && [...els.congress.options].some((option) => option.value === congress)) {
+    state.congress = congress;
+    els.congress.value = congress;
+  }
+  if (agency && [...els.agency.options].some((option) => option.value === agency)) {
+    state.agency = agency;
+    els.agency.value = agency;
+    els.topAgency.value = agency;
+  }
+  if (committee && [...els.committee.options].some((option) => option.value === committee)) {
+    state.committee = committee;
+    els.committee.value = committee;
+    els.topCommittee.value = committee;
+  }
+  if (authority && [...els.authority.options].some((option) => option.value === authority)) {
+    state.authority = authority;
+    els.authority.value = authority;
+  }
+  if (status && [...els.status.options].some((option) => option.value === status)) {
+    state.status = status;
+    els.status.value = status;
+    document.querySelectorAll('[data-report-filter="status"]').forEach((button) => {
+      button.classList.toggle('active', button.dataset.value === status);
+    });
+  }
+}
+
 function exportVisibleReports() {
   const rows = filteredReports();
   const header = ['Report', 'Agency', 'Committee', 'Authority', 'Expected', 'Due to GPO', 'Received by Congress', 'Status', 'GovInfo'];
@@ -261,6 +301,7 @@ function init() {
   optionList(els.committee, reportsData.filters.committees, 'Any committee');
   optionList(els.topCommittee, reportsData.filters.committees, 'Any committee');
   optionList(els.authority, reportsData.filters.sourceKinds, 'Any authority');
+  applyInitialUrlFilters();
 
   els.search.addEventListener('input', (event) => {
     state.search = event.target.value;

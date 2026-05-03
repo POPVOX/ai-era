@@ -124,6 +124,21 @@ function renderHearingList() {
   `).join("")}`;
 }
 
+function applyInitialUrlFilters() {
+  const params = new URLSearchParams(window.location.search);
+  const search = params.get("search") || params.get("q") || "";
+  const status = params.get("status") || "";
+
+  if (search) {
+    state.search = search;
+    els.search.value = search;
+  }
+  if (status && [...els.status.options].some((option) => option.value === status)) {
+    state.status = status;
+    els.status.value = status;
+  }
+}
+
 function renderResearchLinks(profile) {
   const links = profile.links || {};
   return `<div class="witness-link-row">
@@ -195,5 +210,6 @@ function bindEvents() {
 
 renderStats();
 renderHearingList();
+applyInitialUrlFilters();
 bindEvents();
 render();

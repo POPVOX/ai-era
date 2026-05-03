@@ -115,6 +115,26 @@ function renderFilters() {
   });
 }
 
+function applyInitialUrlFilters() {
+  const params = new URLSearchParams(window.location.search);
+  const search = params.get("search") || params.get("q") || "";
+  const year = params.get("year") || "";
+  const status = params.get("status") || "";
+
+  if (search) {
+    state.search = search;
+    els.search.value = search;
+  }
+  if (year && [...els.year.options].some((option) => option.value === year)) {
+    state.year = year;
+    els.year.value = year;
+  }
+  if (status && [...els.status.options].some((option) => option.value === status)) {
+    state.status = status;
+    els.status.value = status;
+  }
+}
+
 function renderProfile(profile) {
   return `
     <article class="lobbyist-card">
@@ -172,5 +192,6 @@ function bindEvents() {
 
 renderStats();
 renderFilters();
+applyInitialUrlFilters();
 bindEvents();
 render();
