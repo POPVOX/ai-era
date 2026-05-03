@@ -6,11 +6,13 @@
   "scripts": {
     "start": "node server.mjs",
     "build": "node scripts/build-witness-pages.mjs && node scripts/build-event-pages.mjs && node scripts/build-bill-pages.mjs",
-    "build:data": "node scripts/build-house-journal-data.mjs && node scripts/build-congressional-reports-data.mjs && node scripts/build-house-expenditure-data.mjs && node scripts/build-house-staff-data.mjs && node scripts/build-lobbyist-data.mjs",
+    "build:data": "node scripts/build-house-journal-data.mjs && node scripts/build-congressional-reports-data.mjs && node scripts/build-house-expenditure-data.mjs && node scripts/build-house-staff-data.mjs && node scripts/build-lobbyist-data.mjs && node scripts/build-senate-committee-data.mjs",
     "build:lobbyists": "node scripts/build-lobbyist-data.mjs",
     "build:senate": "python3 scripts/build-senate-disbursement-data.py",
+    "build:senate-committees": "node scripts/build-senate-committee-data.mjs",
     "refresh:house-disbursements": "node scripts/refresh-house-disbursements.mjs --build",
     "refresh:senate-disbursements": "npm run build:senate",
+    "refresh:senate-committees": "npm run build:senate-committees",
     "refresh:lda": "node scripts/refresh-lda-data.mjs",
     "refresh:lobbyists": "npm run refresh:lda && npm run build:lobbyists",
     "check": "for f in scripts/*.mjs *.js; do node --check \"$f\" || exit 1; done"

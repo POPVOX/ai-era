@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>POPVOX | Senate Committee Explorer</title>
+  <meta name="description" content="Browse Senate committees, subcommittees, rosters, chairs, ranking members, and upcoming hearings from official Senate.gov XML feeds.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="https://s3.us-east-1.amazonaws.com/static.popvox.com/images/pvox+favicon.png">
+</head>
+
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="index.html" aria-label="POPVOX home">
+        <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+      </a>
+
+      <div class="nav-links">
+        <a class="active" href="explore.html">Explore</a>
+        <a href="news.html">News</a>
+        <a href="about.html">About</a>
+        <a href="team.html">Team</a>
+        <a href="contact.html">Contact</a>
+      </div>
+
+      <div class="nav-actions">
+        <a class="button secondary" href="explore.html">All Explorers</a>
+        <a class="button" href="mailto:info@popvox.com">Request a demo</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="senate-committee-shell">
+    <section class="witness-hero" aria-labelledby="senate-committee-title">
+      <div>
+        <div class="eyebrow-row">
+          <span class="tag"><span class="dot"></span> Senate Committee Explorer</span>
+          <span class="tag navy">Senate.gov XML</span>
+          <span class="tag navy" id="senate-committee-updated">Loading</span>
+        </div>
+        <h1 id="senate-committee-title">Map Senate committees and subcommittees<span>.</span></h1>
+        <p class="summary">A first public view of Senate committee structure: full committee rosters, subcommittee assignments, chairs, ranking members, and upcoming hearings.</p>
+      </div>
+
+      <div class="witness-hero-card">
+        <p class="eyebrow">Data caveat</p>
+        <h2>Current rosters, live schedule</h2>
+        <p>Membership comes from current Senate.gov XML. Upcoming hearings come from the live Senate schedule feed. Historical hearing reconstruction needs Congress.gov event pages, GovInfo, and committee archives.</p>
+      </div>
+    </section>
+
+    <section class="witness-stats" aria-label="Senate Committee Explorer statistics">
+      <article><strong id="senate-committee-count">0</strong><span>Committees</span></article>
+      <article><strong id="senate-subcommittee-count">0</strong><span>Subcommittees</span></article>
+      <article><strong id="senate-member-count">0</strong><span>Senators</span></article>
+      <article><strong id="senate-hearing-count">0</strong><span>Upcoming hearings</span></article>
+    </section>
+
+    <section class="witness-toolbar senate-committee-toolbar" aria-label="Senate committee filters">
+      <div class="witness-search-wrap">
+        <label class="label" for="senate-committee-search">Search committees</label>
+        <input id="senate-committee-search" class="search-input" type="search" placeholder="Committee, subcommittee, senator, state, topic...">
+      </div>
+
+      <div>
+        <label class="label" for="senate-committee-kind">Committee type</label>
+        <select id="senate-committee-kind">
+          <option value="">All types</option>
+          <option value="Standing">Standing</option>
+          <option value="Select or Special">Select or special</option>
+          <option value="Joint">Joint</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="label" for="senate-committee-party">Leadership</label>
+        <select id="senate-committee-party">
+          <option value="">All leadership</option>
+          <option value="R">Republican chair</option>
+          <option value="D">Democratic chair</option>
+          <option value="I">Independent chair</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="label" for="senate-committee-sort">Sort</label>
+        <select id="senate-committee-sort">
+          <option value="name">Name A-Z</option>
+          <option value="members">Most members</option>
+          <option value="subcommittees">Most subcommittees</option>
+          <option value="hearings">Upcoming hearings</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="witness-layout senate-committee-layout">
+      <aside class="witness-sidebar" aria-label="Senate Committee Explorer notes">
+        <div class="sidebar-block">
+          <p class="eyebrow">Sources</p>
+          <p>Committee and subcommittee rosters are built from the official Senate.gov committee membership XML files.</p>
+          <p><a href="https://www.senate.gov/committees/?lv=true" target="_blank" rel="noopener">Open Senate committee list</a></p>
+        </div>
+        <div class="sidebar-block">
+          <p class="eyebrow">Hearings</p>
+          <p>Upcoming hearings are pulled from the Senate.gov hearings and meetings XML feed. Past scheduled hearings require a separate Congress.gov event reconstruction layer.</p>
+          <p><a href="https://www.senate.gov/committees/hearings_meetings.htm" target="_blank" rel="noopener">Open Senate hearing schedule</a></p>
+        </div>
+        <div class="sidebar-block">
+          <p class="eyebrow">Next layer</p>
+          <p>Witness lists, prepared testimony, transcripts, and archived videos will need to be reconciled from committee websites, Congress.gov, and GovInfo.</p>
+          <p><a href="https://www.congress.gov/help/committee-schedule-meetings-hearings" target="_blank" rel="noopener">Open Congress.gov schedule notes</a></p>
+        </div>
+        <div class="committee-list" id="senate-committee-list"></div>
+      </aside>
+
+      <section class="witness-results" aria-live="polite">
+        <div class="directory-head">
+          <div>
+            <p class="eyebrow">Results</p>
+            <h2 id="senate-committee-heading">Senate committees</h2>
+          </div>
+          <span id="senate-committee-visible">0 visible</span>
+        </div>
+
+        <div id="senate-committee-detail" class="senate-committee-detail"></div>
+        <div class="senate-committee-grid" id="senate-committee-grid"></div>
+        <div class="empty-state" id="senate-committee-empty" hidden>No Senate committees match those filters.</div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="footer-brand" href="index.html" aria-label="POPVOX home">
+      <img src="assets/popvox-logo-horizontal.png" alt="POPVOX">
+    </a>
+    <div class="footer-links">
+      <a href="explore.html">Explore</a>
+      <a href="news.html">News</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+  </footer>
+
+  <script src="assets/senate-committee-data.js"></script>
+  <script src="senate-committees.js"></script>
+</body>
+
+</html>

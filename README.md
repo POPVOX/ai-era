@@ -19,6 +19,7 @@ The site is intentionally lightweight. Most pages are static HTML/CSS/JS, with a
   - House Rules Explorer
   - House Expenditure Explorer
   - Senate Disbursement Explorer
+  - Senate Committee Explorer
 - Generated detail pages:
   - Bill pages in `bills/`
   - Committee pages in `committees/`
@@ -126,6 +127,14 @@ The Senate Disbursement Explorer uses:
 
 Senate reports are currently PDF-only. The Oct. 1, 2024 to Mar. 31, 2025 report period overlaps 2024/2025; matching records from that report are included with a visible caveat.
 
+The Senate Committee Explorer uses:
+
+- `assets/senate-committee-data.{json,js}` for Senate committees, subcommittees, committee members, subcommittee rosters, and upcoming hearings.
+- `scripts/build-senate-committee-data.mjs` to refresh official Senate.gov committee membership XML files and the Senate hearings and meetings XML feed.
+- `.github/workflows/refresh-senate-committees.yml` to rebuild the Senate committee data weekly.
+
+Senate committee membership XML represents current rosters. The Senate hearings XML is a live/upcoming schedule, not a historical archive. Historical Senate hearing reconstruction should use Congress.gov event pages, committee website archives, and GovInfo published hearing records.
+
 Generated pages and generated data are committed so the site can be deployed as a mostly static site. Live CongressLink-backed pages still need the local/server proxy routes listed above unless an equivalent production proxy is provided.
 
 The local folder `Committee Corpus + Witness Directory - CTO Share/` is source/reference material used during development. It is intentionally ignored by Git because it is large and contains raw working files that do not need to ship with the public site.
@@ -165,6 +174,7 @@ Then spot-check:
 - `/members.html`
 - `/legislation.html`
 - `/committees.html`
+- `/senate-committees.html`
 - `/staff.html`
 - `/senate-disbursements.html`
 - `/lobbyists.html`
