@@ -281,7 +281,7 @@ function pageShell({ title, description, body }) {
     <nav class="nav" aria-label="Primary navigation">
       <a class="brand" href="../index.html" aria-label="POPVOX home"><img src="../assets/popvox-logo-horizontal.png" alt="POPVOX"></a>
       <div class="nav-links"><a class="active" href="../explore.html">Explore</a><a href="../news.html">News</a><a href="../about.html">About</a><a href="../team.html">Team</a><a href="../contact.html">Contact</a></div>
-      <div class="nav-actions"><a class="button secondary" href="../legislation.html">Legislation Explorer</a><a class="button" href="mailto:info@popvox.com">Create alert</a></div>
+      <div class="nav-actions"><a class="button secondary" href="../legislation.html">Legislation Explorer</a></div>
     </nav>
   </header>
   ${body}

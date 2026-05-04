@@ -29,7 +29,7 @@ function pageShell({ title, description, body, prefix = "" }) {
     <nav class="nav" aria-label="Primary navigation">
       <a class="brand" href="${prefix}index.html" aria-label="POPVOX home"><img src="${prefix}assets/popvox-logo-horizontal.png" alt="POPVOX"></a>
       <div class="nav-links"><a class="active" href="${prefix}explore.html">Explore</a><a href="${prefix}news.html">News</a><a href="${prefix}about.html">About</a><a href="${prefix}team.html">Team</a><a href="${prefix}contact.html">Contact</a></div>
-      <div class="nav-actions"><a class="button secondary" href="${prefix}committees.html">Committee Explorer</a><a class="button" href="mailto:info@popvox.com">Request a demo</a></div>
+      <div class="nav-actions"><a class="button secondary" href="${prefix}committees.html">Committee Explorer</a></div>
     </nav>
   </header>
   ${body}
