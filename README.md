@@ -53,8 +53,9 @@ The local server provides:
 - `/api/members`
 - `/api/legislation`
 - `/api/bill/:id`
+- `/api/rules`
 
-These proxy routes keep the CongressLink token out of browser-side JavaScript.
+These proxy routes keep API tokens out of browser-side JavaScript.
 
 ## Build Commands
 
@@ -189,6 +190,11 @@ The local folder `Committee Corpus + Witness Directory - CTO Share/` is source/r
 - `CONGRESSLINK_API_BASE`: optional override for the CongressLink API host.
 - `CONGRESSLINK_MEMBERS_ENDPOINTS`: optional comma-separated member endpoints. Defaults to House and Senate member endpoints.
 - `CONGRESSLINK_LEGISLATION_ENDPOINT`: optional bill endpoint override.
+- `OPENAI_API_KEY`: required for the House Rules Explorer RAG endpoint.
+- `PINECONE_API_KEY`: required for the House Rules Explorer RAG endpoint.
+- `PINECONE_INDEX_HOST`: required Pinecone index host for the House Rules Explorer source chunks.
+- `RULES_OPENAI_MODEL`: optional answer model for the House Rules Explorer. Defaults to `gpt-4o-mini`.
+- `RULES_EMBEDDING_MODEL`: optional embedding model for House Rules retrieval. Defaults to `text-embedding-3-small`.
 - `CONGRESS_GOV_API_KEY`: optional Congress.gov API token for Senate historical committee meeting refreshes.
 - `CONGRESS_GOV_SENATE_MEETING_CONGRESSES`: comma-separated congresses to pull for Senate committee meetings. Defaults to `119`.
 - `SENATE_MEETING_DETAIL_LIMIT`: optional cap on detailed Senate meeting records fetched during a refresh. Defaults to `150`.

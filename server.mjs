@@ -4,9 +4,16 @@ import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
+await loadLocalEnv();
+
 const port = Number(process.env.PORT || 8770);
 const apiBase = (process.env.CONGRESSLINK_API_BASE || 'https://congress-link-main-uwusug.laravel.cloud').replace(/\/$/, '');
 const apiToken = process.env.CONGRESSLINK_API_TOKEN || '';
+const openAiApiKey = process.env.OPENAI_API_KEY || '';
+const pineconeApiKey = process.env.PINECONE_API_KEY || '';
+const pineconeIndexHost = (process.env.PINECONE_INDEX_HOST || '').replace(/\/$/, '');
+const rulesAnswerModel = process.env.RULES_OPENAI_MODEL || 'gpt-4o-mini';
+const rulesEmbeddingModel = process.env.RULES_EMBEDDING_MODEL || 'text-embedding-3-small';
 const membersEndpoints = (process.env.CONGRESSLINK_MEMBERS_ENDPOINTS || '/api/usa/usa-house/members,/api/usa/usa-senate/members')
   .split(',')
   .map((endpoint) => endpoint.trim())
@@ -34,6 +41,12 @@ const server = http.createServer(async (request, response) => {
     if (request.method === 'OPTIONS') {
       response.writeHead(204, corsHeaders());
       response.end();
+      return;
+    }
+
+    if (url.pathname === '/api/rules') {
+      console.log(`${request.method} ${url.pathname}`);
+      await proxyRules(request, response);
       return;
     }
 
@@ -164,7 +177,7 @@ async function proxyBillDetail(response, id) {
 function corsHeaders() {
   return {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   };
 }
@@ -175,6 +188,208 @@ function jsonHeaders() {
     'Content-Type': 'application/json',
     'Cache-Control': 'no-store',
   };
+}
+
+async function proxyRules(request, response) {
+  if (request.method !== 'POST') {
+    response.writeHead(405, jsonHeaders());
+    response.end(JSON.stringify({ error: 'Use POST for /api/rules' }));
+    return;
+  }
+
+  if (!openAiApiKey || !pineconeApiKey || !pineconeIndexHost) {
+    response.writeHead(500, jsonHeaders());
+    response.end(JSON.stringify({
+      error: 'Missing House Rules RAG credentials',
+      required: ['OPENAI_API_KEY', 'PINECONE_API_KEY', 'PINECONE_INDEX_HOST'],
+    }));
+    return;
+  }
+
+  try {
+    const body = await readJsonBody(request);
+    const question = String(body?.question || '').trim();
+
+    if (!question) {
+      response.writeHead(400, jsonHeaders());
+      response.end(JSON.stringify({ error: 'Question is required' }));
+      return;
+    }
+
+    const chunks = await retrieveHouseRulesChunks(question, Number(body?.topK || 5));
+    const answer = await generateHouseRulesAnswer(question, chunks);
+
+    response.writeHead(200, jsonHeaders());
+    response.end(JSON.stringify({
+      answer,
+      sources: chunks.map((chunk) => ({
+        id: chunk.id,
+        score: chunk.score,
+        page: chunk.page,
+        section: chunk.section,
+        summary: chunk.summary,
+        excerpt: chunk.text.slice(0, 700),
+      })),
+    }));
+  } catch (error) {
+    console.error(`Rules RAG request failed: ${error.message}`);
+    response.writeHead(502, jsonHeaders());
+    response.end(JSON.stringify({ error: error.message }));
+  }
+}
+
+async function readJsonBody(request) {
+  const chunks = [];
+  for await (const chunk of request) chunks.push(chunk);
+  const raw = Buffer.concat(chunks).toString('utf8');
+  if (!raw.trim()) return {};
+  return JSON.parse(raw);
+}
+
+async function retrieveHouseRulesChunks(question, topK = 5) {
+  const embeddingResponse = await fetch('https://api.openai.com/v1/embeddings', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${openAiApiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: rulesEmbeddingModel,
+      input: question,
+    }),
+  });
+
+  const embeddingText = await embeddingResponse.text();
+  if (!embeddingResponse.ok) {
+    throw new Error(`OpenAI embedding failed (${embeddingResponse.status}): ${embeddingText.slice(0, 240)}`);
+  }
+
+  const embeddingPayload = JSON.parse(embeddingText);
+  const vector = embeddingPayload?.data?.[0]?.embedding;
+  if (!Array.isArray(vector)) throw new Error('OpenAI did not return an embedding vector');
+
+  const pineconeResponse = await fetch(`${pineconeIndexHost}/query`, {
+    method: 'POST',
+    headers: {
+      'Api-Key': pineconeApiKey,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      vector,
+      topK: Math.max(3, Math.min(8, topK)),
+      includeMetadata: true,
+    }),
+  });
+
+  const pineconeText = await pineconeResponse.text();
+  if (!pineconeResponse.ok) {
+    throw new Error(`Pinecone query failed (${pineconeResponse.status}): ${pineconeText.slice(0, 240)}`);
+  }
+
+  const pineconePayload = JSON.parse(pineconeText);
+  return (pineconePayload.matches || [])
+    .map((match) => ({
+      id: match.id,
+      score: Number(match.score || 0),
+      page: match.metadata?.page || '',
+      section: match.metadata?.section || '',
+      summary: String(match.metadata?.summary || '').trim(),
+      text: String(match.metadata?.text || '').replace(/\s+/g, ' ').trim(),
+    }))
+    .filter((chunk) => chunk.text);
+}
+
+async function generateHouseRulesAnswer(question, chunks) {
+  const sourceContext = chunks.map((chunk, index) => [
+    `Source ${index + 1}`,
+    `Vector ID: ${chunk.id}`,
+    `Score: ${chunk.score.toFixed(4)}`,
+    `Page: ${chunk.page || 'unknown'}`,
+    `Section: ${chunk.section || 'unknown'}`,
+    `Summary: ${chunk.summary || 'No summary available.'}`,
+    `Text: ${chunk.text}`,
+  ].join('\n')).join('\n\n---\n\n');
+
+  const answerResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${openAiApiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: rulesAnswerModel,
+      temperature: 0.2,
+      messages: [
+        { role: 'system', content: houseRulesSystemPrompt() },
+        { role: 'user', content: `Use only the retrieved source excerpts below to answer. If the excerpts are insufficient, say what official source should be checked next.\n\nRetrieved source excerpts:\n${sourceContext}\n\nQuestion: ${question}` },
+      ],
+    }),
+  });
+
+  const answerText = await answerResponse.text();
+  if (!answerResponse.ok) {
+    throw new Error(`OpenAI answer failed (${answerResponse.status}): ${answerText.slice(0, 240)}`);
+  }
+
+  const answerPayload = JSON.parse(answerText);
+  return sanitizeRulesHtml(answerPayload?.choices?.[0]?.message?.content || '<p><strong>No answer returned.</strong></p>');
+}
+
+function houseRulesSystemPrompt() {
+  return `You are an expert in parliamentary procedure, tasked with providing formal, precise explanations of the House Rules for the 119th Congress (2025-2026) for a Congressional audience.
+
+Retrieve and analyze the official House Rules for the 119th Congress (H. Res. 5, adopted January 3, 2025) and related documents, including the House Rules and Manual (119th Congress edition) from authoritative sources such as rules.house.gov or congress.gov.
+
+Task:
+Produce a concise, professional explanation of a specific House rule or procedure, addressing a user-provided question or a significant rule change. Your response should:
+- Clearly articulate the rule or procedure, its purpose, and its operational impact in accessible language.
+- Cite the precise clause, section, or precedent when the retrieved excerpts support it.
+- Provide context, such as comparisons to prior Congresses or procedural significance, if relevant and supported by the retrieved excerpts.
+- Maintain a formal tone suitable for Congressional staff or Members, while ensuring clarity and avoiding jargon overload.
+
+Always provide responses using HTML formatting for improved readability. Follow these rules:
+- Use <strong> for bold headings.
+- Use <ul><li> for bulleted lists and <ol><li> for numbered lists.
+- Use <p> to separate different sections.
+- Avoid large blocks of text.
+
+Constraints:
+- Limit responses to 200-400 words.
+- Base explanations solely on the retrieved source excerpts and established House procedure reflected there.
+- Do not invent clauses, page numbers, or precedents.
+- If the retrieved excerpts are insufficient, say what official source should be checked next.
+- Maintain a nonpartisan, professional tone focused on procedure.
+
+Source Priority:
+1. House Rules for the 119th Congress (H. Res. 5).
+2. House Rules and Manual (119th Congress edition).`;
+}
+
+function sanitizeRulesHtml(html) {
+  return String(html)
+    .replace(/```html|```/gi, '')
+    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+    .replace(/\son\w+="[^"]*"/gi, '')
+    .trim();
+}
+
+async function loadLocalEnv() {
+  try {
+    const text = await readFile(join(root, '.env'), 'utf8');
+    for (const line of text.split(/\r?\n/)) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#') || !trimmed.includes('=')) continue;
+      const index = trimmed.indexOf('=');
+      const key = trimmed.slice(0, index).trim();
+      let value = trimmed.slice(index + 1).trim();
+      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+        value = value.slice(1, -1);
+      }
+      if (key && process.env[key] === undefined) process.env[key] = value;
+    }
+  } catch {
+    // .env is optional; production hosts should provide real environment variables.
+  }
 }
 
 async function fetchAllMembers(endpoint, chamber) {
