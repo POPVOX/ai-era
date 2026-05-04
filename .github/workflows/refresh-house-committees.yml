@@ -1,0 +1,46 @@
+name: Refresh House committee and witness data
+
+on:
+  schedule:
+    - cron: "27 12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Refresh House committee corpus
+        env:
+          HOUSE_DOCS_DAYS_BACK: "21"
+          HOUSE_DOCS_DAYS_AHEAD: "75"
+          HOUSE_DOCS_DELAY_MS: "500"
+        run: npm run refresh:house-committees
+
+      - name: Run checks
+        run: npm run check
+
+      - name: Commit refreshed data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/house-committee-corpus/events.jsonl \
+            data/house-committee-corpus/documents.jsonl \
+            assets/witness-directory-data.json assets/witness-directory-data.js \
+            committees.html committees witnesses
+          if git diff --cached --quiet; then
+            echo "No refreshed House committee or witness data to commit."
+          else
+            git commit -m "Refresh House committee and witness data"
+            git push
+          fi

@@ -7,6 +7,7 @@ const outDir = path.join(root, "witnesses");
 
 const directory = JSON.parse(fs.readFileSync(dataPath, "utf8"));
 const profiles = directory.profiles || [];
+const incremental = process.env.WITNESS_PAGES_INCREMENTAL === "1";
 
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
@@ -205,15 +206,30 @@ function renderProfile(profile) {
   });
 }
 
-fs.rmSync(outDir, { recursive: true, force: true });
 fs.mkdirSync(outDir, { recursive: true });
 
-const manifest = {};
+let manifest = {};
+if (incremental) {
+  try {
+    manifest = JSON.parse(fs.readFileSync(path.join(outDir, "manifest.json"), "utf8"));
+  } catch {
+    manifest = {};
+  }
+} else {
+  fs.rmSync(outDir, { recursive: true, force: true });
+  fs.mkdirSync(outDir, { recursive: true });
+}
+
+let written = 0;
 for (const profile of profiles) {
   const slug = slugs.get(profile.key || profile.displayName);
   manifest[profile.key || profile.displayName] = `witnesses/${slug}.html`;
+  if (incremental && fs.existsSync(path.join(outDir, `${slug}.html`))) continue;
   fs.writeFileSync(path.join(outDir, `${slug}.html`), renderProfile(profile));
+  written += 1;
 }
 
-fs.writeFileSync(path.join(outDir, "manifest.json"), JSON.stringify(manifest, null, 2));
-console.log(`Generated ${profiles.length} witness profile pages.`);
+if (!incremental || written) fs.writeFileSync(path.join(outDir, "manifest.json"), JSON.stringify(manifest, null, 2));
+console.log(incremental
+  ? `Generated ${written} new witness profile page${written === 1 ? "" : "s"}.`
+  : `Generated ${profiles.length} witness profile pages.`);

@@ -92,6 +92,22 @@ npm run check
 
 The public site uses committed static data in `assets/` for the journal, reports, witness corpus, committee/event pages, bill pages, and House expenditure prototype.
 
+The House Committee Explorer and Witness Explorer use:
+
+- `data/house-committee-corpus/events.jsonl` for House committee hearings, markups, witnesses, and event metadata.
+- `data/house-committee-corpus/documents.jsonl` for event source documents from docs.house.gov.
+- `assets/witness-directory-data.{json,js}` for the searchable witness directory and witness profile pages.
+- `scripts/refresh-house-committee-corpus.mjs` to scan docs.house.gov for recent and upcoming House committee calendar additions.
+- `.github/workflows/refresh-house-committees.yml` to refresh House committee and witness data daily.
+
+The House committee refresh scans a rolling docs.house.gov window, merges new or updated event and document records into the committed corpus, rebuilds committee pages and witness directory data, creates missing witness profile pages, and commits generated changes only when the source data changed.
+
+To run the same refresh locally:
+
+```bash
+npm run refresh:house-committees
+```
+
 The House Expenditure Explorer uses:
 
 - `assets/house-expenditure-data.{json,js}` for dashboard metrics, charts, filters, and vendor rollups.
