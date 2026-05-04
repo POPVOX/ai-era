@@ -1886,6 +1886,13 @@ main {
     linear-gradient(135deg, var(--surface), var(--soft));
 }
 
+.localmanac-band {
+  margin-bottom: 28px;
+  background:
+    radial-gradient(circle at 82% 24%, rgba(13, 39, 69, 0.1), transparent 28%),
+    linear-gradient(135deg, var(--surface), rgba(248, 243, 238, 0.84));
+}
+
 .relationship-band h2 {
   max-width: 520px;
   font-size: 44px;
