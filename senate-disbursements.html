@@ -4,8 +4,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>POPVOX | Senate Disbursement Explorer</title>
-  <meta name="description" content="Search Senate Secretary reports for 2025 staff, vendors, offices, and expenditure records extracted from public PDF reports.">
+  <title>POPVOX | Senate Expenditure Explorer</title>
+  <meta name="description" content="Search Senate Secretary reports for 2025 vendors, offices, descriptions, and expenditure records extracted from public reports.">
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" type="image/png" href="https://s3.us-east-1.amazonaws.com/static.popvox.com/images/pvox+favicon.png">
 </head>
@@ -34,12 +34,12 @@
     <section class="expenditure-hero" aria-labelledby="senate-title">
       <div>
         <div class="eyebrow-row">
-          <span class="tag"><span class="dot"></span> Senate Disbursement Explorer</span>
+          <span class="tag"><span class="dot"></span> Senate Expenditure Explorer</span>
           <span class="tag navy">Secretary of the Senate reports</span>
           <span class="tag navy" id="senate-updated">Loading</span>
         </div>
-        <h1 id="senate-title">Explore Senate spending and staff records<span>.</span></h1>
-        <p class="summary">Search vendors, staff names, offices, descriptions, and source pages extracted from the public Report of the Secretary of the Senate.</p>
+        <h1 id="senate-title">Explore Senate expenditures<span>.</span></h1>
+        <p class="summary">Search vendors, offices, descriptions, spending categories, and source pages extracted from the public Report of the Secretary of the Senate.</p>
       </div>
 
       <div class="expenditure-hero-card">
@@ -52,48 +52,58 @@
     <section class="expenditure-stats" aria-label="Senate disbursement statistics">
       <article><strong id="senate-total">$0</strong><span>Parsed non-payroll spending</span></article>
       <article><strong id="senate-transactions">0</strong><span>Transaction rows</span></article>
-      <article><strong id="senate-staff">0</strong><span>Staff profiles</span></article>
+      <article><strong id="senate-periods">0</strong><span>Report periods</span></article>
       <article><strong id="senate-vendors">0</strong><span>Vendors</span></article>
     </section>
 
     <section class="expenditure-charts" aria-label="Senate disbursement charts">
       <article class="expenditure-chart-card feature-chart">
-        <div class="chart-head">
-          <p class="eyebrow">Office type</p>
+        <div class="directory-head">
+          <div>
+            <p class="eyebrow">Office Type</p>
+            <h2>Where spending is booked</h2>
+          </div>
           <span id="senate-office-total">$0</span>
         </div>
-        <h2>Where spending is booked</h2>
         <div class="expenditure-bars" id="senate-office-bars"></div>
       </article>
       <article class="expenditure-chart-card">
-        <div class="chart-head">
-          <p class="eyebrow">Expense mix</p>
+        <div class="directory-head">
+          <div>
+            <p class="eyebrow">Expense Mix</p>
+            <h2>Expense categories</h2>
+          </div>
           <span>Top categories</span>
         </div>
-        <h2>What spending is for</h2>
         <div class="expenditure-bars compact" id="senate-expense-bars"></div>
       </article>
       <article class="expenditure-chart-card">
-        <div class="chart-head">
-          <p class="eyebrow">Source reports</p>
+        <div class="directory-head">
+          <div>
+            <p class="eyebrow">Source Reports</p>
+            <h2>Report periods</h2>
+          </div>
           <span>2025</span>
         </div>
-        <h2>Report periods</h2>
         <div class="expenditure-bars compact" id="senate-period-bars"></div>
       </article>
     </section>
 
-    <section class="expenditure-toolbar" aria-label="Senate filters">
+    <section class="expenditure-toolbar" aria-label="Senate vendor filters">
       <div class="witness-search-wrap">
-        <label class="label" for="senate-search">Search Senate records</label>
-        <input id="senate-search" class="search-input" type="search" placeholder="Vendor, staffer, office, description...">
+        <label class="label" for="senate-search">Search vendors</label>
+        <input id="senate-search" class="search-input" type="search" placeholder="Vendor, office, category, keyword...">
       </div>
       <div>
-        <label class="label" for="senate-record-type">Record type</label>
-        <select id="senate-record-type">
-          <option value="vendors">Vendors</option>
-          <option value="staff">Staff</option>
-          <option value="transactions">Transactions</option>
+        <label class="label" for="senate-office-filter">Office type</label>
+        <select id="senate-office-filter">
+          <option value="">All office types</option>
+        </select>
+      </div>
+      <div>
+        <label class="label" for="senate-expense-filter">Expense type</label>
+        <select id="senate-expense-filter">
+          <option value="">All expense types</option>
         </select>
       </div>
       <div>
@@ -105,17 +115,23 @@
       <div>
         <label class="label" for="senate-sort">Sort</label>
         <select id="senate-sort">
-          <option value="amount">Largest amount</option>
+          <option value="amount">Largest spend</option>
+          <option value="offices">Most Senate offices</option>
+          <option value="transactions">Most transactions</option>
           <option value="name">Name A-Z</option>
-          <option value="rows">Most rows</option>
         </select>
       </div>
     </section>
 
     <section class="expenditure-layout">
-      <aside class="expenditure-sidebar" aria-label="Senate data notes">
+      <aside class="expenditure-sidebar" aria-label="Selected Senate vendor">
+        <div id="senate-profile" class="vendor-profile">
+          <p class="eyebrow">Vendor profile</p>
+          <h2>Select a vendor</h2>
+          <p>Click any vendor card to inspect Senate office exposure, expense mix, repeated descriptions, and large associated transactions.</p>
+        </div>
         <div class="sidebar-block">
-          <p class="eyebrow">Source</p>
+          <p class="eyebrow">Source and dates</p>
           <p>Reports are published as digitally signed GPO PDFs linked from the Senate's Report of the Secretary of the Senate page.</p>
           <p>Current parsed reports are Apr. 1-Sep. 30, 2025 and Oct. 1, 2024-Mar. 31, 2025.</p>
           <p><a href="https://www.senate.gov/legislative/common/generic/report_secsen.htm" target="_blank" rel="noopener">Open Senate report index</a></p>
@@ -135,13 +151,56 @@
         <div class="directory-head">
           <div>
             <p class="eyebrow">Results</p>
-            <h2 id="senate-result-heading">Senate records</h2>
+            <h2 id="senate-result-heading">Vendors</h2>
+          </div>
+          <div class="view-toggle" role="group" aria-label="Senate vendor result view">
+            <button class="active" type="button" data-senate-view="cards">Cards</button>
+            <button type="button" data-senate-view="table">Table</button>
           </div>
           <span id="senate-visible-count">0 visible</span>
         </div>
-        <div class="staff-grid" id="senate-results"></div>
-        <div class="empty-state" id="senate-empty" hidden>No Senate records match those filters.</div>
+
+        <div class="vendor-grid" id="senate-grid"></div>
+        <div class="vendor-table-wrap" id="senate-table-wrap" hidden>
+          <table class="vendor-table">
+            <thead>
+              <tr>
+                <th>Vendor</th>
+                <th>Spend</th>
+                <th>Rows</th>
+                <th>Offices</th>
+                <th>Top expense</th>
+              </tr>
+            </thead>
+            <tbody id="senate-table-body"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="senate-empty" hidden>No Senate vendors match those filters.</div>
       </section>
+    </section>
+
+    <section class="expenditure-transactions-panel">
+      <div class="directory-head">
+        <div>
+          <p class="eyebrow">Largest Transactions</p>
+          <h2>Sample detail rows across the loaded data</h2>
+        </div>
+        <span>Top 25</span>
+      </div>
+      <div class="vendor-table-wrap">
+        <table class="vendor-table">
+          <thead>
+            <tr>
+              <th>Vendor</th>
+              <th>Amount</th>
+              <th>Office</th>
+              <th>Description</th>
+              <th>Report period</th>
+            </tr>
+          </thead>
+          <tbody id="senate-top-transaction-body"></tbody>
+        </table>
+      </div>
     </section>
   </main>
 
