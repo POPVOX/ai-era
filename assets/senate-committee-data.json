@@ -29,7 +29,7 @@
     },
     "govInfoPublishedHearings": {
       "enabled": true,
-      "note": "Linked 215 published GovInfo Senate hearings to current Senate committee records."
+      "note": "Linked 217 published GovInfo Senate hearings to current Senate committee records."
     }
   },
   "metrics": {
@@ -40,8 +40,8 @@
     "subcommitteeMemberships": 949,
     "upcomingHearingCount": 6,
     "historicalMeetingCount": 0,
-    "publishedHearingCount": 215,
-    "publishedWitnessSlots": 305
+    "publishedHearingCount": 217,
+    "publishedWitnessSlots": 309
   },
   "committees": [
     {
@@ -16659,6 +16659,59 @@
       "upcomingHearings": [],
       "historicalMeetings": [],
       "publishedHearings": [
+        {
+          "source": "GovInfo",
+          "congress": "119",
+          "date": "2025-11-19",
+          "dateIssued": "2025-11-19",
+          "title": "Trump's Regulatory Rollback: Saving Americans $907 Billion and Counting",
+          "packageId": "CHRG-119shrg62295",
+          "detailsUrl": "https://www.govinfo.gov/app/details/CHRG-119shrg62295/CHRG-119shrg62295",
+          "htmlUrl": "https://www.govinfo.gov/content/pkg/CHRG-119shrg62295/html/CHRG-119shrg62295.htm",
+          "pdfUrl": "https://www.govinfo.gov/content/pkg/CHRG-119shrg62295/pdf/CHRG-119shrg62295.pdf",
+          "localUrl": "senate-events/chrg-119shrg62295.html",
+          "witnessCount": 0,
+          "witnesses": []
+        },
+        {
+          "source": "GovInfo",
+          "congress": "119",
+          "date": "2025-09-17",
+          "dateIssued": "2025-09-17",
+          "title": "Using the 504 Program to Build America's Manufacturing Future",
+          "packageId": "CHRG-119shrg61659",
+          "detailsUrl": "https://www.govinfo.gov/app/details/CHRG-119shrg61659/CHRG-119shrg61659",
+          "htmlUrl": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/html/CHRG-119shrg61659.htm",
+          "pdfUrl": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/pdf/CHRG-119shrg61659.pdf",
+          "localUrl": "senate-events/chrg-119shrg61659.html",
+          "witnessCount": 4,
+          "witnesses": [
+            {
+              "displayName": "Mr. David P. Raccio",
+              "role": "Senior Vice President and Director of SBA Lending, CDC New England, Wakefield, MA",
+              "organization": "Wakefield, MA",
+              "profileUrl": "senate-witnesses/mr-david-p-raccio.html"
+            },
+            {
+              "displayName": "Mr. Karl E. Swanson",
+              "role": "President, PCT Ebeam and Integration, LLC, Davenport, IA",
+              "organization": "Davenport, IA",
+              "profileUrl": "senate-witnesses/mr-karl-e-swanson.html"
+            },
+            {
+              "displayName": "Ms. Hilda Kennedy",
+              "role": "Founder and President, AmPac Business Capital Ontario, CA",
+              "organization": "AmPac Business Capital Ontario, CA",
+              "profileUrl": "senate-witnesses/ms-hilda-kennedy.html"
+            },
+            {
+              "displayName": "Ms. Jean Wojtowicz",
+              "role": "Executive Director, Indiana Statewide CDC, Indianapolis, IN",
+              "organization": "Indianapolis, IN",
+              "profileUrl": "senate-witnesses/ms-jean-wojtowicz.html"
+            }
+          ]
+        },
         {
           "source": "GovInfo",
           "congress": "119",

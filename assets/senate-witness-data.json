@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-03T18:54:17.697Z",
+  "generatedAt": "2026-05-05T14:28:27.722Z",
   "source": {
     "name": "GovInfo Congressional Hearings",
     "url": "https://www.govinfo.gov/help/chrg",
@@ -7,7 +7,7 @@
     "congresses": [
       "119"
     ],
-    "apiKeyMode": "GOVINFO_API_KEY"
+    "apiKeyMode": "DEMO_KEY"
   },
   "caveats": [
     "Witnesses are extracted from the table-of-contents text in published Senate hearing HTML on GovInfo.",
@@ -15,11 +15,11 @@
     "LinkedIn, Google Scholar, official bio, and photo links are provided as research links unless verified links are later attached."
   ],
   "totals": {
-    "hearings": 241,
-    "witnesses": 300,
-    "appearances": 309,
+    "hearings": 244,
+    "witnesses": 304,
+    "appearances": 313,
     "committees": 42,
-    "researchNeeded": 300
+    "researchNeeded": 304
   },
   "committees": [
     {
@@ -56,14 +56,14 @@
     },
     {
       "name": "Senate committee",
+      "count": 11
+    },
+    {
+      "name": "Committee on Small Business and Entrepreneurship of The",
       "count": 10
     },
     {
       "name": "Committee on Environment and Public Works",
-      "count": 8
-    },
-    {
-      "name": "Committee on Small Business and Entrepreneurship of The",
       "count": 8
     },
     {
@@ -861,6 +861,31 @@
           "initials": "TN"
         }
       ]
+    },
+    {
+      "eventId": "",
+      "source": "GovInfo",
+      "chamber": "Senate",
+      "congress": "119",
+      "date": "2025-11-19",
+      "dateIssued": "2025-11-19",
+      "title": "Trump's Regulatory Rollback: Saving Americans $907 Billion and Counting",
+      "packageId": "CHRG-119shrg62295",
+      "granuleId": "CHRG-119shrg62295",
+      "jacketId": "62295",
+      "detailsUrl": "https://www.govinfo.gov/app/details/CHRG-119shrg62295/CHRG-119shrg62295",
+      "htmlUrl": "https://www.govinfo.gov/content/pkg/CHRG-119shrg62295/html/CHRG-119shrg62295.htm",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/CHRG-119shrg62295/pdf/CHRG-119shrg62295.pdf",
+      "resultLink": "https://api.govinfo.gov/packages/CHRG-119shrg62295/granules/CHRG-119shrg62295/summary",
+      "relatedLink": "https://api.govinfo.gov/related/CHRG-119shrg62295",
+      "committee": {
+        "name": "Committee on Small Business and Entrepreneurship of The",
+        "authorityId": "",
+        "inferred": false
+      },
+      "witnessCount": 0,
+      "localUrl": "senate-events/chrg-119shrg62295.html",
+      "witnesses": []
     },
     {
       "eventId": "",
@@ -1838,6 +1863,60 @@
       "witnessCount": 0,
       "localUrl": "senate-events/chrg-119shrg62461.html",
       "witnesses": []
+    },
+    {
+      "eventId": "",
+      "source": "GovInfo",
+      "chamber": "Senate",
+      "congress": "119",
+      "date": "2025-09-17",
+      "dateIssued": "2025-09-17",
+      "title": "Using the 504 Program to Build America's Manufacturing Future",
+      "packageId": "CHRG-119shrg61659",
+      "granuleId": "CHRG-119shrg61659",
+      "jacketId": "61659",
+      "detailsUrl": "https://www.govinfo.gov/app/details/CHRG-119shrg61659/CHRG-119shrg61659",
+      "htmlUrl": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/html/CHRG-119shrg61659.htm",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/pdf/CHRG-119shrg61659.pdf",
+      "resultLink": "https://api.govinfo.gov/packages/CHRG-119shrg61659/granules/CHRG-119shrg61659/summary",
+      "relatedLink": "https://api.govinfo.gov/related/CHRG-119shrg61659",
+      "committee": {
+        "name": "Committee on Small Business and Entrepreneurship of The",
+        "authorityId": "",
+        "inferred": false
+      },
+      "witnessCount": 4,
+      "localUrl": "senate-events/chrg-119shrg61659.html",
+      "witnesses": [
+        {
+          "displayName": "Mr. David P. Raccio",
+          "role": "Senior Vice President and Director of SBA Lending, CDC New England, Wakefield, MA",
+          "organization": "Wakefield, MA",
+          "profileUrl": "senate-witnesses/mr-david-p-raccio.html",
+          "initials": "MD"
+        },
+        {
+          "displayName": "Mr. Karl E. Swanson",
+          "role": "President, PCT Ebeam and Integration, LLC, Davenport, IA",
+          "organization": "Davenport, IA",
+          "profileUrl": "senate-witnesses/mr-karl-e-swanson.html",
+          "initials": "MK"
+        },
+        {
+          "displayName": "Ms. Hilda Kennedy",
+          "role": "Founder and President, AmPac Business Capital Ontario, CA",
+          "organization": "AmPac Business Capital Ontario, CA",
+          "profileUrl": "senate-witnesses/ms-hilda-kennedy.html",
+          "initials": "MH"
+        },
+        {
+          "displayName": "Ms. Jean Wojtowicz",
+          "role": "Executive Director, Indiana Statewide CDC, Indianapolis, IN",
+          "organization": "Indianapolis, IN",
+          "profileUrl": "senate-witnesses/ms-jean-wojtowicz.html",
+          "initials": "MJ"
+        }
+      ]
     },
     {
       "eventId": "",
@@ -5932,6 +6011,31 @@
           "initials": "TH"
         }
       ]
+    },
+    {
+      "eventId": "",
+      "source": "GovInfo",
+      "chamber": "Senate",
+      "congress": "119",
+      "date": "2025-03-05",
+      "dateIssued": "2025-03-05",
+      "title": "Nomination of Jayanta Bhattacharya to Serve as Director of the National Institutes of Health",
+      "packageId": "CHRG-119shrg59494",
+      "granuleId": "CHRG-119shrg59494",
+      "jacketId": "59494",
+      "detailsUrl": "https://www.govinfo.gov/app/details/CHRG-119shrg59494/CHRG-119shrg59494",
+      "htmlUrl": "https://www.govinfo.gov/content/pkg/CHRG-119shrg59494/html/CHRG-119shrg59494.htm",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/CHRG-119shrg59494/pdf/CHRG-119shrg59494.pdf",
+      "resultLink": "https://api.govinfo.gov/packages/CHRG-119shrg59494/granules/CHRG-119shrg59494/summary",
+      "relatedLink": "https://api.govinfo.gov/related/CHRG-119shrg59494",
+      "committee": {
+        "name": "Senate committee",
+        "authorityId": "",
+        "inferred": true
+      },
+      "witnessCount": 0,
+      "localUrl": "senate-events/chrg-119shrg59494.html",
+      "witnesses": []
     },
     {
       "eventId": "",
@@ -21901,6 +22005,67 @@
       "profileUrl": "senate-witnesses/mr-brian-riley.html"
     },
     {
+      "key": "mr-david-p-raccio",
+      "chamber": "Senate",
+      "displayName": "Mr. David P. Raccio",
+      "title": "Senior Vice President and Director of SBA Lending, CDC New England, Wakefield, MA",
+      "organization": "Wakefield, MA",
+      "bio": "",
+      "links": {
+        "linkedinSearch": "https://www.linkedin.com/search/results/people/?keywords=Mr.%20David%20P.%20Raccio%20Wakefield%2C%20MA",
+        "googleScholarSearch": "https://scholar.google.com/scholar?q=Mr.%20David%20P.%20Raccio%20Wakefield%2C%20MA",
+        "webSearch": "https://www.google.com/search?q=Mr.%20David%20P.%20Raccio%20Wakefield%2C%20MA",
+        "imageSearch": "https://www.google.com/search?tbm=isch&q=Mr.%20David%20P.%20Raccio%20Wakefield%2C%20MA"
+      },
+      "verifiedLinks": {},
+      "enrichmentStatus": "research-needed",
+      "appearances": [
+        {
+          "eventId": "",
+          "source": "GovInfo",
+          "chamber": "Senate",
+          "congress": "119",
+          "date": "2025-09-17",
+          "dateIssued": "2025-09-17",
+          "title": "Using the 504 Program to Build America's Manufacturing Future",
+          "packageId": "CHRG-119shrg61659",
+          "granuleId": "CHRG-119shrg61659",
+          "jacketId": "61659",
+          "detailsUrl": "https://www.govinfo.gov/app/details/CHRG-119shrg61659/CHRG-119shrg61659",
+          "htmlUrl": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/html/CHRG-119shrg61659.htm",
+          "pdfUrl": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/pdf/CHRG-119shrg61659.pdf",
+          "resultLink": "https://api.govinfo.gov/packages/CHRG-119shrg61659/granules/CHRG-119shrg61659/summary",
+          "relatedLink": "https://api.govinfo.gov/related/CHRG-119shrg61659",
+          "committee": {
+            "name": "Committee on Small Business and Entrepreneurship of The",
+            "authorityId": "",
+            "inferred": false
+          },
+          "witnessCount": 4,
+          "localUrl": "senate-events/chrg-119shrg61659.html",
+          "role": "Senior Vice President and Director of SBA Lending, CDC New England, Wakefield, MA",
+          "organization": "Wakefield, MA",
+          "documents": [
+            {
+              "title": "GovInfo HTML",
+              "type": "hearing_html",
+              "url": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/html/CHRG-119shrg61659.htm"
+            },
+            {
+              "title": "GovInfo PDF",
+              "type": "hearing_pdf",
+              "url": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/pdf/CHRG-119shrg61659.pdf"
+            }
+          ]
+        }
+      ],
+      "appearanceCount": 1,
+      "sourceLines": [
+        "Mr. David P. Raccio, Senior Vice President and Director of SBA Lending, CDC New England, Wakefield, MA"
+      ],
+      "profileUrl": "senate-witnesses/mr-david-p-raccio.html"
+    },
+    {
       "key": "mr-joshua-aviv",
       "chamber": "Senate",
       "displayName": "Mr. Joshua Aviv",
@@ -21960,6 +22125,67 @@
         "Mr. Joshua Aviv, CEO, SparkCharge, Somerville, MA"
       ],
       "profileUrl": "senate-witnesses/mr-joshua-aviv.html"
+    },
+    {
+      "key": "mr-karl-e-swanson",
+      "chamber": "Senate",
+      "displayName": "Mr. Karl E. Swanson",
+      "title": "President, PCT Ebeam and Integration, LLC, Davenport, IA",
+      "organization": "Davenport, IA",
+      "bio": "",
+      "links": {
+        "linkedinSearch": "https://www.linkedin.com/search/results/people/?keywords=Mr.%20Karl%20E.%20Swanson%20Davenport%2C%20IA",
+        "googleScholarSearch": "https://scholar.google.com/scholar?q=Mr.%20Karl%20E.%20Swanson%20Davenport%2C%20IA",
+        "webSearch": "https://www.google.com/search?q=Mr.%20Karl%20E.%20Swanson%20Davenport%2C%20IA",
+        "imageSearch": "https://www.google.com/search?tbm=isch&q=Mr.%20Karl%20E.%20Swanson%20Davenport%2C%20IA"
+      },
+      "verifiedLinks": {},
+      "enrichmentStatus": "research-needed",
+      "appearances": [
+        {
+          "eventId": "",
+          "source": "GovInfo",
+          "chamber": "Senate",
+          "congress": "119",
+          "date": "2025-09-17",
+          "dateIssued": "2025-09-17",
+          "title": "Using the 504 Program to Build America's Manufacturing Future",
+          "packageId": "CHRG-119shrg61659",
+          "granuleId": "CHRG-119shrg61659",
+          "jacketId": "61659",
+          "detailsUrl": "https://www.govinfo.gov/app/details/CHRG-119shrg61659/CHRG-119shrg61659",
+          "htmlUrl": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/html/CHRG-119shrg61659.htm",
+          "pdfUrl": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/pdf/CHRG-119shrg61659.pdf",
+          "resultLink": "https://api.govinfo.gov/packages/CHRG-119shrg61659/granules/CHRG-119shrg61659/summary",
+          "relatedLink": "https://api.govinfo.gov/related/CHRG-119shrg61659",
+          "committee": {
+            "name": "Committee on Small Business and Entrepreneurship of The",
+            "authorityId": "",
+            "inferred": false
+          },
+          "witnessCount": 4,
+          "localUrl": "senate-events/chrg-119shrg61659.html",
+          "role": "President, PCT Ebeam and Integration, LLC, Davenport, IA",
+          "organization": "Davenport, IA",
+          "documents": [
+            {
+              "title": "GovInfo HTML",
+              "type": "hearing_html",
+              "url": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/html/CHRG-119shrg61659.htm"
+            },
+            {
+              "title": "GovInfo PDF",
+              "type": "hearing_pdf",
+              "url": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/pdf/CHRG-119shrg61659.pdf"
+            }
+          ]
+        }
+      ],
+      "appearanceCount": 1,
+      "sourceLines": [
+        "Mr. Karl E. Swanson, President, PCT Ebeam and Integration, LLC, Davenport, IA"
+      ],
+      "profileUrl": "senate-witnesses/mr-karl-e-swanson.html"
     },
     {
       "key": "mr-nick-d-arbeloff",
@@ -22145,6 +22371,67 @@
       "profileUrl": "senate-witnesses/ms-emily-de-la-bruyere.html"
     },
     {
+      "key": "ms-hilda-kennedy",
+      "chamber": "Senate",
+      "displayName": "Ms. Hilda Kennedy",
+      "title": "Founder and President, AmPac Business Capital Ontario, CA",
+      "organization": "AmPac Business Capital Ontario, CA",
+      "bio": "",
+      "links": {
+        "linkedinSearch": "https://www.linkedin.com/search/results/people/?keywords=Ms.%20Hilda%20Kennedy%20AmPac%20Business%20Capital%20Ontario%2C%20CA",
+        "googleScholarSearch": "https://scholar.google.com/scholar?q=Ms.%20Hilda%20Kennedy%20AmPac%20Business%20Capital%20Ontario%2C%20CA",
+        "webSearch": "https://www.google.com/search?q=Ms.%20Hilda%20Kennedy%20AmPac%20Business%20Capital%20Ontario%2C%20CA",
+        "imageSearch": "https://www.google.com/search?tbm=isch&q=Ms.%20Hilda%20Kennedy%20AmPac%20Business%20Capital%20Ontario%2C%20CA"
+      },
+      "verifiedLinks": {},
+      "enrichmentStatus": "research-needed",
+      "appearances": [
+        {
+          "eventId": "",
+          "source": "GovInfo",
+          "chamber": "Senate",
+          "congress": "119",
+          "date": "2025-09-17",
+          "dateIssued": "2025-09-17",
+          "title": "Using the 504 Program to Build America's Manufacturing Future",
+          "packageId": "CHRG-119shrg61659",
+          "granuleId": "CHRG-119shrg61659",
+          "jacketId": "61659",
+          "detailsUrl": "https://www.govinfo.gov/app/details/CHRG-119shrg61659/CHRG-119shrg61659",
+          "htmlUrl": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/html/CHRG-119shrg61659.htm",
+          "pdfUrl": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/pdf/CHRG-119shrg61659.pdf",
+          "resultLink": "https://api.govinfo.gov/packages/CHRG-119shrg61659/granules/CHRG-119shrg61659/summary",
+          "relatedLink": "https://api.govinfo.gov/related/CHRG-119shrg61659",
+          "committee": {
+            "name": "Committee on Small Business and Entrepreneurship of The",
+            "authorityId": "",
+            "inferred": false
+          },
+          "witnessCount": 4,
+          "localUrl": "senate-events/chrg-119shrg61659.html",
+          "role": "Founder and President, AmPac Business Capital Ontario, CA",
+          "organization": "AmPac Business Capital Ontario, CA",
+          "documents": [
+            {
+              "title": "GovInfo HTML",
+              "type": "hearing_html",
+              "url": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/html/CHRG-119shrg61659.htm"
+            },
+            {
+              "title": "GovInfo PDF",
+              "type": "hearing_pdf",
+              "url": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/pdf/CHRG-119shrg61659.pdf"
+            }
+          ]
+        }
+      ],
+      "appearanceCount": 1,
+      "sourceLines": [
+        "Ms. Hilda Kennedy, Founder and President, AmPac Business Capital Ontario, CA"
+      ],
+      "profileUrl": "senate-witnesses/ms-hilda-kennedy.html"
+    },
+    {
       "key": "ms-itzel-sims",
       "chamber": "Senate",
       "displayName": "Ms. Itzel Sims",
@@ -22204,6 +22491,67 @@
         "Ms. Itzel Sims, SBA Director and Senior Vice President, First Security Bank, Little Rock, AR"
       ],
       "profileUrl": "senate-witnesses/ms-itzel-sims.html"
+    },
+    {
+      "key": "ms-jean-wojtowicz",
+      "chamber": "Senate",
+      "displayName": "Ms. Jean Wojtowicz",
+      "title": "Executive Director, Indiana Statewide CDC, Indianapolis, IN",
+      "organization": "Indianapolis, IN",
+      "bio": "",
+      "links": {
+        "linkedinSearch": "https://www.linkedin.com/search/results/people/?keywords=Ms.%20Jean%20Wojtowicz%20Indianapolis%2C%20IN",
+        "googleScholarSearch": "https://scholar.google.com/scholar?q=Ms.%20Jean%20Wojtowicz%20Indianapolis%2C%20IN",
+        "webSearch": "https://www.google.com/search?q=Ms.%20Jean%20Wojtowicz%20Indianapolis%2C%20IN",
+        "imageSearch": "https://www.google.com/search?tbm=isch&q=Ms.%20Jean%20Wojtowicz%20Indianapolis%2C%20IN"
+      },
+      "verifiedLinks": {},
+      "enrichmentStatus": "research-needed",
+      "appearances": [
+        {
+          "eventId": "",
+          "source": "GovInfo",
+          "chamber": "Senate",
+          "congress": "119",
+          "date": "2025-09-17",
+          "dateIssued": "2025-09-17",
+          "title": "Using the 504 Program to Build America's Manufacturing Future",
+          "packageId": "CHRG-119shrg61659",
+          "granuleId": "CHRG-119shrg61659",
+          "jacketId": "61659",
+          "detailsUrl": "https://www.govinfo.gov/app/details/CHRG-119shrg61659/CHRG-119shrg61659",
+          "htmlUrl": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/html/CHRG-119shrg61659.htm",
+          "pdfUrl": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/pdf/CHRG-119shrg61659.pdf",
+          "resultLink": "https://api.govinfo.gov/packages/CHRG-119shrg61659/granules/CHRG-119shrg61659/summary",
+          "relatedLink": "https://api.govinfo.gov/related/CHRG-119shrg61659",
+          "committee": {
+            "name": "Committee on Small Business and Entrepreneurship of The",
+            "authorityId": "",
+            "inferred": false
+          },
+          "witnessCount": 4,
+          "localUrl": "senate-events/chrg-119shrg61659.html",
+          "role": "Executive Director, Indiana Statewide CDC, Indianapolis, IN",
+          "organization": "Indianapolis, IN",
+          "documents": [
+            {
+              "title": "GovInfo HTML",
+              "type": "hearing_html",
+              "url": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/html/CHRG-119shrg61659.htm"
+            },
+            {
+              "title": "GovInfo PDF",
+              "type": "hearing_pdf",
+              "url": "https://www.govinfo.gov/content/pkg/CHRG-119shrg61659/pdf/CHRG-119shrg61659.pdf"
+            }
+          ]
+        }
+      ],
+      "appearanceCount": 1,
+      "sourceLines": [
+        "Ms. Jean Wojtowicz, Executive Director, Indiana Statewide CDC, Indianapolis, IN"
+      ],
+      "profileUrl": "senate-witnesses/ms-jean-wojtowicz.html"
     },
     {
       "key": "ms-julie-robbins",
